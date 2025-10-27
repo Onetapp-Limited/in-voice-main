@@ -10,7 +10,6 @@
 		109202F22EAF6BC100F0C7FE /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 109202F12EAF6BC100F0C7FE /* SnapKit */; };
 		9520F87D24D27CBB006CDC05 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9520F87C24D27CBB006CDC05 /* AppDelegate.swift */; };
 		9520F87F24D27CBB006CDC05 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9520F87E24D27CBB006CDC05 /* SceneDelegate.swift */; };
-		9520F88424D27CBB006CDC05 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9520F88224D27CBB006CDC05 /* Main.storyboard */; };
 		9520F88624D27CBC006CDC05 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9520F88524D27CBC006CDC05 /* Assets.xcassets */; };
 		9520F88924D27CBC006CDC05 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9520F88724D27CBC006CDC05 /* LaunchScreen.storyboard */; };
 		95355583253DFFCD00A3AECB /* CSVCreator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95355582253DFFCD00A3AECB /* CSVCreator.swift */; };
@@ -73,7 +72,6 @@
 		9520F87924D27CBB006CDC05 /* Quick Invoice.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Quick Invoice.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9520F87C24D27CBB006CDC05 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		9520F87E24D27CBB006CDC05 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		9520F88324D27CBB006CDC05 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		9520F88524D27CBC006CDC05 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		9520F88824D27CBC006CDC05 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		9520F88A24D27CBC006CDC05 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -190,7 +188,6 @@
 		95525297253E7A9F00DDF5D7 /* Storyboards */ = {
 			isa = PBXGroup;
 			children = (
-				9520F88224D27CBB006CDC05 /* Main.storyboard */,
 				95FDD337253E6A5F0001D2FA /* Invoice.storyboard */,
 				95FDD33B253E77B50001D2FA /* Clients.storyboard */,
 				95525294253E79AD00DDF5D7 /* PreviousInvoices.storyboard */,
@@ -428,7 +425,6 @@
 				9557D58C24EDB33600E2DD8A /* ClientTableViewCell.xib in Resources */,
 				9557D59224EDDB8900E2DD8A /* ItemTableViewCell.xib in Resources */,
 				95FDD338253E6A5F0001D2FA /* Invoice.storyboard in Resources */,
-				9520F88424D27CBB006CDC05 /* Main.storyboard in Resources */,
 				95525299253E7B8E00DDF5D7 /* Items.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -514,14 +510,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		9520F88224D27CBB006CDC05 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				9520F88324D27CBB006CDC05 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		9520F88724D27CBC006CDC05 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (

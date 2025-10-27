@@ -1,4 +1,5 @@
 import UIKit
+import SnapKit
 
 class HomeViewController: UIViewController {
 
@@ -41,13 +42,11 @@ extension HomeViewController {
     
     func setupLayout() {
         view.addSubview(collectionView)
-
-        NSLayoutConstraint.activate([
-            collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-        ])
+        collectionView.snp.makeConstraints { make in
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.top) // Привязка к Safe Area сверху
+            make.leading.trailing.equalToSuperview() // Привязка к левому и правому краям супервью
+            make.bottom.equalToSuperview() // Привязка к нижнему краю супервью
+        }
     }
     
     func setupCollectionView() {
