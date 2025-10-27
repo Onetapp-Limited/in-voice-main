@@ -4,22 +4,17 @@
 <dict>
     <key>CFBundleIdentifier</key>
     <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
-
     <key>CFBundleName</key>
     <string>$(PRODUCT_NAME)</string>
-
     <key>CFBundleExecutable</key>
     <string>$(EXECUTABLE_NAME)</string>
-
     <key>CFBundlePackageType</key>
     <string>APPL</string>
-
     <key>CFBundleShortVersionString</key>
     <string>1.0</string>
-
     <key>CFBundleVersion</key>
     <string>1</string>
-
+    
     <key>UIApplicationSceneManifest</key>
     <dict>
         <key>UISceneConfigurations</key>
@@ -31,10 +26,10 @@
                     <string>Default Configuration</string>
                     <key>UISceneDelegateClassName</key>
                     <string>$(PRODUCT_MODULE_NAME).SceneDelegate</string>
-                </dict>
+                    
+                    </dict>
             </array>
         </dict>
     </dict>
 </dict>
 </plist>
-
