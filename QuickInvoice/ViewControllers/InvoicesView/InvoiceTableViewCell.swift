@@ -1,6 +1,16 @@
 import UIKit
 import SnapKit
 
+struct Client {
+    var clientName: String?
+}
+
+struct Invoice {
+    var invoiceTitle: String?
+    var client: Client?
+    var invoiceDate: String?
+}
+
 class InvoiceTableViewCell: UITableViewCell {
     
     // MARK: - Reuse Identifier

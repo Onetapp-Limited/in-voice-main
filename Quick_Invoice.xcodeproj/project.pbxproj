@@ -11,6 +11,7 @@
 		109202F62EAF6E9900F0C7FE /* HomeCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 109202F52EAF6E9800F0C7FE /* HomeCollectionViewCell.swift */; };
 		109202F92EAF763B00F0C7FE /* InvoiceTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 109202F82EAF763A00F0C7FE /* InvoiceTableViewCell.swift */; };
 		109204592EAF784200F0C7FE /* Colors+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 109204582EAF783D00F0C7FE /* Colors+.swift */; };
+		1092045B2EAF7A2E00F0C7FE /* GradientButton+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1092045A2EAF7A2D00F0C7FE /* GradientButton+.swift */; };
 		9520F87D24D27CBB006CDC05 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9520F87C24D27CBB006CDC05 /* AppDelegate.swift */; };
 		9520F87F24D27CBB006CDC05 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9520F87E24D27CBB006CDC05 /* SceneDelegate.swift */; };
 		9520F88624D27CBC006CDC05 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9520F88524D27CBC006CDC05 /* Assets.xcassets */; };
@@ -29,8 +30,6 @@
 		95A6BC1224ECEB9C00BC3088 /* ItemsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95A6BC1124ECEB9C00BC3088 /* ItemsViewController.swift */; };
 		95A6BC1424ECECBD00BC3088 /* InvoicesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95A6BC1324ECECBD00BC3088 /* InvoicesViewController.swift */; };
 		95A6BC1724ECEFDE00BC3088 /* PDFCreator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95A6BC1624ECEFDE00BC3088 /* PDFCreator.swift */; };
-		95A6BC2224ECF40A00BC3088 /* QuickInvoiceData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95A6BC2124ECF40A00BC3088 /* QuickInvoiceData.swift */; };
-		95A6BC2724EDA0A000BC3088 /* QuickInvoiceModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 95A6BC2524EDA0A000BC3088 /* QuickInvoiceModel.xcdatamodeld */; };
 		95DF1A3224F04FDC002DED7B /* InvoiceItemsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DF1A3124F04FDC002DED7B /* InvoiceItemsViewController.swift */; };
 		95DF1A3824F07509002DED7B /* NewInvoiceItemViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95DF1A3724F07509002DED7B /* NewInvoiceItemViewController.swift */; };
 		95FDD331253E29720001D2FA /* Extension+Float.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95FDD330253E29720001D2FA /* Extension+Float.swift */; };
@@ -57,6 +56,7 @@
 		109202F52EAF6E9800F0C7FE /* HomeCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeCollectionViewCell.swift; sourceTree = "<group>"; };
 		109202F82EAF763A00F0C7FE /* InvoiceTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvoiceTableViewCell.swift; sourceTree = "<group>"; };
 		109204582EAF783D00F0C7FE /* Colors+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Colors+.swift"; sourceTree = "<group>"; };
+		1092045A2EAF7A2D00F0C7FE /* GradientButton+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GradientButton+.swift"; sourceTree = "<group>"; };
 		9520F87924D27CBB006CDC05 /* Quick Invoice.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Quick Invoice.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9520F87C24D27CBB006CDC05 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		9520F87E24D27CBB006CDC05 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -79,8 +79,6 @@
 		95A6BC1124ECEB9C00BC3088 /* ItemsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemsViewController.swift; sourceTree = "<group>"; };
 		95A6BC1324ECECBD00BC3088 /* InvoicesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvoicesViewController.swift; sourceTree = "<group>"; };
 		95A6BC1624ECEFDE00BC3088 /* PDFCreator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFCreator.swift; sourceTree = "<group>"; };
-		95A6BC2124ECF40A00BC3088 /* QuickInvoiceData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickInvoiceData.swift; sourceTree = "<group>"; };
-		95A6BC2624EDA0A000BC3088 /* QuickInvoiceModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = QuickInvoiceModel.xcdatamodel; sourceTree = "<group>"; };
 		95DF1A3124F04FDC002DED7B /* InvoiceItemsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvoiceItemsViewController.swift; sourceTree = "<group>"; };
 		95DF1A3724F07509002DED7B /* NewInvoiceItemViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewInvoiceItemViewController.swift; sourceTree = "<group>"; };
 		95FDD330253E29720001D2FA /* Extension+Float.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+Float.swift"; sourceTree = "<group>"; };
@@ -159,7 +157,6 @@
 		9520F87B24D27CBB006CDC05 /* QuickInvoice */ = {
 			isa = PBXGroup;
 			children = (
-				95A6BC2024ECF3EC00BC3088 /* DataSource */,
 				95A6BC1524ECEFC300BC3088 /* Objects */,
 				95A6BC0A24ECD82600BC3088 /* ViewControllers */,
 				9520F87C24D27CBB006CDC05 /* AppDelegate.swift */,
@@ -191,17 +188,8 @@
 			children = (
 				95355582253DFFCD00A3AECB /* CSVCreator.swift */,
 				95A6BC1624ECEFDE00BC3088 /* PDFCreator.swift */,
-				95A6BC2524EDA0A000BC3088 /* QuickInvoiceModel.xcdatamodeld */,
 			);
 			path = Objects;
-			sourceTree = "<group>";
-		};
-		95A6BC2024ECF3EC00BC3088 /* DataSource */ = {
-			isa = PBXGroup;
-			children = (
-				95A6BC2124ECF40A00BC3088 /* QuickInvoiceData.swift */,
-			);
-			path = DataSource;
 			sourceTree = "<group>";
 		};
 		95B1571924FF1C550018EE56 /* InvoiceVCs */ = {
@@ -237,6 +225,7 @@
 		95FDD332253E297E0001D2FA /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				1092045A2EAF7A2D00F0C7FE /* GradientButton+.swift */,
 				109204582EAF783D00F0C7FE /* Colors+.swift */,
 				95355586253E1E5300A3AECB /* Extension+ViewController.swift */,
 				95FDD330253E29720001D2FA /* Extension+Float.swift */,
@@ -378,8 +367,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9520F87D24D27CBB006CDC05 /* AppDelegate.swift in Sources */,
-				95A6BC2724EDA0A000BC3088 /* QuickInvoiceModel.xcdatamodeld in Sources */,
-				95A6BC2224ECF40A00BC3088 /* QuickInvoiceData.swift in Sources */,
+				1092045B2EAF7A2E00F0C7FE /* GradientButton+.swift in Sources */,
 				95A6BC0E24ECEA2B00BC3088 /* EditInformationViewController.swift in Sources */,
 				9557D59624EE1B5400E2DD8A /* PDFPreviewViewController.swift in Sources */,
 				9557D58924EDB17100E2DD8A /* NewClientViewController.swift in Sources */,
@@ -744,19 +732,6 @@
 			productName = SnapKit;
 		};
 /* End XCSwiftPackageProductDependency section */
-
-/* Begin XCVersionGroup section */
-		95A6BC2524EDA0A000BC3088 /* QuickInvoiceModel.xcdatamodeld */ = {
-			isa = XCVersionGroup;
-			children = (
-				95A6BC2624EDA0A000BC3088 /* QuickInvoiceModel.xcdatamodel */,
-			);
-			currentVersion = 95A6BC2624EDA0A000BC3088 /* QuickInvoiceModel.xcdatamodel */;
-			path = QuickInvoiceModel.xcdatamodeld;
-			sourceTree = "<group>";
-			versionGroupType = wrapper.xcdatamodel;
-		};
-/* End XCVersionGroup section */
 	};
 	rootObject = 9520F87124D27CBB006CDC05 /* Project object */;
 }
