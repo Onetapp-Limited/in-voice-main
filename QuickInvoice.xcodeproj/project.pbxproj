@@ -3,17 +3,16 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		109202F22EAF6BC100F0C7FE /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 109202F12EAF6BC100F0C7FE /* SnapKit */; };
 		9520F87D24D27CBB006CDC05 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9520F87C24D27CBB006CDC05 /* AppDelegate.swift */; };
 		9520F87F24D27CBB006CDC05 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9520F87E24D27CBB006CDC05 /* SceneDelegate.swift */; };
 		9520F88424D27CBB006CDC05 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9520F88224D27CBB006CDC05 /* Main.storyboard */; };
 		9520F88624D27CBC006CDC05 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9520F88524D27CBC006CDC05 /* Assets.xcassets */; };
 		9520F88924D27CBC006CDC05 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9520F88724D27CBC006CDC05 /* LaunchScreen.storyboard */; };
-		9520F89424D27CBC006CDC05 /* QuickInvoiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9520F89324D27CBC006CDC05 /* QuickInvoiceTests.swift */; };
-		9520F89F24D27CBC006CDC05 /* QuickInvoiceUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9520F89E24D27CBC006CDC05 /* QuickInvoiceUITests.swift */; };
 		95355583253DFFCD00A3AECB /* CSVCreator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95355582253DFFCD00A3AECB /* CSVCreator.swift */; };
 		95355585253E0E6D00A3AECB /* SharePopoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95355584253E0E6D00A3AECB /* SharePopoverViewController.swift */; };
 		95355587253E1E5300A3AECB /* Extension+ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95355586253E1E5300A3AECB /* Extension+ViewController.swift */; };
@@ -79,11 +78,7 @@
 		9520F88824D27CBC006CDC05 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		9520F88A24D27CBC006CDC05 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9520F88F24D27CBC006CDC05 /* QuickInvoiceTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = QuickInvoiceTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		9520F89324D27CBC006CDC05 /* QuickInvoiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickInvoiceTests.swift; sourceTree = "<group>"; };
-		9520F89524D27CBC006CDC05 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9520F89A24D27CBC006CDC05 /* QuickInvoiceUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = QuickInvoiceUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		9520F89E24D27CBC006CDC05 /* QuickInvoiceUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickInvoiceUITests.swift; sourceTree = "<group>"; };
-		9520F8A024D27CBC006CDC05 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		95355582253DFFCD00A3AECB /* CSVCreator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSVCreator.swift; sourceTree = "<group>"; };
 		95355584253E0E6D00A3AECB /* SharePopoverViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharePopoverViewController.swift; sourceTree = "<group>"; };
 		95355586253E1E5300A3AECB /* Extension+ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+ViewController.swift"; sourceTree = "<group>"; };
@@ -128,6 +123,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				109202F22EAF6BC100F0C7FE /* SnapKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -152,8 +148,6 @@
 			isa = PBXGroup;
 			children = (
 				9520F87B24D27CBB006CDC05 /* QuickInvoice */,
-				9520F89224D27CBC006CDC05 /* QuickInvoiceTests */,
-				9520F89D24D27CBC006CDC05 /* QuickInvoiceUITests */,
 				9520F87A24D27CBB006CDC05 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -182,24 +176,6 @@
 				9520F88A24D27CBC006CDC05 /* Info.plist */,
 			);
 			path = QuickInvoice;
-			sourceTree = "<group>";
-		};
-		9520F89224D27CBC006CDC05 /* QuickInvoiceTests */ = {
-			isa = PBXGroup;
-			children = (
-				9520F89324D27CBC006CDC05 /* QuickInvoiceTests.swift */,
-				9520F89524D27CBC006CDC05 /* Info.plist */,
-			);
-			path = QuickInvoiceTests;
-			sourceTree = "<group>";
-		};
-		9520F89D24D27CBC006CDC05 /* QuickInvoiceUITests */ = {
-			isa = PBXGroup;
-			children = (
-				9520F89E24D27CBC006CDC05 /* QuickInvoiceUITests.swift */,
-				9520F8A024D27CBC006CDC05 /* Info.plist */,
-			);
-			path = QuickInvoiceUITests;
 			sourceTree = "<group>";
 		};
 		95525296253E7A9200DDF5D7 /* Cells */ = {
@@ -420,6 +396,9 @@
 				Base,
 			);
 			mainGroup = 9520F87024D27CBB006CDC05;
+			packageReferences = (
+				109202F02EAF6BC100F0C7FE /* XCRemoteSwiftPackageReference "SnapKit" */,
+			);
 			productRefGroup = 9520F87A24D27CBB006CDC05 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -509,7 +488,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9520F89424D27CBC006CDC05 /* QuickInvoiceTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -517,7 +495,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9520F89F24D27CBC006CDC05 /* QuickInvoiceUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -713,7 +690,6 @@
 		9520F8A724D27CBC006CDC05 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = QuickInvoiceTests/Info.plist;
@@ -734,7 +710,6 @@
 		9520F8A824D27CBC006CDC05 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = QuickInvoiceTests/Info.plist;
@@ -755,7 +730,6 @@
 		9520F8AA24D27CBC006CDC05 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = QuickInvoiceUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -774,7 +748,6 @@
 		9520F8AB24D27CBC006CDC05 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = QuickInvoiceUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -830,6 +803,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		109202F02EAF6BC100F0C7FE /* XCRemoteSwiftPackageReference "SnapKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SnapKit/SnapKit";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.7.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		109202F12EAF6BC100F0C7FE /* SnapKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 109202F02EAF6BC100F0C7FE /* XCRemoteSwiftPackageReference "SnapKit" */;
+			productName = SnapKit;
+		};
+/* End XCSwiftPackageProductDependency section */
 
 /* Begin XCVersionGroup section */
 		95A6BC2524EDA0A000BC3088 /* QuickInvoiceModel.xcdatamodeld */ = {
