@@ -56,6 +56,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window.windowScene = windowScene
         window.rootViewController = tabBarController
         self.window = window
+        self.window?.overrideUserInterfaceStyle = .light
         window.makeKeyAndVisible()
     }
     

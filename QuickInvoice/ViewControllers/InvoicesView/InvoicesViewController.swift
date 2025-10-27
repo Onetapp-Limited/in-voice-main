@@ -43,8 +43,8 @@ class InvoicesViewController: UIViewController {
         button.tintColor = .white
         
         // Расположение текста и иконки
-        button.titleEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: -10)
-        button.imageEdgeInsets = UIEdgeInsets(top: 0, left: -10, bottom: 0, right: 10)
+//        button.titleEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: -10)
+//        button.imageEdgeInsets = UIEdgeInsets(top: 0, left: -10, bottom: 0, right: 10)
         
         button.addTarget(self, action: #selector(createInvoiceButtonTapped), for: .touchUpInside)
         return button
@@ -69,8 +69,7 @@ class InvoicesViewController: UIViewController {
     // MARK: - Actions
     
     @objc func createInvoiceButtonTapped() {
-        print("Create New Invoice button tapped!")
-        // Здесь ваша логика создания нового инвойса
+        self.navigationController?.pushViewController(NewInvoiceViewController(), animated: true)
     }
 }
 
@@ -137,9 +136,9 @@ extension InvoicesViewController {
     private func fetchInvoices() -> [Invoice] {
         // Временные тестовые данные для демонстрации работы TableView
         return [
-            Invoice(invoiceTitle: "Project Alpha", client: Client(clientName: "Client A"), invoiceDate: "Oct 20, 2025"),
-            Invoice(invoiceTitle: "Monthly Retainer", client: Client(clientName: "Client B"), invoiceDate: "Oct 15, 2025"),
-            Invoice(invoiceTitle: "Website Redesign", client: Client(clientName: "Client C"), invoiceDate: "Sep 28, 2025")
+            Invoice(invoiceTitle: "Project Alpha", client: Client(clientName: "Client A"), invoiceDate: Date()),
+            Invoice(invoiceTitle: "Monthly Retainer", client: Client(clientName: "Client B"), invoiceDate: Date()),
+            Invoice(invoiceTitle: "Website Redesign", client: Client(clientName: "Client C"), invoiceDate: Date())
         ]
     }
     
@@ -182,7 +181,7 @@ extension InvoicesViewController: UITableViewDelegate, UITableViewDataSource {
         }
         
         cell.invoiceTitleLabel.text = currentInvoice.invoiceTitle ?? ""
-        cell.dateLabel.text = currentInvoice.invoiceDate ?? ""
+        cell.dateLabel.text = DateFormatter.invoice.string(from: currentInvoice.invoiceDate)
         
         return cell
     }
@@ -210,10 +209,6 @@ extension InvoicesViewController: UITableViewDelegate, UITableViewDataSource {
 // MARK: - View Controller Flow
 extension InvoicesViewController {
     func showInvoiceDetailVC() {
-        // Здесь должна быть ваша логика инициализации NewInvoiceViewController
-        // let vc = NewInvoiceViewController()
-        // vc.modalPresentationStyle = .overFullScreen
-        // vc.curInvoice = selectedInvoice
-        // self.present(vc, animated: true)
+        self.navigationController?.pushViewController(InvoiceDetailViewController(), animated: true)
     }
 }

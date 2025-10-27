@@ -12,6 +12,13 @@
 		109202F92EAF763B00F0C7FE /* InvoiceTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 109202F82EAF763A00F0C7FE /* InvoiceTableViewCell.swift */; };
 		109204592EAF784200F0C7FE /* Colors+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 109204582EAF783D00F0C7FE /* Colors+.swift */; };
 		1092045B2EAF7A2E00F0C7FE /* GradientButton+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1092045A2EAF7A2D00F0C7FE /* GradientButton+.swift */; };
+		1092045E2EAF7B9F00F0C7FE /* NewInvoiceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1092045D2EAF7B9E00F0C7FE /* NewInvoiceViewController.swift */; };
+		109204602EAF7CEE00F0C7FE /* DateFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1092045F2EAF7CEE00F0C7FE /* DateFormatter.swift */; };
+		109204622EAF7D5900F0C7FE /* InvoiceItemCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 109204612EAF7D5800F0C7FE /* InvoiceItemCell.swift */; };
+		109204652EAF7DCB00F0C7FE /* InvoiceDetailVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 109204642EAF7DC900F0C7FE /* InvoiceDetailVC.swift */; };
+		109204672EAF7DFE00F0C7FE /* InvoiceModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 109204662EAF7DFB00F0C7FE /* InvoiceModel.swift */; };
+		109204692EAF7E2100F0C7FE /* InvoiceDetailItemCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 109204682EAF7E2100F0C7FE /* InvoiceDetailItemCell.swift */; };
+		1092046C2EAF89D500F0C7FE /* InvoiceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1092046B2EAF89C100F0C7FE /* InvoiceService.swift */; };
 		9520F87D24D27CBB006CDC05 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9520F87C24D27CBB006CDC05 /* AppDelegate.swift */; };
 		9520F87F24D27CBB006CDC05 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9520F87E24D27CBB006CDC05 /* SceneDelegate.swift */; };
 		9520F88624D27CBC006CDC05 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9520F88524D27CBC006CDC05 /* Assets.xcassets */; };
@@ -24,7 +31,6 @@
 		9557D59024EDD87700E2DD8A /* NewItemViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9557D58F24EDD87700E2DD8A /* NewItemViewController.swift */; };
 		9557D59624EE1B5400E2DD8A /* PDFPreviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9557D59524EE1B5400E2DD8A /* PDFPreviewViewController.swift */; };
 		95A6BC0924ECD48800BC3088 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95A6BC0824ECD48800BC3088 /* HomeViewController.swift */; };
-		95A6BC0C24ECD83500BC3088 /* NewInvoiceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95A6BC0B24ECD83500BC3088 /* NewInvoiceViewController.swift */; };
 		95A6BC0E24ECEA2B00BC3088 /* EditInformationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95A6BC0D24ECEA2B00BC3088 /* EditInformationViewController.swift */; };
 		95A6BC1024ECEB0200BC3088 /* ClientsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95A6BC0F24ECEB0200BC3088 /* ClientsViewController.swift */; };
 		95A6BC1224ECEB9C00BC3088 /* ItemsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95A6BC1124ECEB9C00BC3088 /* ItemsViewController.swift */; };
@@ -57,6 +63,13 @@
 		109202F82EAF763A00F0C7FE /* InvoiceTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvoiceTableViewCell.swift; sourceTree = "<group>"; };
 		109204582EAF783D00F0C7FE /* Colors+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Colors+.swift"; sourceTree = "<group>"; };
 		1092045A2EAF7A2D00F0C7FE /* GradientButton+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GradientButton+.swift"; sourceTree = "<group>"; };
+		1092045D2EAF7B9E00F0C7FE /* NewInvoiceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewInvoiceViewController.swift; sourceTree = "<group>"; };
+		1092045F2EAF7CEE00F0C7FE /* DateFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateFormatter.swift; sourceTree = "<group>"; };
+		109204612EAF7D5800F0C7FE /* InvoiceItemCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvoiceItemCell.swift; sourceTree = "<group>"; };
+		109204642EAF7DC900F0C7FE /* InvoiceDetailVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvoiceDetailVC.swift; sourceTree = "<group>"; };
+		109204662EAF7DFB00F0C7FE /* InvoiceModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvoiceModel.swift; sourceTree = "<group>"; };
+		109204682EAF7E2100F0C7FE /* InvoiceDetailItemCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvoiceDetailItemCell.swift; sourceTree = "<group>"; };
+		1092046B2EAF89C100F0C7FE /* InvoiceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvoiceService.swift; sourceTree = "<group>"; };
 		9520F87924D27CBB006CDC05 /* Quick Invoice.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Quick Invoice.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9520F87C24D27CBB006CDC05 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		9520F87E24D27CBB006CDC05 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -73,7 +86,6 @@
 		9557D58F24EDD87700E2DD8A /* NewItemViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewItemViewController.swift; sourceTree = "<group>"; };
 		9557D59524EE1B5400E2DD8A /* PDFPreviewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFPreviewViewController.swift; sourceTree = "<group>"; };
 		95A6BC0824ECD48800BC3088 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
-		95A6BC0B24ECD83500BC3088 /* NewInvoiceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewInvoiceViewController.swift; sourceTree = "<group>"; };
 		95A6BC0D24ECEA2B00BC3088 /* EditInformationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditInformationViewController.swift; sourceTree = "<group>"; };
 		95A6BC0F24ECEB0200BC3088 /* ClientsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientsViewController.swift; sourceTree = "<group>"; };
 		95A6BC1124ECEB9C00BC3088 /* ItemsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemsViewController.swift; sourceTree = "<group>"; };
@@ -130,10 +142,39 @@
 		109202F72EAF762A00F0C7FE /* InvoicesView */ = {
 			isa = PBXGroup;
 			children = (
+				109204662EAF7DFB00F0C7FE /* InvoiceModel.swift */,
+				109204632EAF7DC500F0C7FE /* InvoiceDetailVC */,
+				1092045C2EAF7B9900F0C7FE /* NewInvoiceViewController */,
 				109202F82EAF763A00F0C7FE /* InvoiceTableViewCell.swift */,
 				95A6BC1324ECECBD00BC3088 /* InvoicesViewController.swift */,
 			);
 			path = InvoicesView;
+			sourceTree = "<group>";
+		};
+		1092045C2EAF7B9900F0C7FE /* NewInvoiceViewController */ = {
+			isa = PBXGroup;
+			children = (
+				109204612EAF7D5800F0C7FE /* InvoiceItemCell.swift */,
+				1092045D2EAF7B9E00F0C7FE /* NewInvoiceViewController.swift */,
+			);
+			path = NewInvoiceViewController;
+			sourceTree = "<group>";
+		};
+		109204632EAF7DC500F0C7FE /* InvoiceDetailVC */ = {
+			isa = PBXGroup;
+			children = (
+				109204682EAF7E2100F0C7FE /* InvoiceDetailItemCell.swift */,
+				109204642EAF7DC900F0C7FE /* InvoiceDetailVC.swift */,
+			);
+			path = InvoiceDetailVC;
+			sourceTree = "<group>";
+		};
+		1092046A2EAF89B900F0C7FE /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				1092046B2EAF89C100F0C7FE /* InvoiceService.swift */,
+			);
+			path = Data;
 			sourceTree = "<group>";
 		};
 		9520F87024D27CBB006CDC05 = {
@@ -157,7 +198,8 @@
 		9520F87B24D27CBB006CDC05 /* QuickInvoice */ = {
 			isa = PBXGroup;
 			children = (
-				95A6BC1524ECEFC300BC3088 /* Objects */,
+				1092046A2EAF89B900F0C7FE /* Data */,
+				95A6BC1524ECEFC300BC3088 /* Docs */,
 				95A6BC0A24ECD82600BC3088 /* ViewControllers */,
 				9520F87C24D27CBB006CDC05 /* AppDelegate.swift */,
 				9520F87E24D27CBB006CDC05 /* SceneDelegate.swift */,
@@ -183,13 +225,13 @@
 			path = ViewControllers;
 			sourceTree = "<group>";
 		};
-		95A6BC1524ECEFC300BC3088 /* Objects */ = {
+		95A6BC1524ECEFC300BC3088 /* Docs */ = {
 			isa = PBXGroup;
 			children = (
 				95355582253DFFCD00A3AECB /* CSVCreator.swift */,
 				95A6BC1624ECEFDE00BC3088 /* PDFCreator.swift */,
 			);
-			path = Objects;
+			path = Docs;
 			sourceTree = "<group>";
 		};
 		95B1571924FF1C550018EE56 /* InvoiceVCs */ = {
@@ -197,7 +239,6 @@
 			children = (
 				9557D59524EE1B5400E2DD8A /* PDFPreviewViewController.swift */,
 				95DF1A3124F04FDC002DED7B /* InvoiceItemsViewController.swift */,
-				95A6BC0B24ECD83500BC3088 /* NewInvoiceViewController.swift */,
 				95DF1A3724F07509002DED7B /* NewInvoiceItemViewController.swift */,
 				95355584253E0E6D00A3AECB /* SharePopoverViewController.swift */,
 			);
@@ -225,6 +266,7 @@
 		95FDD332253E297E0001D2FA /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				1092045F2EAF7CEE00F0C7FE /* DateFormatter.swift */,
 				1092045A2EAF7A2D00F0C7FE /* GradientButton+.swift */,
 				109204582EAF783D00F0C7FE /* Colors+.swift */,
 				95355586253E1E5300A3AECB /* Extension+ViewController.swift */,
@@ -323,6 +365,7 @@
 			mainGroup = 9520F87024D27CBB006CDC05;
 			packageReferences = (
 				109202F02EAF6BC100F0C7FE /* XCRemoteSwiftPackageReference "SnapKit" */,
+				1092046D2EAF8AA800F0C7FE /* XCRemoteSwiftPackageReference "realm-swift" */,
 			);
 			productRefGroup = 9520F87A24D27CBB006CDC05 /* Products */;
 			projectDirPath = "";
@@ -366,8 +409,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				109204602EAF7CEE00F0C7FE /* DateFormatter.swift in Sources */,
+				109204652EAF7DCB00F0C7FE /* InvoiceDetailVC.swift in Sources */,
 				9520F87D24D27CBB006CDC05 /* AppDelegate.swift in Sources */,
 				1092045B2EAF7A2E00F0C7FE /* GradientButton+.swift in Sources */,
+				109204622EAF7D5900F0C7FE /* InvoiceItemCell.swift in Sources */,
 				95A6BC0E24ECEA2B00BC3088 /* EditInformationViewController.swift in Sources */,
 				9557D59624EE1B5400E2DD8A /* PDFPreviewViewController.swift in Sources */,
 				9557D58924EDB17100E2DD8A /* NewClientViewController.swift in Sources */,
@@ -381,13 +427,16 @@
 				95355587253E1E5300A3AECB /* Extension+ViewController.swift in Sources */,
 				95A6BC0924ECD48800BC3088 /* HomeViewController.swift in Sources */,
 				95355583253DFFCD00A3AECB /* CSVCreator.swift in Sources */,
+				1092045E2EAF7B9F00F0C7FE /* NewInvoiceViewController.swift in Sources */,
 				109202F92EAF763B00F0C7FE /* InvoiceTableViewCell.swift in Sources */,
 				95A6BC1424ECECBD00BC3088 /* InvoicesViewController.swift in Sources */,
 				109202F62EAF6E9900F0C7FE /* HomeCollectionViewCell.swift in Sources */,
 				95DF1A3824F07509002DED7B /* NewInvoiceItemViewController.swift in Sources */,
-				95A6BC0C24ECD83500BC3088 /* NewInvoiceViewController.swift in Sources */,
 				109204592EAF784200F0C7FE /* Colors+.swift in Sources */,
+				109204692EAF7E2100F0C7FE /* InvoiceDetailItemCell.swift in Sources */,
+				109204672EAF7DFE00F0C7FE /* InvoiceModel.swift in Sources */,
 				95A6BC1724ECEFDE00BC3088 /* PDFCreator.swift in Sources */,
+				1092046C2EAF89D500F0C7FE /* InvoiceService.swift in Sources */,
 				9552529D253F635D00DDF5D7 /* SettingsViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -721,6 +770,14 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 5.7.1;
+			};
+		};
+		1092046D2EAF8AA800F0C7FE /* XCRemoteSwiftPackageReference "realm-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/realm/realm-swift.git";
+			requirement = {
+				branch = master;
+				kind = branch;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
