@@ -43,8 +43,8 @@ class InvoicesViewController: UIViewController {
         button.tintColor = .white
         
         // Расположение текста и иконки
-//        button.titleEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: -10)
-//        button.imageEdgeInsets = UIEdgeInsets(top: 0, left: -10, bottom: 0, right: 10)
+//         button.titleEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: -10)
+//         button.imageEdgeInsets = UIEdgeInsets(top: 0, left: -10, bottom: 0, right: 10)
         
         button.addTarget(self, action: #selector(createInvoiceButtonTapped), for: .touchUpInside)
         return button
@@ -64,12 +64,25 @@ class InvoicesViewController: UIViewController {
         view.backgroundColor = UIColor.background // ✅ Замена .systemBackground
         setupUI()
         setup()
+        setupTapToDismissKeyboard() // ✅ Добавляем обработку тапа для скрытия клавиатуры
     }
     
     // MARK: - Actions
     
     @objc func createInvoiceButtonTapped() {
         self.navigationController?.pushViewController(NewInvoiceViewController(), animated: true)
+    }
+    
+    // MARK: - Keyboard Handling
+    
+    private func setupTapToDismissKeyboard() {
+        let tap = UITapGestureRecognizer(target: self, action: #selector(endEditing))
+        tap.cancelsTouchesInView = false
+        view.addGestureRecognizer(tap)
+    }
+    
+    @objc private func endEditing() {
+        view.endEditing(true)
     }
 }
 
@@ -149,6 +162,13 @@ extension InvoicesViewController {
 
 // MARK: - Search Bar Delegate
 extension InvoicesViewController: UISearchBarDelegate {
+    
+    // ✅ Скрываем клавиатуру при нажатии "Return"
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
+        // Здесь можно было бы запустить окончательный поиск, если бы он не был в textDidChange
+    }
+    
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         filteredInvoices = searchText.isEmpty ? invoices : invoices.filter({ (invoice) -> Bool in
             if invoice.invoiceTitle?.range(of: searchText, options: .caseInsensitive, range: nil, locale: nil) != nil {

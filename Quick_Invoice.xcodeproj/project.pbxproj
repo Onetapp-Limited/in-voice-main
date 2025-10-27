@@ -7,7 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		109202F22EAF6BC100F0C7FE /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 109202F12EAF6BC100F0C7FE /* SnapKit */; };
+		1051E60E2EAF912200D576BC /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 1051E60D2EAF912200D576BC /* RealmSwift */; };
+		1051E6112EAF91C100D576BC /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 1051E6102EAF91C100D576BC /* SnapKit */; };
 		109202F62EAF6E9900F0C7FE /* HomeCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 109202F52EAF6E9800F0C7FE /* HomeCollectionViewCell.swift */; };
 		109202F92EAF763B00F0C7FE /* InvoiceTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 109202F82EAF763A00F0C7FE /* InvoiceTableViewCell.swift */; };
 		109204592EAF784200F0C7FE /* Colors+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 109204582EAF783D00F0C7FE /* Colors+.swift */; };
@@ -41,22 +42,18 @@
 		95FDD331253E29720001D2FA /* Extension+Float.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95FDD330253E29720001D2FA /* Extension+Float.swift */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXContainerItemProxy section */
-		9520F89024D27CBC006CDC05 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 9520F87124D27CBB006CDC05 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 9520F87824D27CBB006CDC05;
-			remoteInfo = QuickInvoice;
+/* Begin PBXCopyFilesBuildPhase section */
+		1051E6062EAF8F3B00D576BC /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
 		};
-		9520F89B24D27CBC006CDC05 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 9520F87124D27CBB006CDC05 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 9520F87824D27CBB006CDC05;
-			remoteInfo = QuickInvoice;
-		};
-/* End PBXContainerItemProxy section */
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		109202F52EAF6E9800F0C7FE /* HomeCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -76,8 +73,6 @@
 		9520F88524D27CBC006CDC05 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		9520F88824D27CBC006CDC05 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		9520F88A24D27CBC006CDC05 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		9520F88F24D27CBC006CDC05 /* Quick_InvoiceTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Quick_InvoiceTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		9520F89A24D27CBC006CDC05 /* Quick_InvoiceUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Quick_InvoiceUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		95355582253DFFCD00A3AECB /* CSVCreator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSVCreator.swift; sourceTree = "<group>"; };
 		95355584253E0E6D00A3AECB /* SharePopoverViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharePopoverViewController.swift; sourceTree = "<group>"; };
 		95355586253E1E5300A3AECB /* Extension+ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+ViewController.swift"; sourceTree = "<group>"; };
@@ -101,21 +96,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				109202F22EAF6BC100F0C7FE /* SnapKit in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		9520F88C24D27CBC006CDC05 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		9520F89724D27CBC006CDC05 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
+				1051E60E2EAF912200D576BC /* RealmSwift in Frameworks */,
+				1051E6112EAF91C100D576BC /* SnapKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -189,8 +171,6 @@
 			isa = PBXGroup;
 			children = (
 				9520F87924D27CBB006CDC05 /* Quick Invoice.app */,
-				9520F88F24D27CBC006CDC05 /* Quick_InvoiceTests.xctest */,
-				9520F89A24D27CBC006CDC05 /* Quick_InvoiceUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -285,6 +265,7 @@
 				9520F87524D27CBB006CDC05 /* Sources */,
 				9520F87624D27CBB006CDC05 /* Frameworks */,
 				9520F87724D27CBB006CDC05 /* Resources */,
+				1051E6062EAF8F3B00D576BC /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -294,42 +275,6 @@
 			productName = QuickInvoice;
 			productReference = 9520F87924D27CBB006CDC05 /* Quick Invoice.app */;
 			productType = "com.apple.product-type.application";
-		};
-		9520F88E24D27CBC006CDC05 /* Quick_InvoiceTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 9520F8A624D27CBC006CDC05 /* Build configuration list for PBXNativeTarget "Quick_InvoiceTests" */;
-			buildPhases = (
-				9520F88B24D27CBC006CDC05 /* Sources */,
-				9520F88C24D27CBC006CDC05 /* Frameworks */,
-				9520F88D24D27CBC006CDC05 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				9520F89124D27CBC006CDC05 /* PBXTargetDependency */,
-			);
-			name = Quick_InvoiceTests;
-			productName = QuickInvoiceTests;
-			productReference = 9520F88F24D27CBC006CDC05 /* Quick_InvoiceTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
-		9520F89924D27CBC006CDC05 /* Quick_InvoiceUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 9520F8A924D27CBC006CDC05 /* Build configuration list for PBXNativeTarget "Quick_InvoiceUITests" */;
-			buildPhases = (
-				9520F89624D27CBC006CDC05 /* Sources */,
-				9520F89724D27CBC006CDC05 /* Frameworks */,
-				9520F89824D27CBC006CDC05 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				9520F89C24D27CBC006CDC05 /* PBXTargetDependency */,
-			);
-			name = Quick_InvoiceUITests;
-			productName = QuickInvoiceUITests;
-			productReference = 9520F89A24D27CBC006CDC05 /* Quick_InvoiceUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
 
@@ -344,14 +289,6 @@
 					9520F87824D27CBB006CDC05 = {
 						CreatedOnToolsVersion = 11.5;
 					};
-					9520F88E24D27CBC006CDC05 = {
-						CreatedOnToolsVersion = 11.5;
-						TestTargetID = 9520F87824D27CBB006CDC05;
-					};
-					9520F89924D27CBC006CDC05 = {
-						CreatedOnToolsVersion = 11.5;
-						TestTargetID = 9520F87824D27CBB006CDC05;
-					};
 				};
 			};
 			buildConfigurationList = 9520F87424D27CBB006CDC05 /* Build configuration list for PBXProject "Quick_Invoice" */;
@@ -364,16 +301,14 @@
 			);
 			mainGroup = 9520F87024D27CBB006CDC05;
 			packageReferences = (
-				109202F02EAF6BC100F0C7FE /* XCRemoteSwiftPackageReference "SnapKit" */,
-				1092046D2EAF8AA800F0C7FE /* XCRemoteSwiftPackageReference "realm-swift" */,
+				1051E60A2EAF912200D576BC /* XCRemoteSwiftPackageReference "realm-swift" */,
+				1051E60F2EAF91C100D576BC /* XCRemoteSwiftPackageReference "SnapKit" */,
 			);
 			productRefGroup = 9520F87A24D27CBB006CDC05 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				9520F87824D27CBB006CDC05 /* Quick_Invoice */,
-				9520F88E24D27CBC006CDC05 /* Quick_InvoiceTests */,
-				9520F89924D27CBC006CDC05 /* Quick_InvoiceUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -385,20 +320,6 @@
 			files = (
 				9520F88924D27CBC006CDC05 /* LaunchScreen.storyboard in Resources */,
 				9520F88624D27CBC006CDC05 /* Assets.xcassets in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		9520F88D24D27CBC006CDC05 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		9520F89824D27CBC006CDC05 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -441,34 +362,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		9520F88B24D27CBC006CDC05 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		9520F89624D27CBC006CDC05 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		9520F89124D27CBC006CDC05 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 9520F87824D27CBB006CDC05 /* Quick_Invoice */;
-			targetProxy = 9520F89024D27CBC006CDC05 /* PBXContainerItemProxy */;
-		};
-		9520F89C24D27CBC006CDC05 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 9520F87824D27CBB006CDC05 /* Quick_Invoice */;
-			targetProxy = 9520F89B24D27CBC006CDC05 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		9520F88724D27CBC006CDC05 /* LaunchScreen.storyboard */ = {
@@ -602,6 +496,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				BUILD_LIBRARY_FOR_DISTRIBUTION = NO;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = "";
@@ -626,6 +521,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				BUILD_LIBRARY_FOR_DISTRIBUTION = NO;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = "";
@@ -643,82 +539,6 @@
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
-			};
-			name = Release;
-		};
-		9520F8A724D27CBC006CDC05 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				INFOPLIST_FILE = QuickInvoiceTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.5;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = kirbec.QuickInvoiceTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Quick_Invoice.app/Quick_Invoice";
-			};
-			name = Debug;
-		};
-		9520F8A824D27CBC006CDC05 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				INFOPLIST_FILE = QuickInvoiceTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.5;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = kirbec.QuickInvoiceTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Quick_Invoice.app/Quick_Invoice";
-			};
-			name = Release;
-		};
-		9520F8AA24D27CBC006CDC05 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				INFOPLIST_FILE = QuickInvoiceUITests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = kirbec.QuickInvoiceUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = QuickInvoice;
-			};
-			name = Debug;
-		};
-		9520F8AB24D27CBC006CDC05 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				INFOPLIST_FILE = QuickInvoiceUITests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = kirbec.QuickInvoiceUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = QuickInvoice;
 			};
 			name = Release;
 		};
@@ -743,36 +563,10 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		9520F8A624D27CBC006CDC05 /* Build configuration list for PBXNativeTarget "Quick_InvoiceTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				9520F8A724D27CBC006CDC05 /* Debug */,
-				9520F8A824D27CBC006CDC05 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		9520F8A924D27CBC006CDC05 /* Build configuration list for PBXNativeTarget "Quick_InvoiceUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				9520F8AA24D27CBC006CDC05 /* Debug */,
-				9520F8AB24D27CBC006CDC05 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		109202F02EAF6BC100F0C7FE /* XCRemoteSwiftPackageReference "SnapKit" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/SnapKit/SnapKit";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 5.7.1;
-			};
-		};
-		1092046D2EAF8AA800F0C7FE /* XCRemoteSwiftPackageReference "realm-swift" */ = {
+		1051E60A2EAF912200D576BC /* XCRemoteSwiftPackageReference "realm-swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/realm/realm-swift.git";
 			requirement = {
@@ -780,12 +574,25 @@
 				kind = branch;
 			};
 		};
+		1051E60F2EAF91C100D576BC /* XCRemoteSwiftPackageReference "SnapKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SnapKit/SnapKit";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.7.1;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		109202F12EAF6BC100F0C7FE /* SnapKit */ = {
+		1051E60D2EAF912200D576BC /* RealmSwift */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 109202F02EAF6BC100F0C7FE /* XCRemoteSwiftPackageReference "SnapKit" */;
+			package = 1051E60A2EAF912200D576BC /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = RealmSwift;
+		};
+		1051E6102EAF91C100D576BC /* SnapKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1051E60F2EAF91C100D576BC /* XCRemoteSwiftPackageReference "SnapKit" */;
 			productName = SnapKit;
 		};
 /* End XCSwiftPackageProductDependency section */
