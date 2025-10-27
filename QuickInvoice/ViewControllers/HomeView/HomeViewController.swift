@@ -9,7 +9,7 @@ class HomeViewController: UIViewController {
         let layout = UICollectionViewFlowLayout()
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false // Отключаем autoresizing mask
-        collectionView.backgroundColor = .systemBackground // Устанавливаем фон
+        collectionView.backgroundColor = UIColor.background // ✅ Замена .systemBackground
         return collectionView
     }()
 
@@ -31,14 +31,28 @@ class HomeViewController: UIViewController {
         super.viewDidLoad()
         
         title = "Home"
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = UIColor.background // ✅ Замена .systemBackground
         
         setupLayout()
+        setupNavigationBarAppearance() // Добавляем настройку Navigation Bar
         setupCollectionView()
     }
 }
 
 extension HomeViewController {
+    
+    // Настройка внешнего вида Navigation Bar с учетом кастомных цветов
+    func setupNavigationBarAppearance() {
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = UIColor.background
+        appearance.titleTextAttributes = [.foregroundColor: UIColor.primaryText]
+        
+        navigationController?.navigationBar.standardAppearance = appearance
+        navigationController?.navigationBar.scrollEdgeAppearance = appearance
+        navigationController?.navigationBar.compactAppearance = appearance
+        navigationController?.navigationBar.tintColor = UIColor.primary // Цвет элементов (кнопок)
+    }
     
     func setupLayout() {
         view.addSubview(collectionView)
@@ -60,6 +74,7 @@ extension HomeViewController {
             layout.minimumInteritemSpacing = 10 // Добавляем минимальный интервал между элементами
             layout.minimumLineSpacing = 10 // Добавляем минимальный интервал между линиями
             
+            // NOTE: Это временный расчет. Для корректного расчета нужно вызвать layoutIfNeeded() или использовать делегат.
             layout.itemSize = CGSize(width: collectionView.frame.width/2-17 , height: collectionView.frame.width/2-17)
         }
     }
@@ -84,9 +99,8 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
         customCell.updateShadow()
         
         
-        // Временный вариант, чтобы коллекция работала
-        cell.backgroundColor = .systemGray5
-        cell.layer.cornerRadius = 8
+        cell.backgroundColor = UIColor.background // ✅ Фон ячейки должен быть таким же, как у CollectionView
+        cell.layer.cornerRadius = 12
         
         return cell
     }
@@ -95,41 +109,41 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
         /*
-        // Навигация (переходы) полностью закомментированы.
-        // Используй эту структуру для программного перехода, когда создашь новые VC.
-        
-        switch indexPath.row {
-        case 0:
-            // Создание и презентация нового VC (был "newInvoiceVC")
-            // let vc = NewInvoiceViewController()
-            // vc.modalPresentationStyle = .fullScreen // Соответствует .overFullScreen
-            // self.present(vc, animated: true)
-            break
-        case 1:
-            // let vc = EditInfoViewController()
-            // self.present(vc, animated: true)
-            break
-        case 2:
-            // let vc = ClientsViewController()
-            // self.present(vc, animated: true)
-            break
-        case 3:
-            // let vc = ItemsViewController()
-            // self.present(vc, animated: true)
-            break
-        case 4:
-            // let vc = PreviousInvoicesViewController()
-            // vc.modalPresentationStyle = .fullScreen
-            // self.present(vc, animated: true)
-            break
-        case 5:
-            // let vc = SettingsViewController()
-            // self.present(vc, animated: true)
-            break
-        default:
-            print("Could not find indexpath")
-        }
-        */
+         // Навигация (переходы) полностью закомментированы.
+         // Используй эту структуру для программного перехода, когда создашь новые VC.
+         
+         switch indexPath.row {
+         case 0:
+             // Создание и презентация нового VC (был "newInvoiceVC")
+             // let vc = NewInvoiceViewController()
+             // vc.modalPresentationStyle = .fullScreen // Соответствует .overFullScreen
+             // self.present(vc, animated: true)
+             break
+         case 1:
+             // let vc = EditInfoViewController()
+             // self.present(vc, animated: true)
+             break
+         case 2:
+             // let vc = ClientsViewController()
+             // self.present(vc, animated: true)
+             break
+         case 3:
+             // let vc = ItemsViewController()
+             // self.present(vc, animated: true)
+             break
+         case 4:
+             // let vc = PreviousInvoicesViewController()
+             // vc.modalPresentationStyle = .fullScreen
+             // self.present(vc, animated: true)
+             break
+         case 5:
+             // let vc = SettingsViewController()
+             // self.present(vc, animated: true)
+             break
+         default:
+             print("Could not find indexpath")
+         }
+         */
     }
 }
 

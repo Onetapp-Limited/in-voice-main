@@ -9,7 +9,7 @@ class HomeCollectionViewCell: UICollectionViewCell {
     public let imageIcon: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
-        imageView.tintColor = .systemBlue
+        imageView.tintColor = UIColor.primary // ✅ Замена .systemBlue
         return imageView
     }()
     
@@ -17,7 +17,7 @@ class HomeCollectionViewCell: UICollectionViewCell {
     public let actionLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 15, weight: .medium)
-        label.textColor = .label
+        label.textColor = UIColor.primaryText // ✅ Замена .label
         label.textAlignment = .center
         label.numberOfLines = 2
         return label
@@ -68,7 +68,7 @@ class HomeCollectionViewCell: UICollectionViewCell {
     
     private func styleCell() {
         // Базовые стили для contentView
-        contentView.backgroundColor = .systemGray6
+        contentView.backgroundColor = UIColor.surface // ✅ Замена .systemGray6
         contentView.layer.cornerRadius = 12
         contentView.layer.masksToBounds = true
     }
@@ -77,7 +77,7 @@ class HomeCollectionViewCell: UICollectionViewCell {
     
     // Функция для обновления тени (согласно исходному коду)
     public func updateShadow() {
-        layer.shadowColor = UIColor.black.cgColor
+        layer.shadowColor = UIColor.black.cgColor // Оставляем черный цвет для тени, это стандарт
         layer.shadowOpacity = 0.1
         layer.shadowOffset = CGSize(width: 0, height: 2)
         layer.shadowRadius = 4

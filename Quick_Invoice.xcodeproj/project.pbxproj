@@ -117,6 +117,7 @@
 			children = (
 				109202F42EAF6E9200F0C7FE /* Subviews */,
 				95A6BC0824ECD48800BC3088 /* HomeViewController.swift */,
+				109202F52EAF6E9800F0C7FE /* HomeCollectionViewCell.swift */,
 			);
 			path = HomeView;
 			sourceTree = "<group>";
@@ -124,7 +125,6 @@
 		109202F42EAF6E9200F0C7FE /* Subviews */ = {
 			isa = PBXGroup;
 			children = (
-				109202F52EAF6E9800F0C7FE /* HomeCollectionViewCell.swift */,
 			);
 			path = Subviews;
 			sourceTree = "<group>";

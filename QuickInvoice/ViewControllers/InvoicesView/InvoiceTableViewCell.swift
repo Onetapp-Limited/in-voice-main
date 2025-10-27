@@ -12,7 +12,7 @@ class InvoiceTableViewCell: UITableViewCell {
     public let invoiceTitleLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
-        label.textColor = .label
+        label.textColor = UIColor.primaryText // ✅ Замена .label
         return label
     }()
     
@@ -20,7 +20,7 @@ class InvoiceTableViewCell: UITableViewCell {
     public let clientNameLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 14, weight: .regular)
-        label.textColor = .secondaryLabel
+        label.textColor = UIColor.secondaryText // ✅ Замена .secondaryLabel
         return label
     }()
     
@@ -28,7 +28,7 @@ class InvoiceTableViewCell: UITableViewCell {
     public let dateLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 14, weight: .regular)
-        label.textColor = .systemGray
+        label.textColor = UIColor.tertiaryText // ✅ Замена .systemGray
         label.textAlignment = .right
         return label
     }()
@@ -50,6 +50,9 @@ class InvoiceTableViewCell: UITableViewCell {
         
         // Убираем стандартную индикацию выделения
         self.selectionStyle = .none
+        
+        // Устанавливаем цвет фона ячейки
+        self.backgroundColor = UIColor.surface // ✅ Используем Surface для фона ячейки
         
         setupViews()
         setupConstraints()
