@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		109202F22EAF6BC100F0C7FE /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 109202F12EAF6BC100F0C7FE /* SnapKit */; };
 		109202F62EAF6E9900F0C7FE /* HomeCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 109202F52EAF6E9800F0C7FE /* HomeCollectionViewCell.swift */; };
+		109202F92EAF763B00F0C7FE /* InvoiceTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 109202F82EAF763A00F0C7FE /* InvoiceTableViewCell.swift */; };
 		9520F87D24D27CBB006CDC05 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9520F87C24D27CBB006CDC05 /* AppDelegate.swift */; };
 		9520F87F24D27CBB006CDC05 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9520F87E24D27CBB006CDC05 /* SceneDelegate.swift */; };
 		9520F88624D27CBC006CDC05 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9520F88524D27CBC006CDC05 /* Assets.xcassets */; };
@@ -53,14 +54,15 @@
 
 /* Begin PBXFileReference section */
 		109202F52EAF6E9800F0C7FE /* HomeCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeCollectionViewCell.swift; sourceTree = "<group>"; };
+		109202F82EAF763A00F0C7FE /* InvoiceTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvoiceTableViewCell.swift; sourceTree = "<group>"; };
 		9520F87924D27CBB006CDC05 /* Quick Invoice.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Quick Invoice.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9520F87C24D27CBB006CDC05 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		9520F87E24D27CBB006CDC05 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		9520F88524D27CBC006CDC05 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		9520F88824D27CBC006CDC05 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		9520F88A24D27CBC006CDC05 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		9520F88F24D27CBC006CDC05 /* QuickInvoiceTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = QuickInvoiceTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		9520F89A24D27CBC006CDC05 /* QuickInvoiceUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = QuickInvoiceUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		9520F88F24D27CBC006CDC05 /* Quick_InvoiceTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Quick_InvoiceTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		9520F89A24D27CBC006CDC05 /* Quick_InvoiceUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Quick_InvoiceUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		95355582253DFFCD00A3AECB /* CSVCreator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSVCreator.swift; sourceTree = "<group>"; };
 		95355584253E0E6D00A3AECB /* SharePopoverViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharePopoverViewController.swift; sourceTree = "<group>"; };
 		95355586253E1E5300A3AECB /* Extension+ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+ViewController.swift"; sourceTree = "<group>"; };
@@ -125,6 +127,15 @@
 			path = Subviews;
 			sourceTree = "<group>";
 		};
+		109202F72EAF762A00F0C7FE /* InvoicesView */ = {
+			isa = PBXGroup;
+			children = (
+				109202F82EAF763A00F0C7FE /* InvoiceTableViewCell.swift */,
+				95A6BC1324ECECBD00BC3088 /* InvoicesViewController.swift */,
+			);
+			path = InvoicesView;
+			sourceTree = "<group>";
+		};
 		9520F87024D27CBB006CDC05 = {
 			isa = PBXGroup;
 			children = (
@@ -137,8 +148,8 @@
 			isa = PBXGroup;
 			children = (
 				9520F87924D27CBB006CDC05 /* Quick Invoice.app */,
-				9520F88F24D27CBC006CDC05 /* QuickInvoiceTests.xctest */,
-				9520F89A24D27CBC006CDC05 /* QuickInvoiceUITests.xctest */,
+				9520F88F24D27CBC006CDC05 /* Quick_InvoiceTests.xctest */,
+				9520F89A24D27CBC006CDC05 /* Quick_InvoiceUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -161,10 +172,10 @@
 		95A6BC0A24ECD82600BC3088 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
+				109202F72EAF762A00F0C7FE /* InvoicesView */,
 				109202F32EAF6E7700F0C7FE /* HomeView */,
 				9552529C253F635D00DDF5D7 /* SettingsViewController.swift */,
 				95A6BC0D24ECEA2B00BC3088 /* EditInformationViewController.swift */,
-				95A6BC1324ECECBD00BC3088 /* InvoicesViewController.swift */,
 				95B1571924FF1C550018EE56 /* InvoiceVCs */,
 				95B1571A24FF1C6F0018EE56 /* ClientVCs */,
 				95B1571B24FF1C860018EE56 /* ItemsVCs */,
@@ -233,9 +244,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		9520F87824D27CBB006CDC05 /* QuickInvoice */ = {
+		9520F87824D27CBB006CDC05 /* Quick_Invoice */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 9520F8A324D27CBC006CDC05 /* Build configuration list for PBXNativeTarget "QuickInvoice" */;
+			buildConfigurationList = 9520F8A324D27CBC006CDC05 /* Build configuration list for PBXNativeTarget "Quick_Invoice" */;
 			buildPhases = (
 				9520F87524D27CBB006CDC05 /* Sources */,
 				9520F87624D27CBB006CDC05 /* Frameworks */,
@@ -245,14 +256,14 @@
 			);
 			dependencies = (
 			);
-			name = QuickInvoice;
+			name = Quick_Invoice;
 			productName = QuickInvoice;
 			productReference = 9520F87924D27CBB006CDC05 /* Quick Invoice.app */;
 			productType = "com.apple.product-type.application";
 		};
-		9520F88E24D27CBC006CDC05 /* QuickInvoiceTests */ = {
+		9520F88E24D27CBC006CDC05 /* Quick_InvoiceTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 9520F8A624D27CBC006CDC05 /* Build configuration list for PBXNativeTarget "QuickInvoiceTests" */;
+			buildConfigurationList = 9520F8A624D27CBC006CDC05 /* Build configuration list for PBXNativeTarget "Quick_InvoiceTests" */;
 			buildPhases = (
 				9520F88B24D27CBC006CDC05 /* Sources */,
 				9520F88C24D27CBC006CDC05 /* Frameworks */,
@@ -263,14 +274,14 @@
 			dependencies = (
 				9520F89124D27CBC006CDC05 /* PBXTargetDependency */,
 			);
-			name = QuickInvoiceTests;
+			name = Quick_InvoiceTests;
 			productName = QuickInvoiceTests;
-			productReference = 9520F88F24D27CBC006CDC05 /* QuickInvoiceTests.xctest */;
+			productReference = 9520F88F24D27CBC006CDC05 /* Quick_InvoiceTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		9520F89924D27CBC006CDC05 /* QuickInvoiceUITests */ = {
+		9520F89924D27CBC006CDC05 /* Quick_InvoiceUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 9520F8A924D27CBC006CDC05 /* Build configuration list for PBXNativeTarget "QuickInvoiceUITests" */;
+			buildConfigurationList = 9520F8A924D27CBC006CDC05 /* Build configuration list for PBXNativeTarget "Quick_InvoiceUITests" */;
 			buildPhases = (
 				9520F89624D27CBC006CDC05 /* Sources */,
 				9520F89724D27CBC006CDC05 /* Frameworks */,
@@ -281,9 +292,9 @@
 			dependencies = (
 				9520F89C24D27CBC006CDC05 /* PBXTargetDependency */,
 			);
-			name = QuickInvoiceUITests;
+			name = Quick_InvoiceUITests;
 			productName = QuickInvoiceUITests;
-			productReference = 9520F89A24D27CBC006CDC05 /* QuickInvoiceUITests.xctest */;
+			productReference = 9520F89A24D27CBC006CDC05 /* Quick_InvoiceUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -309,7 +320,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 9520F87424D27CBB006CDC05 /* Build configuration list for PBXProject "QuickInvoice" */;
+			buildConfigurationList = 9520F87424D27CBB006CDC05 /* Build configuration list for PBXProject "Quick_Invoice" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -325,9 +336,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				9520F87824D27CBB006CDC05 /* QuickInvoice */,
-				9520F88E24D27CBC006CDC05 /* QuickInvoiceTests */,
-				9520F89924D27CBC006CDC05 /* QuickInvoiceUITests */,
+				9520F87824D27CBB006CDC05 /* Quick_Invoice */,
+				9520F88E24D27CBC006CDC05 /* Quick_InvoiceTests */,
+				9520F89924D27CBC006CDC05 /* Quick_InvoiceUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -379,6 +390,7 @@
 				95355587253E1E5300A3AECB /* Extension+ViewController.swift in Sources */,
 				95A6BC0924ECD48800BC3088 /* HomeViewController.swift in Sources */,
 				95355583253DFFCD00A3AECB /* CSVCreator.swift in Sources */,
+				109202F92EAF763B00F0C7FE /* InvoiceTableViewCell.swift in Sources */,
 				95A6BC1424ECECBD00BC3088 /* InvoicesViewController.swift in Sources */,
 				109202F62EAF6E9900F0C7FE /* HomeCollectionViewCell.swift in Sources */,
 				95DF1A3824F07509002DED7B /* NewInvoiceItemViewController.swift in Sources */,
@@ -407,12 +419,12 @@
 /* Begin PBXTargetDependency section */
 		9520F89124D27CBC006CDC05 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 9520F87824D27CBB006CDC05 /* QuickInvoice */;
+			target = 9520F87824D27CBB006CDC05 /* Quick_Invoice */;
 			targetProxy = 9520F89024D27CBC006CDC05 /* PBXContainerItemProxy */;
 		};
 		9520F89C24D27CBC006CDC05 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 9520F87824D27CBB006CDC05 /* QuickInvoice */;
+			target = 9520F87824D27CBB006CDC05 /* Quick_Invoice */;
 			targetProxy = 9520F89B24D27CBC006CDC05 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -553,12 +565,17 @@
 				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = QuickInvoice/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.QuickInvoice.app.Main;
 				PRODUCT_NAME = "Quick Invoice";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -572,12 +589,17 @@
 				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = QuickInvoice/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.QuickInvoice.app.Main;
 				PRODUCT_NAME = "Quick Invoice";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -599,7 +621,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/QuickInvoice.app/QuickInvoice";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Quick_Invoice.app/Quick_Invoice";
 			};
 			name = Debug;
 		};
@@ -619,7 +641,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/QuickInvoice.app/QuickInvoice";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Quick_Invoice.app/Quick_Invoice";
 			};
 			name = Release;
 		};
@@ -662,7 +684,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		9520F87424D27CBB006CDC05 /* Build configuration list for PBXProject "QuickInvoice" */ = {
+		9520F87424D27CBB006CDC05 /* Build configuration list for PBXProject "Quick_Invoice" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				9520F8A124D27CBC006CDC05 /* Debug */,
@@ -671,7 +693,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		9520F8A324D27CBC006CDC05 /* Build configuration list for PBXNativeTarget "QuickInvoice" */ = {
+		9520F8A324D27CBC006CDC05 /* Build configuration list for PBXNativeTarget "Quick_Invoice" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				9520F8A424D27CBC006CDC05 /* Debug */,
@@ -680,7 +702,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		9520F8A624D27CBC006CDC05 /* Build configuration list for PBXNativeTarget "QuickInvoiceTests" */ = {
+		9520F8A624D27CBC006CDC05 /* Build configuration list for PBXNativeTarget "Quick_InvoiceTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				9520F8A724D27CBC006CDC05 /* Debug */,
@@ -689,7 +711,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		9520F8A924D27CBC006CDC05 /* Build configuration list for PBXNativeTarget "QuickInvoiceUITests" */ = {
+		9520F8A924D27CBC006CDC05 /* Build configuration list for PBXNativeTarget "Quick_InvoiceUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				9520F8AA24D27CBC006CDC05 /* Debug */,
