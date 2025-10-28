@@ -5,7 +5,7 @@ class NewInvoiceViewController: UIViewController {
     
     // MARK: - Properties
     var currentInvoice: Invoice = Invoice()
-    private var invoiceService: InvoiceService? {
+    var invoiceService: InvoiceService? {
         do {
             return try InvoiceService()
         } catch {
@@ -21,7 +21,7 @@ class NewInvoiceViewController: UIViewController {
     
     // Header Section
     private let headerCard = UIView()
-    private let titleTextField: UITextField = {
+    let titleTextField: UITextField = {
         let tf = UITextField()
         tf.placeholder = "Invoice Title"
         tf.font = .systemFont(ofSize: 24, weight: .bold)
@@ -222,7 +222,7 @@ class NewInvoiceViewController: UIViewController {
         lbl.textColor = .primaryText
         return lbl
     }()
-    private let totalAmountLabel: UILabel = {
+    let totalAmountLabel: UILabel = {
         let lbl = UILabel()
         lbl.text = "$0.00"
         lbl.font = .systemFont(ofSize: 24, weight: .bold)
@@ -232,7 +232,7 @@ class NewInvoiceViewController: UIViewController {
     }()
     
     // Save Button
-    private lazy var saveButton: GradientButton = {
+    lazy var saveButton: GradientButton = {
         let btn = GradientButton(type: .custom)
         btn.setTitle("Save Invoice", for: .normal)
         btn.setTitleColor(.white, for: .normal)
@@ -599,7 +599,7 @@ class NewInvoiceViewController: UIViewController {
     }
     
     // MARK: - Actions
-    @objc private func dismissSelf() {
+    @objc func dismissSelf() {
         navigationController?.popViewController(animated: true)
     }
     
@@ -630,7 +630,7 @@ class NewInvoiceViewController: UIViewController {
         present(navController, animated: true)
     }
     
-    @objc private func saveInvoiceTapped() {
+    @objc func saveInvoiceTapped() {
         currentInvoice.invoiceTitle = titleTextField.text
         currentInvoice.totalAmount = totalAmountLabel.text ?? ""
         
@@ -649,7 +649,7 @@ class NewInvoiceViewController: UIViewController {
         } catch {
             print(error)
         }
-                            
+               
         dismissSelf()
     }
 }

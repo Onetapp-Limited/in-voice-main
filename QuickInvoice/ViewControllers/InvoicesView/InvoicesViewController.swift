@@ -286,9 +286,9 @@ extension InvoicesViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let sectionTitle = sortedSections[indexPath.section]
         if let selectedInvoice = groupedInvoices[sectionTitle]?[indexPath.row] {
-            let invoiceDetailVC = InvoiceDetailViewController()
-            invoiceDetailVC.invoice = selectedInvoice
-            self.navigationController?.pushViewController(invoiceDetailVC, animated: true)
+            let invoiceDetailPDFVC = InvoiceDetailPDFViewController()
+            invoiceDetailPDFVC.invoice = selectedInvoice
+            self.navigationController?.pushViewController(invoiceDetailPDFVC, animated: true)
         }
     }
     

@@ -10,7 +10,7 @@ class NewInvoiceItemViewController: UIViewController, UITextFieldDelegate {
 
     weak var delegate: NewInvoiceItemViewControllerDelegate?
     
-    private var item: InvoiceItem // Модель итема, которую мы редактируем
+    private var item: InvoiceItem
     
     // MARK: - UI Elements
     

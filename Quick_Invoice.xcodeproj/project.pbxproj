@@ -11,6 +11,8 @@
 		1051E6112EAF91C100D576BC /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 1051E6102EAF91C100D576BC /* SnapKit */; };
 		1051E6142EAF9CC900D576BC /* NewClientViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1051E6132EAF9CC800D576BC /* NewClientViewController.swift */; };
 		1051E6172EAFA36100D576BC /* NewInvoiceItemViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1051E6162EAFA36000D576BC /* NewInvoiceItemViewController.swift */; };
+		1051E61A2EB0F17A00D576BC /* InvoiceDetailPDFViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1051E6192EB0F17900D576BC /* InvoiceDetailPDFViewController.swift */; };
+		1051E61D2EB0FC7A00D576BC /* EditInvoiceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1051E61C2EB0FC7900D576BC /* EditInvoiceViewController.swift */; };
 		109202F62EAF6E9900F0C7FE /* HomeCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 109202F52EAF6E9800F0C7FE /* HomeCollectionViewCell.swift */; };
 		109202F92EAF763B00F0C7FE /* InvoiceTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 109202F82EAF763A00F0C7FE /* InvoiceTableViewCell.swift */; };
 		109204592EAF784200F0C7FE /* Colors+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 109204582EAF783D00F0C7FE /* Colors+.swift */; };
@@ -54,6 +56,8 @@
 /* Begin PBXFileReference section */
 		1051E6132EAF9CC800D576BC /* NewClientViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewClientViewController.swift; sourceTree = "<group>"; };
 		1051E6162EAFA36000D576BC /* NewInvoiceItemViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewInvoiceItemViewController.swift; sourceTree = "<group>"; };
+		1051E6192EB0F17900D576BC /* InvoiceDetailPDFViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvoiceDetailPDFViewController.swift; sourceTree = "<group>"; };
+		1051E61C2EB0FC7900D576BC /* EditInvoiceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditInvoiceViewController.swift; sourceTree = "<group>"; };
 		109202F52EAF6E9800F0C7FE /* HomeCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeCollectionViewCell.swift; sourceTree = "<group>"; };
 		109202F82EAF763A00F0C7FE /* InvoiceTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvoiceTableViewCell.swift; sourceTree = "<group>"; };
 		109204582EAF783D00F0C7FE /* Colors+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Colors+.swift"; sourceTree = "<group>"; };
@@ -112,6 +116,22 @@
 			path = NewInvoiceItemViewController;
 			sourceTree = "<group>";
 		};
+		1051E6182EB0F17500D576BC /* InvoiceDetailPDFViewController */ = {
+			isa = PBXGroup;
+			children = (
+				1051E6192EB0F17900D576BC /* InvoiceDetailPDFViewController.swift */,
+			);
+			path = InvoiceDetailPDFViewController;
+			sourceTree = "<group>";
+		};
+		1051E61B2EB0FC7600D576BC /* EditInvoiceViewController */ = {
+			isa = PBXGroup;
+			children = (
+				1051E61C2EB0FC7900D576BC /* EditInvoiceViewController.swift */,
+			);
+			path = EditInvoiceViewController;
+			sourceTree = "<group>";
+		};
 		109202F32EAF6E7700F0C7FE /* HomeView */ = {
 			isa = PBXGroup;
 			children = (
@@ -132,6 +152,7 @@
 		109202F72EAF762A00F0C7FE /* InvoicesView */ = {
 			isa = PBXGroup;
 			children = (
+				1051E6182EB0F17500D576BC /* InvoiceDetailPDFViewController */,
 				109204662EAF7DFB00F0C7FE /* InvoiceModel.swift */,
 				1051E6152EAFA35D00D576BC /* NewInvoiceItemViewController */,
 				1051E6122EAF9CC400D576BC /* NewClientViewController */,
@@ -146,6 +167,7 @@
 		1092045C2EAF7B9900F0C7FE /* NewInvoiceViewController */ = {
 			isa = PBXGroup;
 			children = (
+				1051E61B2EB0FC7600D576BC /* EditInvoiceViewController */,
 				109204612EAF7D5800F0C7FE /* InvoiceItemCell.swift */,
 				1092045D2EAF7B9E00F0C7FE /* NewInvoiceViewController.swift */,
 			);
@@ -336,6 +358,8 @@
 				109202F92EAF763B00F0C7FE /* InvoiceTableViewCell.swift in Sources */,
 				95A6BC1424ECECBD00BC3088 /* InvoicesViewController.swift in Sources */,
 				109202F62EAF6E9900F0C7FE /* HomeCollectionViewCell.swift in Sources */,
+				1051E61D2EB0FC7A00D576BC /* EditInvoiceViewController.swift in Sources */,
+				1051E61A2EB0F17A00D576BC /* InvoiceDetailPDFViewController.swift in Sources */,
 				109204592EAF784200F0C7FE /* Colors+.swift in Sources */,
 				1051E6142EAF9CC900D576BC /* NewClientViewController.swift in Sources */,
 				109204692EAF7E2100F0C7FE /* InvoiceDetailItemCell.swift in Sources */,

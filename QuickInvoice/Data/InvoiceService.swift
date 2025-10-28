@@ -270,4 +270,35 @@ class InvoiceService: InvoiceServiceProtocol {
             realm.delete(clientObjectsToDelete)
         }
     }
+    
+    func updateInvoice(_ newInvoice: Invoice) throws {
+        guard let existingInvoice = realm.object(ofType: InvoiceObject.self, forPrimaryKey: newInvoice.id.uuidString) else {
+            print("❌ Invoice not found with id: \(newInvoice.id)")
+            return
+        }
+        
+        try realm.write {
+            // Обновляем простые поля
+            existingInvoice.invoiceTitle = newInvoice.invoiceTitle
+            existingInvoice.taxRate = newInvoice.taxRate
+            existingInvoice.discount = newInvoice.discount
+            existingInvoice.invoiceDate = newInvoice.invoiceDate
+            existingInvoice.dueDate = newInvoice.dueDate
+            existingInvoice.status = newInvoice.status
+            
+            // Обновляем клиента (если передан)
+            if let clientStruct = newInvoice.client {
+                let clientObject = ClientObject(client: clientStruct)
+                realm.add(clientObject, update: .modified)
+                existingInvoice.client = clientObject
+            }
+            
+            // Обновляем items — сначала очищаем старые, потом добавляем новые
+            existingInvoice.items.removeAll()
+            let newItemObjects = newInvoice.items.map { InvoiceItemObject(item: $0) }
+            existingInvoice.items.append(objectsIn: newItemObjects)
+        }
+        
+        print("✅ Invoice updated: \(newInvoice.id)")
+    }
 }
