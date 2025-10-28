@@ -44,10 +44,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         )
         
         tabBarController.viewControllers = [
+            invoicesNavVC,
             homeNavController,
             dummyVC2,
             dummyVC3,
-            invoicesNavVC,
             dummyVC5
         ]
         

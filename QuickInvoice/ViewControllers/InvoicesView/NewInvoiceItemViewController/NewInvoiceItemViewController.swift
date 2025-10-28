@@ -20,10 +20,10 @@ class NewInvoiceItemViewController: UIViewController, UITextFieldDelegate {
     
     // Поля ввода
     private let nameField = UITextField()
-    private let descriptionField = UITextField() // Используем UITextField, можно заменить на UITextView
+    private let descriptionField = UITextField()
     private let priceField = UITextField()
     private let quantityField = UITextField()
-    private let discountField = UITextField()
+    private let discountField = UITextField() // Оставляем, как в исходном коде, но не используем в UI
     
     // Элементы управления
     
@@ -103,7 +103,7 @@ class NewInvoiceItemViewController: UIViewController, UITextFieldDelegate {
         addTextField(field: nameField, placeholder: "Item Name (Required)", delegate: self)
         addTextField(field: descriptionField, placeholder: "Description", delegate: self)
         
-        // **Цена и Количество - ИЗМЕНЕНО, теперь с лейблами сверху**
+        // Цена и Количество (Теперь с лейблами сверху)
         addLabeledTextField(field: priceField, labelText: "Unit Price:", keyboardType: .decimalPad, delegate: self)
         addLabeledTextField(field: quantityField, labelText: "Quantity:", keyboardType: .decimalPad, delegate: self)
         
@@ -111,10 +111,10 @@ class NewInvoiceItemViewController: UIViewController, UITextFieldDelegate {
         stackView.addArrangedSubview(createLabel(text: "Unit Type:"))
         stackView.addArrangedSubview(unitSegmentedControl)
         
-        // Скидка
-        stackView.addArrangedSubview(createLabel(text: "Discount:"))
+        // Скидка: ТОЛЬКО ТИП (убираем текстовое поле)
+        stackView.addArrangedSubview(createLabel(text: "Discount Type:")) // Изменяем заголовок для ясности
         stackView.addArrangedSubview(discountSegmentedControl)
-        addLabeledTextField(field: discountField, labelText: "Discount Value (Amount or %):", keyboardType: .decimalPad, delegate: self)
+        // **УДАЛЕНО:** addTextField(field: discountField, placeholder: "Value (e.g., 10 or 15.00)", keyboardType: .decimalPad, delegate: self)
         
         // Taxable Toggle
         stackView.addArrangedSubview(createToggleRow(label: "Taxable", toggle: taxableSwitch))
@@ -151,7 +151,7 @@ class NewInvoiceItemViewController: UIViewController, UITextFieldDelegate {
         return stack
     }
     
-    // Вспомогательная функция для полей, где нужен только placeholder и нет лейбла
+    // Вспомогательная функция для полей, где нужен только placeholder и нет лейбла (Name, Description)
     private func addTextField(field: UITextField, placeholder: String, keyboardType: UIKeyboardType = .default, delegate: UITextFieldDelegate) {
         field.placeholder = placeholder
         field.borderStyle = .roundedRect
@@ -163,14 +163,14 @@ class NewInvoiceItemViewController: UIViewController, UITextFieldDelegate {
         stackView.addArrangedSubview(field)
     }
 
-    // **НОВАЯ ВСПОМОГАТЕЛЬНАЯ ФУНКЦИЯ для полей с лейблом сверху**
+    // Вспомогательная функция для полей с лейблом сверху (Unit Price, Quantity)
     private func addLabeledTextField(field: UITextField, labelText: String, keyboardType: UIKeyboardType = .default, delegate: UITextFieldDelegate) {
         
         // Добавляем заголовок (лейбл)
         stackView.addArrangedSubview(createLabel(text: labelText))
         
         // Настраиваем само поле
-        field.placeholder = labelText.replacingOccurrences(of: ":", with: "").trimmingCharacters(in: .whitespacesAndNewlines) // Используем лейбл как плейсхолдер без двоеточия
+        field.placeholder = labelText.replacingOccurrences(of: ":", with: "").trimmingCharacters(in: .whitespacesAndNewlines)
         field.borderStyle = .roundedRect
         field.keyboardType = keyboardType
         field.delegate = delegate
@@ -184,12 +184,13 @@ class NewInvoiceItemViewController: UIViewController, UITextFieldDelegate {
         stackView.addArrangedSubview(field)
     }
 
+
     private func loadItemData() {
         nameField.text = item.name
         descriptionField.text = item.description
         priceField.text = String(format: "%.2f", item.unitPrice)
         quantityField.text = String(format: "%.2f", item.quantity)
-        discountField.text = String(format: "%.2f", item.discountValue)
+        // **УДАЛЕНО:** discountField.text = String(format: "%.2f", item.discountValue)
         taxableSwitch.isOn = item.isTaxable
         
         if let unitIndex = UnitType.allCases.firstIndex(of: item.unitType) {
@@ -215,7 +216,8 @@ class NewInvoiceItemViewController: UIViewController, UITextFieldDelegate {
         // Преобразование числовых полей
         item.unitPrice = Double(priceField.text?.replacingOccurrences(of: ",", with: ".") ?? "0") ?? 0.0
         item.quantity = Double(quantityField.text?.replacingOccurrences(of: ",", with: ".") ?? "1") ?? 1.0
-        item.discountValue = Double(discountField.text?.replacingOccurrences(of: ",", with: ".") ?? "0") ?? 0.0
+        // Оставляем эту строку для сохранения discountValue, хотя поле ввода удалено
+//         item.discountValue = Double(discountField.text?.replacingOccurrences(of: ",", with: ".") ?? "0") ?? 0.0
         
         item.isTaxable = taxableSwitch.isOn
         item.discountType = DiscountType.allCases[discountSegmentedControl.selectedSegmentIndex]

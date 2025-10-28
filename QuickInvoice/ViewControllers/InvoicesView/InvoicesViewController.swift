@@ -43,8 +43,8 @@ class InvoicesViewController: UIViewController {
         button.tintColor = .white
         
         // Расположение текста и иконки
-//         button.titleEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: -10)
-//         button.imageEdgeInsets = UIEdgeInsets(top: 0, left: -10, bottom: 0, right: 10)
+         button.titleEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: -10)
+         button.imageEdgeInsets = UIEdgeInsets(top: 0, left: -10, bottom: 0, right: 10)
         
         button.addTarget(self, action: #selector(createInvoiceButtonTapped), for: .touchUpInside)
         return button

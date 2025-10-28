@@ -125,7 +125,7 @@ class NewInvoiceViewController: UIViewController {
             make.width.height.equalTo(24)
         }
         
-//        btn.contentEdgeInsets = UIEdgeInsets(top: 0, left: 32, bottom: 0, right: 0)
+        btn.contentEdgeInsets = UIEdgeInsets(top: 0, left: 32, bottom: 0, right: 0)
         return btn
     }()
     
