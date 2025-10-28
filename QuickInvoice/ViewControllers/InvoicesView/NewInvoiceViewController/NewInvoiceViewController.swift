@@ -5,6 +5,13 @@ class NewInvoiceViewController: UIViewController {
     
     // MARK: - Properties
     var currentInvoice: Invoice = Invoice()
+    private var invoiceService: InvoiceService? {
+        do {
+            return try InvoiceService()
+        } catch {
+            return nil
+        }
+    }
     private let itemCellHeight: CGFloat = 80
     private var tableViewHeightConstraint: Constraint!
     
@@ -635,8 +642,13 @@ class NewInvoiceViewController: UIViewController {
         print("Total: \(totalAmountLabel.text ?? "")")
         print("----------------------")
         
-        // todo save to realm
-        
+        do {
+            try invoiceService?.save(invoice: currentInvoice)
+            print()
+        } catch {
+            print(error)
+        }
+                            
         dismissSelf()
     }
 }

@@ -3,6 +3,14 @@ import SnapKit
 
 class InvoicesViewController: UIViewController {
     
+    private var invoiceService: InvoiceService? {
+        do {
+            return try InvoiceService()
+        } catch {
+            return nil
+        }
+    }
+    
     // MARK: - UI Elements
     
     lazy var invoiceTableView: UITableView = {
@@ -43,8 +51,8 @@ class InvoicesViewController: UIViewController {
         button.tintColor = .white
         
         // Расположение текста и иконки
-         button.titleEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: -10)
-         button.imageEdgeInsets = UIEdgeInsets(top: 0, left: -10, bottom: 0, right: 10)
+        button.titleEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: -10)
+        button.imageEdgeInsets = UIEdgeInsets(top: 0, left: -10, bottom: 0, right: 10)
         
         button.addTarget(self, action: #selector(createInvoiceButtonTapped), for: .touchUpInside)
         return button
@@ -147,12 +155,8 @@ extension InvoicesViewController {
     }
     
     private func fetchInvoices() -> [Invoice] {
-        // Временные тестовые данные для демонстрации работы TableView
-        return [
-            Invoice(invoiceTitle: "Project Alpha", client: Client(clientName: "Client A"), invoiceDate: Date()),
-            Invoice(invoiceTitle: "Monthly Retainer", client: Client(clientName: "Client B"), invoiceDate: Date()),
-            Invoice(invoiceTitle: "Website Redesign", client: Client(clientName: "Client C"), invoiceDate: Date())
-        ]
+        let invoices: [Invoice] = invoiceService?.getAllInvoices() ?? []
+        return invoices
     }
     
     private func deleteInvoice(invoice: Invoice) {
