@@ -89,4 +89,5 @@ struct Invoice: Codable {
     var dueDate: Date = Calendar.current.date(byAdding: .day, value: 30, to: Date())!
     var creationDate: Date = Date()
     var status: String = "Paid"
+    var totalAmount: String = ""
 }

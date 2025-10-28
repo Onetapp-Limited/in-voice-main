@@ -632,6 +632,7 @@ class NewInvoiceViewController: UIViewController {
     
     @objc private func saveInvoiceTapped() {
         currentInvoice.invoiceTitle = titleTextField.text
+        currentInvoice.totalAmount = totalAmountLabel.text ?? ""
         
         print("--- Saving Invoice ---")
         print("Title: \(currentInvoice.invoiceTitle ?? "")")
