@@ -7,7 +7,7 @@ class InvoiceDetailPDFViewController: UIViewController {
 
     // MARK: - Properties
     
-    var invoice: Invoice! // Принимает модель инвойса
+    var invoice: Invoice! // todo ИИ блин форс анврапит и не стесняется -- переделать это обязательно!!!
     private let pdfView = PDFView()
     
     // MARK: - UI Elements
@@ -476,8 +476,10 @@ class InvoiceDetailPDFViewController: UIViewController {
     
     @objc private func editTapped() {
         let editInvoiceViewController = EditInvoiceViewController(invoice: invoice)
-        editInvoiceViewController.popEditInvoiceViewControllerHandler = { [weak self] in
-            // todo test111 надо вызвать после закрытия editInvoiceViewController обновление экрана с пдф а то он не обновляется
+        editInvoiceViewController.popEditInvoiceViewControllerHandler = { [weak self] updatedInvoice in
+            self?.invoice = updatedInvoice
+            self?.generateAndLoadPDF()
+            self?.title = self?.invoice.invoiceTitle ?? "Invoice Preview"
         }
         self.navigationController?.pushViewController(editInvoiceViewController, animated: true)
     }

@@ -3,7 +3,7 @@ import SnapKit
 
 class EditInvoiceViewController: NewInvoiceViewController {
 
-    var popEditInvoiceViewControllerHandler: (() -> Void)?
+    var popEditInvoiceViewControllerHandler: ((Invoice) -> Void)?
     
     init(invoice: Invoice) {
         super.init(nibName: nil, bundle: nil)
@@ -33,7 +33,7 @@ class EditInvoiceViewController: NewInvoiceViewController {
         do {
             try invoiceService?.updateInvoice(currentInvoice)
             print("Invoice updated successfully!")
-            popEditInvoiceViewControllerHandler?()
+            popEditInvoiceViewControllerHandler?(currentInvoice)
         } catch {
             print("Error updating invoice: \(error)")
         }
