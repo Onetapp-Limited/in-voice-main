@@ -1,6 +1,6 @@
 import Foundation
 
-enum DiscountType: String, Codable, CaseIterable {
+enum DiscountType: String, Codable, CaseIterable { // todo test111 не влияет выбор процент или фикс
     case fixedAmount = "Fixed Amount"
     case percentage = "Percentage"
     
@@ -67,25 +67,13 @@ struct InvoiceItem: Codable {
     
     // discountValue: Хранит процентное значение (0-100), если discountType = .percentage
     var discountValue: Double = 0.0
-    var discountType: DiscountType = .percentage
+    var discountType: DiscountType = .fixedAmount
     var isTaxable: Bool = true
     var unitType: UnitType = .item
     
     var lineTotal: Double {
         let grossTotal = quantity * unitPrice
-        var netTotal = grossTotal
-        
-        if discountValue > 0 {
-            switch discountType {
-            case .percentage:
-                // ✅ ИСПРАВЛЕНО: Делим на 100.0, чтобы использовать как долю (0.10 для 10%)
-                let discountRate = discountValue / 100.0
-                netTotal -= grossTotal * min(1.0, discountRate) // Защита от >100% скидки
-            case .fixedAmount:
-                netTotal -= discountValue
-            }
-        }
-        return max(0, netTotal)
+        return grossTotal
     }
 }
 
@@ -121,6 +109,8 @@ struct Invoice: Codable {
     // taxRate: Хранит процентное значение (0-100)
     var taxRate: Double = 0
     var discount: Double = 0
+    var discountType: DiscountType = .fixedAmount
+    
     var invoiceDate: Date = Date()
     var dueDate: Date = Calendar.current.date(byAdding: .day, value: 30, to: Date())!
     var creationDate: Date = Date()
@@ -136,16 +126,25 @@ struct Invoice: Codable {
 
     var taxTotal: Double {
         let taxableSubtotal = items.filter { $0.isTaxable }.reduce(0) { $0 + $1.lineTotal }
-        
-        // ✅ ИСПРАВЛЕНО: Делим taxRate на 100.0, чтобы использовать как долю (0.10 для 10%)
         let rateAsDecimal = taxRate / 100.0
         return taxableSubtotal * rateAsDecimal
     }
+    
+    var discountValue: Double {
+        let taxableTotal = subtotal + taxTotal // Обычно скидка применяется к сумме до или после налога. В данном случае, судя по старому grandTotal, применяется после налога.
+        switch discountType {
+        case .fixedAmount:
+            return min(discount, taxableTotal) // Не даем скидке превысить общую сумму
+        case .percentage:
+            // Скидка хранится как процент (0-100), применяем к общей сумме (Subtotal + TaxTotal)
+            let rateAsDecimal = discount / 100.0
+            return taxableTotal * rateAsDecimal
+        }
+    }
 
     var grandTotal: Double {
-        // Теперь grandTotal использует корректные вычисляемые свойства
         let total = subtotal + taxTotal
-        return max(0, total - discount)
+        return max(0, total - discountValue)
     }
 
     var currencySymbol: String { return currency.symbol }

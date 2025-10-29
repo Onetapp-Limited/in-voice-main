@@ -121,7 +121,7 @@ class InvoicesViewController: UIViewController {
         
         proButton.backgroundColor = UIColor(red: 0.9, green: 0.7, blue: 0.2, alpha: 1.0)
         proButton.contentEdgeInsets = UIEdgeInsets(top: 5, left: 10, bottom: 5, right: 10)
-        proButton.layer.cornerRadius = 15
+        proButton.layer.cornerRadius = 10
         proButton.clipsToBounds = true
         
         proButton.addTarget(self, action: #selector(proBadgeTapped), for: .touchUpInside)

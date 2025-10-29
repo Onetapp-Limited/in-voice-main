@@ -10,6 +10,12 @@ class InvoiceDetailPDFViewController: UIViewController {
     var invoice: Invoice?
     private let pdfView = PDFView()
     
+    // Вспомогательный enum для определения типа символа в строке итогов
+    enum SummarySymbolType {
+        case currency
+        case percent
+    }
+    
     // MARK: - UI Elements
     
     private lazy var sendButton: UIButton = {
@@ -40,7 +46,6 @@ class InvoiceDetailPDFViewController: UIViewController {
         
         guard invoice != nil else {
             print("Error: Invoice model not set.")
-            // В случае ошибки, лучше закрыть контроллер
             dismiss(animated: true)
             return
         }
@@ -57,12 +62,10 @@ class InvoiceDetailPDFViewController: UIViewController {
     // MARK: - Setup
     
     private func setupUI() {
-        // Использование предполагаемого кастомного цвета
         view.backgroundColor = .background
         
         title = invoice?.invoiceTitle ?? "Invoice Preview"
         
-        // Правая кнопка "Edit" (предполагаем наличие EditInvoiceViewController)
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Edit", style: .plain, target: self, action: #selector(editTapped))
         
         view.addSubview(pdfView)
@@ -373,8 +376,8 @@ class InvoiceDetailPDFViewController: UIViewController {
             let discountValueString: String
             
             if item.discountType == .percentage {
-                // discountValue в модели - это доля (0.0 - 1.0)
-                discountValueString = String(format: "%.0f%%", item.discountValue * 100)
+                // Предполагаем, что item.discountValue это 0-100%, не умножаем на 100
+                discountValueString = String(format: "%.0f%%", item.discountValue)
             } else {
                 discountValueString = "\(currencySymbol)\(String(format: "%.2f", item.discountValue))"
             }
@@ -398,9 +401,9 @@ class InvoiceDetailPDFViewController: UIViewController {
                     tuple.0.draw(at: CGPoint(x: colStart + 5, y: y + 4), withAttributes: nameAttributes)
                     
                     // Description (Multiline support in restricted area)
-                    if !tuple.1!.isEmpty {
+                    if let desc = tuple.1, !desc.isEmpty {
                         let descRect = CGRect(x: colStart + 5, y: y + 18, width: colWidth - 10, height: 15)
-                        tuple.1!.draw(in: descRect, withAttributes: descAttributes)
+                        desc.draw(in: descRect, withAttributes: descAttributes)
                     }
                     
                 } else {
@@ -437,16 +440,40 @@ class InvoiceDetailPDFViewController: UIViewController {
         let currencySymbol = invoice.currencySymbol
         
         // --- Subtotal ---
-        y = drawSummaryRow(y: y, x: summaryX, width: summaryWidth, label: "Subtotal:", value: invoice.subtotal, currencySymbol: currencySymbol, isBold: false)
+        y = drawSummaryRow(y: y, x: summaryX, width: summaryWidth, label: "Subtotal:", value: invoice.subtotal, currencySymbol: currencySymbol, symbolType: .currency, isBold: false)
         
         // --- Tax ---
         let taxRateDisplay = String(format: "%.1f", invoice.taxRate * 100) // Отображаем в процентах
-        y = drawSummaryRow(y: y, x: summaryX, width: summaryWidth, label: "Tax (\(taxRateDisplay)%):", value: invoice.taxTotal, currencySymbol: currencySymbol, isBold: false)
+        y = drawSummaryRow(y: y, x: summaryX, width: summaryWidth, label: "Tax (\(taxRateDisplay)%):", value: invoice.taxTotal, currencySymbol: currencySymbol, symbolType: .currency, isBold: false)
         
         // --- Total Discount (на инвойс) ---
-        if invoice.discount > 0 {
-            // Передаем отрицательное значение, чтобы показать вычитание
-            y = drawSummaryRow(y: y, x: summaryX, width: summaryWidth, label: "Invoice Discount:", value: -invoice.discount, currencySymbol: currencySymbol, isBold: false)
+        if invoice.discountValue != 0 {
+            
+            let discountLabel = "Invoice Discount:"
+            let discountAmount = abs(invoice.discountValue) // Сумма скидки (положительное число)
+            let isPercentage = invoice.discountType == .percentage
+            
+            let valueToDisplay: Double
+            let symbolType: SummarySymbolType
+            
+            if isPercentage {
+                // Если процент, показываем сам процент (invoice.discount)
+                valueToDisplay = invoice.discount // Предполагаем, что discount это 0-100%
+                symbolType = .percent
+            } else {
+                // Если фиксированная сумма, показываем сумму (discountAmount)
+                valueToDisplay = discountAmount
+                symbolType = .currency
+            }
+            
+            // Передаем отрицательную сумму, чтобы показать вычитание (если скидка)
+            y = drawSummaryRow(y: y, x: summaryX, width: summaryWidth,
+                               label: discountLabel,
+                               value: -discountAmount, // Сумма в валюте, которая вычтется
+                               currencySymbol: currencySymbol,
+                               symbolType: symbolType, // Передаем тип символа (процент или валюта)
+                               valueToDisplay: valueToDisplay, // Передаем значение для отображения (процент или сумма)
+                               isBold: false)
         }
         
         // Draw thick separator line
@@ -460,15 +487,20 @@ class InvoiceDetailPDFViewController: UIViewController {
         y += 5
         
         // --- Grand Total (Highlight) ---
-        y = drawSummaryRow(y: y, x: summaryX, width: summaryWidth, label: "GRAND TOTAL: ", value: invoice.grandTotal, currencySymbol: currencySymbol, isBold: true, fontSize: 16, color: .primary)
+        y = drawSummaryRow(y: y, x: summaryX, width: summaryWidth, label: "GRAND TOTAL: ", value: invoice.grandTotal, currencySymbol: currencySymbol, symbolType: .currency, isBold: true, fontSize: 16, color: .primary)
         
         return y
     }
     
     /**
      Вспомогательная функция для отрисовки одной строки итогов.
+     
+     ⭐ ИЗМЕНЕНИЕ: Добавлен `valueToDisplay` и `symbolType` для гибкого отображения процентов/валюты.
      */
-    private func drawSummaryRow(y: CGFloat, x: CGFloat, width: CGFloat, label: String, value: Double, currencySymbol: String, isBold: Bool, fontSize: CGFloat = 12, color: UIColor? = nil) -> CGFloat {
+    private func drawSummaryRow(y: CGFloat, x: CGFloat, width: CGFloat, label: String, value: Double, currencySymbol: String, symbolType: SummarySymbolType, valueToDisplay: Double? = nil, isBold: Bool, fontSize: CGFloat = 12, color: UIColor? = nil) -> CGFloat {
+        
+        let displayValue = valueToDisplay ?? abs(value) // Используем явно переданное значение (для процентов) или абсолютное значение суммы (для валюты)
+
         let labelAttributes: [NSAttributedString.Key: Any] = [
             .font: isBold ? UIFont.boldSystemFont(ofSize: fontSize) : UIFont.systemFont(ofSize: fontSize),
             .foregroundColor: color ?? UIColor.primaryText
@@ -481,12 +513,21 @@ class InvoiceDetailPDFViewController: UIViewController {
         // Draw Label (Left in Summary Box)
         label.draw(at: CGPoint(x: x, y: y), withAttributes: labelAttributes)
         
-        // Draw Value (Right in Summary Box)
-        // Используем abs(value), так как знак уже подразумевается для Discount
-        let formattedValue = "\(currencySymbol)\(String(format: "%.2f", abs(value)))"
+        // Форматирование значения
+        let formattedValue: String
+        
+        switch symbolType {
+        case .currency:
+            // Валюта: добавляем символ в начале
+            formattedValue = "\(currencySymbol)\(String(format: "%.2f", abs(displayValue)))"
+        case .percent:
+            // Процент: добавляем символ в конце
+            formattedValue = String(format: "%.0f%%", displayValue)
+        }
+        
         let size = formattedValue.size(withAttributes: valueAttributes)
         let valueX = x + width - size.width
-        formattedValue.draw(at: CGPoint(x: valueX, y: y), withAttributes: valueAttributes)
+        formattedValue.draw(at: CGPoint(x: valueX, y: y + (20 - size.height) / 2), withAttributes: valueAttributes)
         
         return y + 20
     }
@@ -516,10 +557,8 @@ class InvoiceDetailPDFViewController: UIViewController {
     @objc private func editTapped() {
         guard let invoice = invoice else { return }
 
-        // Предполагаем, что класс EditInvoiceViewController существует
         let editInvoiceViewController = EditInvoiceViewController(invoice: invoice)
         
-        // Обновление PDF после редактирования
         editInvoiceViewController.popEditInvoiceViewControllerHandler = { [weak self] updatedInvoice in
             self?.invoice = updatedInvoice
             self?.generateAndLoadPDF()

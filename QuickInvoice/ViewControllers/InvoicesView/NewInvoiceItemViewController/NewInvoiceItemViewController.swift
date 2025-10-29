@@ -111,11 +111,6 @@ class NewInvoiceItemViewController: UIViewController, UITextFieldDelegate {
         stackView.addArrangedSubview(createLabel(text: "Unit Type:"))
         stackView.addArrangedSubview(unitSegmentedControl)
         
-        // Скидка: ТОЛЬКО ТИП (убираем текстовое поле)
-        stackView.addArrangedSubview(createLabel(text: "Discount Type:")) // Изменяем заголовок для ясности
-        stackView.addArrangedSubview(discountSegmentedControl)
-        // **УДАЛЕНО:** addTextField(field: discountField, placeholder: "Value (e.g., 10 or 15.00)", keyboardType: .decimalPad, delegate: self)
-        
         // Taxable Toggle
         stackView.addArrangedSubview(createToggleRow(label: "Taxable", toggle: taxableSwitch))
 

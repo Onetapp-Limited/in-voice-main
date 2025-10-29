@@ -321,6 +321,10 @@ class NewInvoiceViewController: UIViewController {
         dismissButton.tintColor = .primary
         navigationItem.leftBarButtonItem = dismissButton
         
+        let discountTypeTap = UITapGestureRecognizer(target: self, action: #selector(handleDiscountTypeChange))
+        discountDollarLabel.isUserInteractionEnabled = true
+        discountDollarLabel.addGestureRecognizer(discountTypeTap)
+        
         clientButton.addTarget(self, action: #selector(selectClientTapped), for: .touchUpInside)
         addItemButton.addTarget(self, action: #selector(addItemTapped), for: .touchUpInside)
         saveButton.addTarget(self, action: #selector(saveInvoiceTapped), for: .touchUpInside)
@@ -654,6 +658,8 @@ class NewInvoiceViewController: UIViewController {
         discountContainer.addSubview(discountDollarLabel)
         discountContainer.addSubview(discountTextField)
         
+        discountDollarLabel.textColor = .primary
+        
         discountLabel.snp.makeConstraints { make in
             make.leading.centerY.equalToSuperview()
         }
@@ -699,11 +705,21 @@ class NewInvoiceViewController: UIViewController {
         currencyDisplayLabel.text = currentInvoice.currency.rawValue
         statusDisplayLabel.text = currentInvoice.status.rawValue
         
+        updateDiscountTypeDisplay()
         updateClientDisplay()
         updateTableViewHeight()
     }
     
     // MARK: - Helpers
+    private func updateDiscountTypeDisplay() {
+        switch currentInvoice.discountType {
+        case .fixedAmount:
+            discountDollarLabel.text = currentInvoice.currencySymbol
+        case .percentage:
+            discountDollarLabel.text = "%"
+        }
+    }
+    
     private func updateClientDisplay() {
         if let client = currentInvoice.client {
             clientNameLabel.text = client.clientName
@@ -730,8 +746,9 @@ class NewInvoiceViewController: UIViewController {
         let discountInput = Double(discountTextField.text ?? "0") ?? 0.0
         currentInvoice.discount = max(0, discountInput)
         let subtotal = currentInvoice.subtotal
+        
         let grandTotal = currentInvoice.grandTotal
-        discountDollarLabel.text = currentInvoice.currencySymbol
+        updateDiscountTypeDisplay()
         
         let currencyCode = currentInvoice.currency.code
         
@@ -857,6 +874,42 @@ class NewInvoiceViewController: UIViewController {
         }
               
         dismissSelf()
+    }
+    
+    @objc private func handleDiscountTypeChange() {
+        let actionSheet = UIAlertController(title: "Select Discount Type", message: nil, preferredStyle: .actionSheet)
+        
+        for type in DiscountType.allCases {
+            let action = UIAlertAction(title: type.localized, style: .default) { [weak self] _ in
+                guard let self = self else { return }
+                
+                // 1. Обновляем модель
+                self.currentInvoice.discountType = type
+                
+                // 2. Обновляем отображение типа скидки (валюта/$ или %)
+                self.updateDiscountTypeDisplay()
+                
+                // 3. Пересчитываем итоговую сумму
+                self.updateInvoiceSummary()
+            }
+            
+            if type == currentInvoice.discountType {
+                action.setValue(true, forKey: "checked")
+            }
+            
+            actionSheet.addAction(action)
+        }
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+        actionSheet.addAction(cancelAction)
+        
+        // Настройка popover для iPad
+        if let popoverController = actionSheet.popoverPresentationController {
+            popoverController.sourceView = discountDollarLabel
+            popoverController.sourceRect = discountDollarLabel.bounds
+        }
+        
+        present(actionSheet, animated: true)
     }
 }
 
