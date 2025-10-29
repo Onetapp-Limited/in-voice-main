@@ -1,6 +1,6 @@
 import Foundation
 
-enum DiscountType: String, Codable, CaseIterable { // todo test111 не влияет выбор процент или фикс
+enum DiscountType: String, Codable, CaseIterable {
     case fixedAmount = "Fixed Amount"
     case percentage = "Percentage"
     

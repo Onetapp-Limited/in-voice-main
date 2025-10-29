@@ -925,6 +925,9 @@ extension NewInvoiceViewController: UITableViewDataSource, UITableViewDelegate {
             return UITableViewCell()
         }
         cell.configure(with: currentInvoice.items[indexPath.row])
+        cell.cardTappedHandler = { [weak self] in
+            self?.tableView(tableView, didSelectRowAt: indexPath)
+        }
         return cell
     }
     
@@ -944,6 +947,13 @@ extension NewInvoiceViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         print("Edit item at \(indexPath.row)")
+
+        let itemToEdit = currentInvoice.items[indexPath.row]
+        let editItemVC = NewInvoiceItemViewController(item: itemToEdit)
+        editItemVC.delegate = self
+        
+        let navController = UINavigationController(rootViewController: editItemVC)
+        present(navController, animated: true)
     }
 }
 
@@ -983,5 +993,6 @@ extension NewInvoiceViewController: NewInvoiceItemViewControllerDelegate {
 
         updateTableViewHeight()
         updateInvoiceSummary()
+        itemsTableView.reloadData()
     }
 }

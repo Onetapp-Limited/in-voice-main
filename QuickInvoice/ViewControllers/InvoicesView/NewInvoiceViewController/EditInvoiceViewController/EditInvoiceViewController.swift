@@ -40,26 +40,5 @@ class EditInvoiceViewController: NewInvoiceViewController {
              
         dismissSelf()
     }
-
-    // MARK: - Table View Delegate Overrides
-    
-
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-        print("Edit item at \(indexPath.row)")
-        
-        let itemToEdit = currentInvoice.items[indexPath.row]
-        
-        // test111 item не редактируется сейчас потом можно доделать
-        // Предположим, что NewInvoiceItemViewController может принимать элемент для редактирования
-        // Если NewInvoiceItemViewController не имеет такого инициализатора,
-        // его нужно будет создать/обновить в реальном приложении.
-        // Для примера, используем тот же класс и передаем существующий элемент
-        
-        let editItemVC = NewInvoiceItemViewController(item: itemToEdit) // Предполагаем, что такой init существует
-        editItemVC.delegate = self
-        let navController = UINavigationController(rootViewController: editItemVC)
-        present(navController, animated: true)
-    }
 }
 

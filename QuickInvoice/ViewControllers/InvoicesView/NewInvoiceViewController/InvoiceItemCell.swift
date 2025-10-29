@@ -1,7 +1,6 @@
 import UIKit
 import SnapKit
 
-
 class InvoiceItemCell: UITableViewCell {
     static let reuseIdentifier = "InvoiceItemCell"
     
@@ -28,6 +27,8 @@ class InvoiceItemCell: UITableViewCell {
         return lbl
     }()
     
+    var cardTappedHandler: (() -> Void)?
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupViews()
@@ -39,13 +40,13 @@ class InvoiceItemCell: UITableViewCell {
     
     private func setupViews() {
         backgroundColor = .clear
-        selectionStyle = .none
         
         contentView.addSubview(cardView)
         cardView.backgroundColor = .surface
         cardView.layer.cornerRadius = 12
         cardView.layer.borderWidth = 1
         cardView.layer.borderColor = UIColor.border.cgColor
+        cardView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(cardTapped)))
         
         cardView.addSubview(descriptionLabel)
         cardView.addSubview(detailsLabel)
@@ -77,5 +78,9 @@ class InvoiceItemCell: UITableViewCell {
         descriptionLabel.text = item.description
         detailsLabel.text = "\(item.quantity.formatted(.number.precision(.fractionLength(0...2)))) × \(item.unitPrice.formatted(.currency(code: "USD")))"
         totalLabel.text = item.lineTotal.formatted(.currency(code: "USD"))
+    }
+    
+    @objc private func cardTapped() {
+        cardTappedHandler?()
     }
 }
