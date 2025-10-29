@@ -101,14 +101,14 @@ class InvoiceTableViewCell: UITableViewCell {
         dueDateLabel.text = "Due: \(DateFormatter.shortDate.string(from: invoice.dueDate))"
         
         // Стиль для статуса: Если просрочен, меняем цвет
-        if invoice.dueDate < Date() && invoice.status != "Paid" {
+        if invoice.dueDate < Date() && invoice.status != .paid {
             dueDateLabel.textColor = .systemRed
         } else {
             dueDateLabel.textColor = .secondaryText
         }
         
         // Стиль для суммы: Если статус Paid, цвет успеха
-        if invoice.status == "Paid" {
+        if invoice.status == .paid {
             totalAmountLabel.textColor = .success
         } else {
             totalAmountLabel.textColor = .warning // Если не оплачен, предупреждающий цвет

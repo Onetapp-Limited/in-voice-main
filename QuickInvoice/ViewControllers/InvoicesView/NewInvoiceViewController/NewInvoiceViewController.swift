@@ -242,6 +242,68 @@ class NewInvoiceViewController: UIViewController {
         return btn
     }()
     
+    private let currencyContainer = UIView()
+    private let currencyLabel: UILabel = {
+        let lbl = UILabel()
+        lbl.text = "CURRENCY"
+        lbl.font = .systemFont(ofSize: 11, weight: .semibold)
+        lbl.textColor = .secondaryText
+        return lbl
+    }()
+    // Лейбл, который будет отображать выбранную валюту, например "USD ($)"
+    private let currencyDisplayLabel: UILabel = {
+        let lbl = UILabel()
+        lbl.text = Currency.USD.rawValue
+        lbl.font = .systemFont(ofSize: 17, weight: .medium)
+        lbl.textColor = .primaryText
+        return lbl
+    }()
+    private lazy var currencyButton: UIButton = {
+        let btn = UIButton(type: .system)
+        btn.backgroundColor = .clear
+        return btn
+    }()
+
+    // Status Section (Добавляем после Dates Card, перед Items Section)
+    private let statusCard = UIView()
+    
+    private let statusLabel: UILabel = {
+        let lbl = UILabel()
+        lbl.text = "STATUS"
+        lbl.font = .systemFont(ofSize: 11, weight: .semibold)
+        lbl.textColor = .secondaryText
+        return lbl
+    }()
+    
+    private let statusSwitch: UISwitch = {
+        let sw = UISwitch()
+        sw.isOn = false // Соответствует статусу .draft
+        sw.onTintColor = .primary // Используем цвет primary для статуса Ready To Send
+        return sw
+    }()
+    
+    private let statusDisplayLabel: UILabel = {
+        let lbl = UILabel()
+        lbl.text = InvoiceStatus.draft.rawValue
+        lbl.font = .systemFont(ofSize: 17, weight: .medium)
+        lbl.textColor = .primaryText
+        return lbl
+    }()
+    
+    private lazy var statusButton: UIButton = { // Кнопка для вызова ActionSheet
+        let btn = UIButton(type: .system)
+        btn.backgroundColor = .clear
+        return btn
+    }()
+    
+    private let statusChevron: UIImageView = { // Шеврон для обозначения выбора
+        let iv = UIImageView()
+        iv.image = UIImage(systemName: "chevron.right")
+        iv.tintColor = .iconSecondary
+        iv.contentMode = .scaleAspectFit
+        return iv
+    }()
+    
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -265,6 +327,9 @@ class NewInvoiceViewController: UIViewController {
         
         datePicker.addTarget(self, action: #selector(dateChanged), for: .valueChanged)
         dueDatePicker.addTarget(self, action: #selector(dateChanged), for: .valueChanged)
+        
+        currencyButton.addTarget(self, action: #selector(selectCurrencyTapped), for: .touchUpInside)
+        statusButton.addTarget(self, action: #selector(selectStatusTapped), for: .touchUpInside) // ОБНОВЛЕНО
         
         titleTextField.delegate = self
         taxTextField.delegate = self
@@ -290,6 +355,7 @@ class NewInvoiceViewController: UIViewController {
         setupHeaderCard()
         setupClientCard()
         setupDatesCard()
+        setupStatusCard() // ОБНОВЛЕНО
         setupItemsSection()
         setupSummaryCard()
         setupSaveButton()
@@ -300,7 +366,13 @@ class NewInvoiceViewController: UIViewController {
     private func setupHeaderCard() {
         styleCard(headerCard)
         contentView.addSubview(headerCard)
+        
         headerCard.addSubview(titleTextField)
+        headerCard.addSubview(currencyContainer)
+        
+        currencyContainer.addSubview(currencyLabel)
+        currencyContainer.addSubview(currencyDisplayLabel)
+        currencyContainer.addSubview(currencyButton)
         
         headerCard.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(16)
@@ -308,7 +380,74 @@ class NewInvoiceViewController: UIViewController {
         }
         
         titleTextField.snp.makeConstraints { make in
-            make.edges.equalToSuperview().inset(20)
+            make.top.equalToSuperview().inset(20)
+            make.leading.trailing.equalToSuperview().inset(20)
+        }
+        
+        let currencyChevron = UIImageView(image: UIImage(systemName: "chevron.right"))
+        currencyChevron.tintColor = .iconSecondary
+        currencyChevron.contentMode = .scaleAspectFit
+        currencyContainer.addSubview(currencyChevron)
+        
+        currencyContainer.snp.makeConstraints { make in
+            make.top.equalTo(titleTextField.snp.bottom).offset(16)
+            make.leading.trailing.bottom.equalToSuperview().inset(20)
+            make.height.equalTo(48)
+        }
+
+        currencyLabel.snp.makeConstraints { make in
+            make.top.leading.equalToSuperview()
+        }
+        
+        currencyDisplayLabel.snp.makeConstraints { make in
+            make.leading.equalToSuperview()
+            make.top.equalTo(currencyLabel.snp.bottom).offset(6)
+        }
+        
+        currencyChevron.snp.makeConstraints { make in
+            make.trailing.equalToSuperview()
+            make.centerY.equalTo(currencyDisplayLabel)
+            make.width.height.equalTo(16)
+        }
+        
+        currencyButton.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+    }
+    
+    // ОБНОВЛЕНО: Логика размещения элементов на карточке статуса
+    private func setupStatusCard() {
+        styleCard(statusCard)
+        contentView.addSubview(statusCard)
+        
+        statusCard.addSubview(statusLabel)
+        statusCard.addSubview(statusDisplayLabel)
+        statusCard.addSubview(statusChevron)
+        statusCard.addSubview(statusButton)
+        
+        statusCard.snp.makeConstraints { make in
+            make.top.equalTo(datesCard.snp.bottom).offset(16)
+            make.leading.trailing.equalToSuperview().inset(16)
+            make.height.equalTo(76)
+        }
+        
+        statusLabel.snp.makeConstraints { make in
+            make.top.leading.trailing.equalToSuperview().inset(16)
+        }
+        
+        statusDisplayLabel.snp.makeConstraints { make in
+            make.leading.equalToSuperview().inset(16)
+            make.bottom.equalToSuperview().inset(16)
+        }
+        
+        statusChevron.snp.makeConstraints { make in
+            make.trailing.equalToSuperview().inset(16)
+            make.centerY.equalTo(statusDisplayLabel)
+            make.width.height.equalTo(16)
+        }
+        
+        statusButton.snp.makeConstraints { make in // Кнопка на всю область карточки
+            make.edges.equalToSuperview()
         }
     }
     
@@ -399,7 +538,7 @@ class NewInvoiceViewController: UIViewController {
         contentView.addSubview(addItemButton)
         
         itemsHeaderLabel.snp.makeConstraints { make in
-            make.top.equalTo(datesCard.snp.bottom).offset(24)
+            make.top.equalTo(statusCard.snp.bottom).offset(24)
             make.leading.equalToSuperview().inset(16)
         }
         
@@ -552,10 +691,14 @@ class NewInvoiceViewController: UIViewController {
     
     private func loadInvoiceData() {
         titleTextField.text = currentInvoice.invoiceTitle
-        taxTextField.text = String(format: "%.1f", currentInvoice.taxRate * 100)
+        taxTextField.text = String(format: "%.1f", currentInvoice.taxRate)
         discountTextField.text = String(format: "%.2f", currentInvoice.discount)
         datePicker.date = currentInvoice.invoiceDate
         dueDatePicker.date = currentInvoice.dueDate
+        
+        currencyDisplayLabel.text = currentInvoice.currency.rawValue
+        statusDisplayLabel.text = currentInvoice.status.rawValue
+        
         updateClientDisplay()
         updateTableViewHeight()
     }
@@ -582,20 +725,24 @@ class NewInvoiceViewController: UIViewController {
     }
     
     private func updateInvoiceSummary() {
-        let subtotal = currentInvoice.items.reduce(0) { $0 + $1.lineTotal }
+        let taxRateInput = Double(taxTextField.text ?? "0") ?? 0.0
+        currentInvoice.taxRate = max(0, taxRateInput)
+        let discountInput = Double(discountTextField.text ?? "0") ?? 0.0
+        currentInvoice.discount = max(0, discountInput)
+        let subtotal = currentInvoice.subtotal
+        let grandTotal = currentInvoice.grandTotal
+        discountDollarLabel.text = currentInvoice.currencySymbol
         
-        let taxRate = Double(taxTextField.text ?? "0") ?? 0.0
-        currentInvoice.taxRate = max(0, taxRate / 100.0)
+        let currencyCode = currentInvoice.currency.code
         
-        let discount = Double(discountTextField.text ?? "0") ?? 0.0
-        currentInvoice.discount = max(0, discount)
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+        formatter.currencyCode = currencyCode
         
-        let taxableSubtotal = max(0, subtotal - currentInvoice.discount)
-        let taxAmount = taxableSubtotal * currentInvoice.taxRate
-        let total = taxableSubtotal + taxAmount
+        subtotalAmountLabel.text = formatter.string(from: NSNumber(value: subtotal))
+        totalAmountLabel.text = formatter.string(from: NSNumber(value: grandTotal))
         
-        subtotalAmountLabel.text = subtotal.formatted(.currency(code: "USD"))
-        totalAmountLabel.text = total.formatted(.currency(code: "USD"))
+        currentInvoice.totalAmount = totalAmountLabel.text ?? ""
     }
     
     // MARK: - Actions
@@ -630,26 +777,85 @@ class NewInvoiceViewController: UIViewController {
         present(navController, animated: true)
     }
     
+    @objc private func selectStatusTapped() {
+        let actionSheet = UIAlertController(title: "Select Invoice Status", message: nil, preferredStyle: .actionSheet)
+        
+        for status in InvoiceStatus.allCases {
+            let action = UIAlertAction(title: status.rawValue, style: .default) { [weak self] _ in
+                guard let self = self else { return }
+                self.currentInvoice.status = status
+                self.statusDisplayLabel.text = status.rawValue
+                switch currentInvoice.status {
+                case .draft:
+                    self.statusDisplayLabel.textColor = .primaryText
+                case .readyToSend:
+                    self.statusDisplayLabel.textColor = .success
+                case .paid:
+                    self.statusDisplayLabel.textColor = .success
+                case .pending:
+                    self.statusDisplayLabel.textColor = .warning
+                }
+            }
+            
+            if status == currentInvoice.status {
+                action.setValue(true, forKey: "checked")
+            }
+            
+            actionSheet.addAction(action)
+        }
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+        actionSheet.addAction(cancelAction)
+        
+        if let popoverController = actionSheet.popoverPresentationController {
+            popoverController.sourceView = statusCard
+            popoverController.sourceRect = statusCard.bounds
+        }
+ 
+        present(actionSheet, animated: true)
+    }
+
+    @objc private func selectCurrencyTapped() {
+        let actionSheet = UIAlertController(title: "Select Currency", message: nil, preferredStyle: .actionSheet)
+        
+        for currency in Currency.allCases {
+            let action = UIAlertAction(title: currency.rawValue, style: .default) { [weak self] _ in
+                guard let self = self else { return }
+                self.currentInvoice.currency = currency
+                self.currencyDisplayLabel.text = currency.rawValue
+                self.updateInvoiceSummary()
+            }
+            
+            if currency == currentInvoice.currency {
+                action.setValue(true, forKey: "checked")
+            }
+            
+            actionSheet.addAction(action)
+        }
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+        actionSheet.addAction(cancelAction)
+        
+        if let popoverController = actionSheet.popoverPresentationController {
+            popoverController.sourceView = currencyContainer
+            popoverController.sourceRect = currencyContainer.bounds
+        }
+
+        present(actionSheet, animated: true)
+    }
+    
     @objc func saveInvoiceTapped() {
         currentInvoice.invoiceTitle = titleTextField.text
         currentInvoice.totalAmount = totalAmountLabel.text ?? ""
-        
-        print("--- Saving Invoice ---")
-        print("Title: \(currentInvoice.invoiceTitle ?? "")")
-        print("Client: \(currentInvoice.client?.clientName ?? "None")")
-        print("Items: \(currentInvoice.items.count)")
-        print("Tax: \(currentInvoice.taxRate * 100)%")
-        print("Discount: $\(currentInvoice.discount)")
-        print("Total: \(totalAmountLabel.text ?? "")")
-        print("----------------------")
-        
+        updateInvoiceSummary()
+
         do {
             try invoiceService?.save(invoice: currentInvoice)
-            print()
+            print("Invoice Saved!")
         } catch {
-            print(error)
+            print("Error saving invoice: \(error)")
         }
-               
+              
         dismissSelf()
     }
 }

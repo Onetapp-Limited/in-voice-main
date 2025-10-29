@@ -3,23 +3,19 @@ import RealmSwift
 
 // MARK: - 1. Realm Object Definitions (Обновлено)
 
-// Для хранения строковых enum'ов (DiscountType, UnitType, ClientType)
-// в Realm мы будем использовать их rawValue (String).
-// Realm автоматически сохраняет @Persisted String.
-
-// Client Object (Обновлено)
+// Client Object (Без изменений, т.к. его структура уже была обновлена)
 class ClientObject: Object {
     @Persisted(primaryKey: true) var id: String = UUID().uuidString
     @Persisted var clientName: String?
-    @Persisted var email: String? // Новое поле
-    @Persisted var phoneNumber: String? // Новое поле
+    @Persisted var email: String?
+    @Persisted var phoneNumber: String?
     @Persisted var address: String?
-    @Persisted var idNumber: String? // Новое поле
-    @Persisted var faxNumber: String? // Новое поле
-    @Persisted var tags = RealmSwift.List<String>() // Новое поле (List для массива String)
-    @Persisted var clientTypeRaw: String = ClientType.newClient.rawValue // Новое поле (храним rawValue)
+    @Persisted var idNumber: String?
+    @Persisted var faxNumber: String?
+    @Persisted var tags = RealmSwift.List<String>()
+    @Persisted var clientTypeRaw: String = ClientType.newClient.rawValue
 
-    // Конвертер из Swift структуры в Realm Object
+    // Конвертер из Swift структуры в Realm Object (Без изменений)
     convenience init(client: Client) {
         self.init()
         self.id = client.id?.uuidString ?? UUID().uuidString
@@ -29,14 +25,12 @@ class ClientObject: Object {
         self.address = client.address
         self.idNumber = client.idNumber
         self.faxNumber = client.faxNumber
-        // Маппинг массива String в Realm List<String>
         self.tags.append(objectsIn: client.tags)
         self.clientTypeRaw = client.clientType.rawValue
     }
 
-    // Конвертер из Realm Object в Swift структуру
+    // Конвертер из Realm Object в Swift структуру (Без изменений)
     var toStruct: Client {
-        // Безопасное приведение rawValue к enum
         let type = ClientType(rawValue: clientTypeRaw) ?? .newClient
         return Client(
             id: UUID(uuidString: id),
@@ -46,26 +40,26 @@ class ClientObject: Object {
             address: address,
             idNumber: idNumber,
             faxNumber: faxNumber,
-            tags: Array(tags), // Конвертируем Realm List обратно в Swift Array
+            tags: Array(tags),
             clientType: type
         )
     }
 }
 
-// Invoice Item Object (EmbeddedObject, Обновлено)
+// Invoice Item Object (EmbeddedObject, Без изменений)
 class InvoiceItemObject: EmbeddedObject {
     @Persisted var id: String = UUID().uuidString
-    @Persisted var name: String? // Новое поле
+    @Persisted var name: String?
     @Persisted var itemDescription: String = "" // Используем другое имя, чтобы избежать конфликта с 'description'
     @Persisted var quantity: Double = 1.0
     @Persisted var unitPrice: Double = 0.0
 
-    @Persisted var discountValue: Double = 0.0 // Новое поле
-    @Persisted var discountTypeRaw: String = DiscountType.percentage.rawValue // Новое поле (храним rawValue)
-    @Persisted var isTaxable: Bool = true // Новое поле
-    @Persisted var unitTypeRaw: String = UnitType.item.rawValue // Новое поле (храним rawValue)
+    @Persisted var discountValue: Double = 0.0
+    @Persisted var discountTypeRaw: String = DiscountType.percentage.rawValue
+    @Persisted var isTaxable: Bool = true
+    @Persisted var unitTypeRaw: String = UnitType.item.rawValue
 
-    // Конвертер из Swift структуры в Realm Object
+    // Конвертер из Swift структуры в Realm Object (Без изменений)
     convenience init(item: InvoiceItem) {
         self.init()
         self.id = item.id.uuidString
@@ -80,9 +74,8 @@ class InvoiceItemObject: EmbeddedObject {
         self.unitTypeRaw = item.unitType.rawValue
     }
 
-    // Конвертер из Realm Object в Swift структуру
+    // Конвертер из Realm Object в Swift структуру (Без изменений)
     var toStruct: InvoiceItem {
-        // Безопасное приведение rawValue к enum
         let discountType = DiscountType(rawValue: discountTypeRaw) ?? .percentage
         let unitType = UnitType(rawValue: unitTypeRaw) ?? .item
         
@@ -100,51 +93,69 @@ class InvoiceItemObject: EmbeddedObject {
     }
 }
 
-// Invoice Object (Главный объект для хранения, без изменений структуры)
+// Invoice Object (Главный объект для хранения, ОБНОВЛЕН)
 class InvoiceObject: Object {
     @Persisted(primaryKey: true) var id: String = UUID().uuidString
     @Persisted var invoiceTitle: String?
     @Persisted var client: ClientObject?
-    @Persisted var items = RealmSwift.List<InvoiceItemObject>() // Список позиций
+    @Persisted var items = RealmSwift.List<InvoiceItemObject>()
     @Persisted var taxRate: Double = 0.0
     @Persisted var discount: Double = 0.0
     @Persisted var invoiceDate: Date = Date()
     @Persisted var dueDate: Date = Date()
-    @Persisted var creationDate: Date = Date() // Дата создания для сортировки
-    @Persisted var status: String = "Paid"
+    @Persisted var creationDate: Date = Date()
+    
+    // 💡 ОБНОВЛЕННЫЕ / НОВЫЕ ПОЛЯ
+    // Статус теперь хранится как String (rawValue InvoiceStatus)
+    @Persisted var statusRaw: String = InvoiceStatus.draft.rawValue
+    // Валюта теперь хранится как String (rawValue Currency)
+    @Persisted var currencyRaw: String = Currency.USD.rawValue
+    
+    @Persisted var totalAmount: String = "" // Строковое поле, которое мы вычисляли
 
-    // Конвертер из Swift структуры в Realm Object (обновлен для использования обновленного InvoiceItemObject)
+    // Конвертер из Swift структуры в Realm Object (ОБНОВЛЕН)
     convenience init(invoice: Invoice, clientObject: ClientObject?) {
         self.init()
         self.id = invoice.id.uuidString
         self.invoiceTitle = invoice.invoiceTitle
         
-        self.client = clientObject // Клиент передается уже сохраненным объектом
+        self.client = clientObject
         
-        // Маппинг массива структур в Realm List объектов (используется обновленный InvoiceItemObject)
+        // Маппинг массива структур в Realm List объектов
         self.items.append(objectsIn: invoice.items.map { InvoiceItemObject(item: $0) })
         self.taxRate = invoice.taxRate
         self.discount = invoice.discount
         self.invoiceDate = invoice.invoiceDate
         self.dueDate = invoice.dueDate
         self.creationDate = invoice.creationDate
-        self.status = invoice.status
+        
+        // 💡 ОБНОВЛЕНИЕ: Сохранение rawValue Enums
+        self.statusRaw = invoice.status.rawValue
+        self.currencyRaw = invoice.currency.rawValue
+        
+        self.totalAmount = invoice.totalAmount // Не вычисляем здесь, просто сохраняем
     }
 
-    // Конвертер из Realm Object в Swift структуру (обновлен для использования обновленного InvoiceItemObject)
+    // Конвертер из Realm Object в Swift структуру (ОБНОВЛЕН)
     var toStruct: Invoice {
+        // Безопасное приведение rawValue к enum
+        let status = InvoiceStatus(rawValue: statusRaw) ?? .draft
+        let currency = Currency(rawValue: currencyRaw) ?? .USD
+        
         return Invoice(
             id: UUID(uuidString: id) ?? UUID(),
             invoiceTitle: invoiceTitle,
             client: client?.toStruct,
-            // Конвертируем Realm List обратно в Swift Array
-            items: Array(items.map { $0.toStruct }), // Используем Array(List) вместо reduce
+            items: Array(items.map { $0.toStruct }),
             taxRate: taxRate,
             discount: discount,
             invoiceDate: invoiceDate,
             dueDate: dueDate,
             creationDate: creationDate,
-            status: status
+            // 💡 ОБНОВЛЕНИЕ: Использование сконвертированных Enums
+            status: status,
+            currency: currency,
+            totalAmount: totalAmount
         )
     }
 }
@@ -157,46 +168,43 @@ protocol InvoiceServiceProtocol {
     func getInvoice(id: UUID) -> Invoice?
     func deleteInvoice(id: UUID) throws
     func deleteAllInvoices() throws
+    func updateInvoice(_ newInvoice: Invoice) throws // Добавим в протокол для полноты
 }
 
 class InvoiceService: InvoiceServiceProtocol {
     private let realm: Realm
 
     init() throws {
-        // --- БЛОК КОДА ДЛЯ МИГРАЦИИ ---
-        let currentSchemaVersion: UInt64 = 2 // ⚠️ Увеличиваем версию схемы
+        // ⚠️ Увеличиваем версию схемы, т.к. структура InvoiceObject изменилась.
+        let currentSchemaVersion: UInt64 = 3
 
         let config = Realm.Configuration(
             schemaVersion: currentSchemaVersion,
             migrationBlock: { migration, oldSchemaVersion in
-                if oldSchemaVersion < 1 {
-                    // Миграция со старой версии (0) до версии 1, если она была
-                    // В твоем случае, если это первая миграция, ставим oldSchemaVersion < 2
-                }
                 
-                if oldSchemaVersion < 2 {
-                    // Миграция с версии 1 до версии 2: Добавлены поля
-                    
-                    // 1. Обновляем ClientObject
-                    migration.enumerateObjects(ofType: ClientObject.className()) { oldObject, newObject in
-                        // Добавленные поля в ClientObject
-                        newObject!["email"] = nil
-                        newObject!["phoneNumber"] = nil
-                        newObject!["idNumber"] = nil
-                        newObject!["faxNumber"] = nil
-                        // Realm List<String> инициализируется пустым списком
-                        // newObject!["tags"] = RealmSwift.List<String>()
-                        newObject!["clientTypeRaw"] = ClientType.newClient.rawValue // Устанавливаем значение по умолчанию
-                    }
-                    
-                    // 2. Обновляем InvoiceItemObject (EmbeddedObject)
-                    migration.enumerateObjects(ofType: InvoiceItemObject.className()) { oldObject, newObject in
-                        // Добавленные поля в InvoiceItemObject
-                        newObject!["name"] = nil
-                        newObject!["discountValue"] = 0.0
-                        newObject!["discountTypeRaw"] = DiscountType.percentage.rawValue
-                        newObject!["isTaxable"] = true
-                        newObject!["unitTypeRaw"] = UnitType.item.rawValue
+                // Миграция с версии < 2 уже описана.
+                
+                if oldSchemaVersion < 3 {
+                    // Миграция с версии 2 до версии 3: Добавлены поля statusRaw и currencyRaw в InvoiceObject.
+                    migration.enumerateObjects(ofType: InvoiceObject.className()) { oldObject, newObject in
+                        // status: в старой версии было поле 'status' типа String.
+                        // Теперь оно переименовано в 'statusRaw', но т.к. тип остался String, Realm должен
+                        // справиться с переименованием и автоматическим переносом.
+                        // Если в старой версии не было 'status', а было другое поле,
+                        // нужно вручную присвоить значение по умолчанию.
+                        
+                        // Если вы переименовали поле 'status' в 'statusRaw', Realm может попросить
+                        // миграцию по переименованию. Если нет, то достаточно установить значение по умолчанию для нового поля.
+                        
+                        // 💡 НОВОЕ ПОЛЕ: currencyRaw
+                        newObject!["currencyRaw"] = Currency.USD.rawValue // Устанавливаем значение по умолчанию
+                        
+                        // 💡 ПОЛЕ 'status' (если оно было раньше)
+                        // Если старое поле status было String, и мы его просто переименовали в statusRaw:
+                        // newObject!["statusRaw"] = oldObject!["status"]
+                        // Если в вашем старом коде поле status было и вы его удалили, а добавили statusRaw:
+                        // (Убедитесь, что 'status' в старой схеме имел значение по умолчанию, например "Draft")
+                        // newObject!["statusRaw"] = oldObject!["status"] ?? InvoiceStatus.draft.rawValue
                     }
                 }
                 
@@ -204,12 +212,11 @@ class InvoiceService: InvoiceServiceProtocol {
             }
         )
         Realm.Configuration.defaultConfiguration = config
-        // ------------------------------------------------------------------------
-
+        
         self.realm = try Realm()
     }
 
-    // MARK: - CRUD Operations (Не требуют изменений)
+    // MARK: - CRUD Operations
 
     /// Добавляет новый счет или обновляет существующий.
     func save(invoice: Invoice) throws {
@@ -217,6 +224,7 @@ class InvoiceService: InvoiceServiceProtocol {
 
         // ШАГ 1: Сохраняем/обновляем клиента перед сохранением счета.
         if let clientStruct = invoice.client {
+            // Создаем объект клиента.
             clientObject = ClientObject(client: clientStruct)
 
             try realm.write {
@@ -226,6 +234,7 @@ class InvoiceService: InvoiceServiceProtocol {
         }
 
         // ШАГ 2: Создаем Realm Object из Swift структуры, передавая ему сохраненного клиента.
+        // Используется ОБНОВЛЕННЫЙ InvoiceObject(invoice:clientObject:)
         let invoiceObject = InvoiceObject(invoice: invoice, clientObject: clientObject)
 
         try realm.write {
@@ -234,18 +243,20 @@ class InvoiceService: InvoiceServiceProtocol {
         }
     }
 
-    /// Получает все счета, отсортированные по дате создания (самые новые сначала).
+    /// Получает все счета.
     func getAllInvoices() -> [Invoice] {
         let results = realm.objects(InvoiceObject.self)
-            .sorted(byKeyPath: "creationDate", ascending: false) // Сортировка по убыванию даты
+            .sorted(byKeyPath: "creationDate", ascending: false)
 
         // Маппинг Realm Results в массив Swift структур
+        // Используется ОБНОВЛЕННЫЙ InvoiceObject.toStruct
         return results.map { $0.toStruct }
     }
 
     /// Получает счет по его уникальному ID.
     func getInvoice(id: UUID) -> Invoice? {
         let object = realm.object(ofType: InvoiceObject.self, forPrimaryKey: id.uuidString)
+        // Используется ОБНОВЛЕННЫЙ InvoiceObject.toStruct
         return object?.toStruct
     }
 
@@ -271,6 +282,7 @@ class InvoiceService: InvoiceServiceProtocol {
         }
     }
     
+    // Метод для обновления (также ОБНОВЛЕН, чтобы учесть новые поля)
     func updateInvoice(_ newInvoice: Invoice) throws {
         guard let existingInvoice = realm.object(ofType: InvoiceObject.self, forPrimaryKey: newInvoice.id.uuidString) else {
             print("❌ Invoice not found with id: \(newInvoice.id)")
@@ -284,16 +296,26 @@ class InvoiceService: InvoiceServiceProtocol {
             existingInvoice.discount = newInvoice.discount
             existingInvoice.invoiceDate = newInvoice.invoiceDate
             existingInvoice.dueDate = newInvoice.dueDate
-            existingInvoice.status = newInvoice.status
+            
+            // 💡 НОВЫЕ ПОЛЯ: Обновление статуса и валюты
+            existingInvoice.statusRaw = newInvoice.status.rawValue
+            existingInvoice.currencyRaw = newInvoice.currency.rawValue
+            existingInvoice.totalAmount = newInvoice.totalAmount
             
             // Обновляем клиента (если передан)
             if let clientStruct = newInvoice.client {
                 let clientObject = ClientObject(client: clientStruct)
+                // Важно: встраиваемые объекты (EmbeddedObject) не нужно добавлять/обновлять отдельно,
+                // они автоматически управляются родительским объектом. ClientObject - не встраиваемый,
+                // поэтому его обновляем отдельно.
                 realm.add(clientObject, update: .modified)
                 existingInvoice.client = clientObject
+            } else {
+                existingInvoice.client = nil // Если клиент удален
             }
             
             // Обновляем items — сначала очищаем старые, потом добавляем новые
+            // Поскольку InvoiceItemObject является EmbeddedObject, этот подход работает корректно.
             existingInvoice.items.removeAll()
             let newItemObjects = newInvoice.items.map { InvoiceItemObject(item: $0) }
             existingInvoice.items.append(objectsIn: newItemObjects)

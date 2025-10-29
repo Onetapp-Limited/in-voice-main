@@ -1,0 +1,152 @@
+import Foundation
+
+enum DiscountType: String, Codable, CaseIterable {
+    case fixedAmount = "Fixed Amount"
+    case percentage = "Percentage"
+    
+    var localized: String { return self.rawValue }
+}
+
+enum UnitType: String, Codable, CaseIterable {
+    case hours = "Hours"
+    case days = "Days"
+    case item = "Item"
+    
+    var localized: String { return self.rawValue }
+}
+
+enum Currency: String, Codable, CaseIterable {
+    case USD = "USD ($)" // United States Dollar
+    case EUR = "EUR (€)" // Euro
+    case GBP = "GBP (£)" // British Pound Sterling
+    case JPY = "JPY (¥)" // Japanese Yen
+    case AUD = "AUD (A$)" // Australian Dollar
+    case CAD = "CAD (C$)" // Canadian Dollar
+    case CHF = "CHF (CHF)" // Swiss Franc
+    case CNY = "CNY (¥)" // Chinese Yuan
+    case RUB = "RUB (₽)" // Russian Ruble
+    case KZT = "KZT (₸)" // Kazakhstani Tenge
+
+    // Свойство для получения только символа валюты
+    var symbol: String {
+        switch self {
+        case .USD: return "$"
+        case .EUR: return "€"
+        case .GBP: return "£"
+        case .JPY: return "¥"
+        case .AUD: return "A$"
+        case .CAD: return "C$"
+        case .CHF: return "CHF"
+        case .CNY: return "¥"
+        case .RUB: return "₽"
+        case .KZT: return "₸"
+        }
+    }
+
+    // Свойство для получения кода валюты для форматирования
+    var code: String {
+        return self.rawValue.components(separatedBy: " ").first ?? "USD"
+    }
+}
+
+enum InvoiceStatus: String, Codable, CaseIterable {
+    case draft = "Draft"
+    case readyToSend = "Ready To Send"
+    case paid = "Paid"
+    case pending = "Pending"
+}
+
+// --- InvoiceItem: ИСПРАВЛЕНИЕ lineTotal ---
+
+struct InvoiceItem: Codable {
+    var id = UUID()
+    var name: String?
+    var description: String = ""
+    var quantity: Double = 1.0
+    var unitPrice: Double = 0.0
+    
+    // discountValue: Хранит процентное значение (0-100), если discountType = .percentage
+    var discountValue: Double = 0.0
+    var discountType: DiscountType = .percentage
+    var isTaxable: Bool = true
+    var unitType: UnitType = .item
+    
+    var lineTotal: Double {
+        let grossTotal = quantity * unitPrice
+        var netTotal = grossTotal
+        
+        if discountValue > 0 {
+            switch discountType {
+            case .percentage:
+                // ✅ ИСПРАВЛЕНО: Делим на 100.0, чтобы использовать как долю (0.10 для 10%)
+                let discountRate = discountValue / 100.0
+                netTotal -= grossTotal * min(1.0, discountRate) // Защита от >100% скидки
+            case .fixedAmount:
+                netTotal -= discountValue
+            }
+        }
+        return max(0, netTotal)
+    }
+}
+
+// --- Енумы и Структура Client (без изменений) ---
+
+enum ClientType: String, Codable, CaseIterable {
+    case newClient = "New Client"
+    case ongoing = "Ongoing"
+    case recurrent = "Recurrent"
+    
+    var localized: String { return self.rawValue }
+}
+
+struct Client: Codable {
+    var id: UUID?
+    var clientName: String?
+    var email: String?
+    var phoneNumber: String?
+    var address: String?
+    var idNumber: String?
+    var faxNumber: String?
+    var tags: [String] = []
+    var clientType: ClientType = .newClient
+}
+
+// --- Invoice: ИСПРАВЛЕНИЕ taxTotal ---
+
+struct Invoice: Codable {
+    var id: UUID = UUID()
+    var invoiceTitle: String? = ""
+    var client: Client?
+    var items: [InvoiceItem] = []
+    // taxRate: Хранит процентное значение (0-100)
+    var taxRate: Double = 0
+    var discount: Double = 0
+    var invoiceDate: Date = Date()
+    var dueDate: Date = Calendar.current.date(byAdding: .day, value: 30, to: Date())!
+    var creationDate: Date = Date()
+    
+    var status: InvoiceStatus = .draft
+    var currency: Currency = .USD
+    
+    var totalAmount: String = ""
+
+    var subtotal: Double {
+        return items.reduce(0) { $0 + $1.lineTotal }
+    }
+
+    var taxTotal: Double {
+        let taxableSubtotal = items.filter { $0.isTaxable }.reduce(0) { $0 + $1.lineTotal }
+        
+        // ✅ ИСПРАВЛЕНО: Делим taxRate на 100.0, чтобы использовать как долю (0.10 для 10%)
+        let rateAsDecimal = taxRate / 100.0
+        return taxableSubtotal * rateAsDecimal
+    }
+
+    var grandTotal: Double {
+        // Теперь grandTotal использует корректные вычисляемые свойства
+        let total = subtotal + taxTotal
+        return max(0, total - discount)
+    }
+
+    var currencySymbol: String { return currency.symbol }
+}

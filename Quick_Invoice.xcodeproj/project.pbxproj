@@ -132,6 +132,14 @@
 			path = EditInvoiceViewController;
 			sourceTree = "<group>";
 		};
+		1051E61E2EB21CAF00D576BC /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				109204662EAF7DFB00F0C7FE /* InvoiceModel.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
 		109202F32EAF6E7700F0C7FE /* HomeView */ = {
 			isa = PBXGroup;
 			children = (
@@ -152,8 +160,8 @@
 		109202F72EAF762A00F0C7FE /* InvoicesView */ = {
 			isa = PBXGroup;
 			children = (
+				1051E61E2EB21CAF00D576BC /* Model */,
 				1051E6182EB0F17500D576BC /* InvoiceDetailPDFViewController */,
-				109204662EAF7DFB00F0C7FE /* InvoiceModel.swift */,
 				1051E6152EAFA35D00D576BC /* NewInvoiceItemViewController */,
 				1051E6122EAF9CC400D576BC /* NewClientViewController */,
 				109204632EAF7DC500F0C7FE /* InvoiceDetailVC */,

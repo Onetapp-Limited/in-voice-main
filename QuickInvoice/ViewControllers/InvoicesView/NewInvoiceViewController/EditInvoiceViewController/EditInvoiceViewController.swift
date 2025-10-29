@@ -49,6 +49,7 @@ class EditInvoiceViewController: NewInvoiceViewController {
         print("Edit item at \(indexPath.row)")
         
         let itemToEdit = currentInvoice.items[indexPath.row]
+        // test111 item не редактируется сейчас потом можно доделать
         // Предположим, что NewInvoiceItemViewController может принимать элемент для редактирования
         // Если NewInvoiceItemViewController не имеет такого инициализатора,
         // его нужно будет создать/обновить в реальном приложении.

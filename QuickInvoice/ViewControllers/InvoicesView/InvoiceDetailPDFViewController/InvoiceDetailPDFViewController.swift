@@ -1,13 +1,13 @@
 import UIKit
 import SnapKit
-import PDFKit // Необходимо для отображения PDF
+import PDFKit
 import MessageUI
 
 class InvoiceDetailPDFViewController: UIViewController {
 
     // MARK: - Properties
     
-    var invoice: Invoice! // todo ИИ блин форс анврапит и не стесняется -- переделать это обязательно!!!
+    var invoice: Invoice?
     private let pdfView = PDFView()
     
     // MARK: - UI Elements
@@ -15,8 +15,9 @@ class InvoiceDetailPDFViewController: UIViewController {
     private lazy var sendButton: UIButton = {
         var config = UIButton.Configuration.filled()
         config.title = "Send Invoice (PDF)"
-        config.image = UIImage(systemName: "paperplane.fill") // Красивая системная иконка для отправки
+        config.image = UIImage(systemName: "paperplane.fill")
         config.imagePadding = 10
+        // Использование предполагаемых кастомных цветов
         config.baseBackgroundColor = .primary
         config.baseForegroundColor = .white
         config.buttonSize = .large
@@ -24,7 +25,7 @@ class InvoiceDetailPDFViewController: UIViewController {
         let button = UIButton(configuration: config, primaryAction: UIAction { [weak self] _ in
             self?.sendButtonTapped()
         })
-        button.layer.cornerRadius = 14 // Скругленные углы в стиле iOS
+        button.layer.cornerRadius = 14
         button.layer.shadowColor = UIColor.primary.cgColor
         button.layer.shadowOpacity = 0.4
         button.layer.shadowRadius = 8
@@ -37,10 +38,10 @@ class InvoiceDetailPDFViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Гарантируем, что invoice установлен
         guard invoice != nil else {
             print("Error: Invoice model not set.")
-            // В продакшене тут лучше показать ошибку и закрыть контроллер
+            // В случае ошибки, лучше закрыть контроллер
+            dismiss(animated: true)
             return
         }
         
@@ -50,48 +51,39 @@ class InvoiceDetailPDFViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        // Убеждаемся, что навигационная панель видна, если мы ее скрывали ранее
         navigationController?.setNavigationBarHidden(false, animated: animated)
     }
 
     // MARK: - Setup
     
     private func setupUI() {
-        view.backgroundColor = .background // Используем ваш кастомный цвет фона
+        // Использование предполагаемого кастомного цвета
+        view.backgroundColor = .background
         
-        // 1. Настройка Navigation Bar
-        title = invoice.invoiceTitle ?? "Invoice Preview"
+        title = invoice?.invoiceTitle ?? "Invoice Preview"
         
-        // Правая кнопка "Edit"
+        // Правая кнопка "Edit" (предполагаем наличие EditInvoiceViewController)
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Edit", style: .plain, target: self, action: #selector(editTapped))
         
-        // 2. Добавление Subviews
         view.addSubview(pdfView)
         view.addSubview(sendButton)
         
-        // 3. SnapKit Constraints
-        
-        // Кнопка "Send Invoice" - внизу, с отступом
         sendButton.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(20)
             make.bottom.equalTo(view.safeAreaLayoutGuide).inset(10)
             make.height.equalTo(56)
         }
         
-        // PDF View - занимает все пространство над кнопкой
         pdfView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide)
             make.leading.trailing.equalToSuperview()
             make.bottom.equalTo(sendButton.snp.top).offset(-10)
         }
         
-        // Настройка PDFView
-        pdfView.autoScales = true // Автоматически подстраивать размер страницы
-        pdfView.displayDirection = .vertical // Скроллинг по вертикали
-        pdfView.displayMode = .singlePage // Показать одну страницу за раз
-        pdfView.backgroundColor = .background // Фон, окружающий PDF документ
-        
-        // Стиль скроллбара
+        pdfView.autoScales = true
+        pdfView.displayDirection = .vertical
+        pdfView.displayMode = .singlePage
+        pdfView.backgroundColor = .background
         pdfView.layer.cornerRadius = 8
         pdfView.clipsToBounds = true
     }
@@ -99,44 +91,42 @@ class InvoiceDetailPDFViewController: UIViewController {
     // MARK: - PDF Generation and Loading
     
     private func generateAndLoadPDF() {
-        let pdfData = generatePDF()
+        guard let invoice = invoice else { return }
+        let pdfData = generatePDF(for: invoice)
+        
         if let document = PDFDocument(data: pdfData) {
             pdfView.document = document
         } else {
-            // Обработка ошибки
             let alert = UIAlertController(title: "Error", message: "Could not generate PDF document.", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "OK", style: .default))
             present(alert, animated: true)
         }
     }
     
-    private func generatePDF() -> Data {
-        // Стандартный размер страницы A4 (595.2 x 841.8 points)
-        let pageRect = CGRect(x: 0, y: 0, width: 595.2, height: 841.8)
+    private func generatePDF(for invoice: Invoice) -> Data {
+        let pageRect = CGRect(x: 0, y: 0, width: 595.2, height: 841.8) // A4
         let renderer = UIGraphicsPDFRenderer(bounds: pageRect)
         
         let pdfData = renderer.pdfData { context in
             context.beginPage()
             
-            // Отступы
             let margin: CGFloat = 40
             var currentY: CGFloat = margin
-            let pageWidth = pageRect.width - 2 * margin
             
-            // --- 1. Header (Название инвойса, Дата, Due Date) ---
-            currentY = drawHeader(pageRect: pageRect, currentY: currentY, margin: margin)
+            // --- 1. Header (Title, ID) ---
+            currentY = drawHeader(pageRect: pageRect, currentY: currentY, margin: margin, invoice: invoice)
             
-            // --- 2. Sender/Company Info (Mock) ---
-            currentY = drawCompanyInfo(pageRect: pageRect, currentY: currentY, margin: margin)
+            // --- 2. Sender Info & Dates/Status (Фикс дублирования) ---
+            currentY = drawCompanyInfo(pageRect: pageRect, currentY: currentY + 10, margin: margin, invoice: invoice)
             
-            // --- 3. Client Info ---
-            currentY = drawClientInfo(pageRect: pageRect, currentY: currentY, margin: margin)
+            // --- 3. Client Info (BILL TO) ---
+            currentY = drawClientInfo(pageRect: pageRect, currentY: currentY + 30, margin: margin, invoice: invoice)
             
-            // --- 4. Items Table ---
-            currentY = drawItemsTable(pageRect: pageRect, currentY: currentY + 30, margin: margin)
+            // --- 4. Items Table (с учетом новых полей) ---
+            currentY = drawItemsTable(pageRect: pageRect, currentY: currentY + 30, margin: margin, invoice: invoice)
             
-            // --- 5. Summary / Totals ---
-            currentY = drawSummary(pageRect: pageRect, currentY: currentY + 30, margin: margin)
+            // --- 5. Summary / Totals (с учетом новых вычислений) ---
+            currentY = drawSummary(pageRect: pageRect, currentY: currentY + 30, margin: margin, invoice: invoice)
             
             // --- 6. Footer (Payment Notes / Status) ---
             _ = drawFooter(pageRect: pageRect, currentY: 800, margin: margin) // Фиксированное место внизу
@@ -147,7 +137,7 @@ class InvoiceDetailPDFViewController: UIViewController {
     
     // MARK: - PDF Drawing Helper Functions
     
-    private func drawHeader(pageRect: CGRect, currentY: CGFloat, margin: CGFloat) -> CGFloat {
+    private func drawHeader(pageRect: CGRect, currentY: CGFloat, margin: CGFloat, invoice: Invoice) -> CGFloat {
         var y = currentY
         let textRect = CGRect(x: margin, y: y, width: pageRect.width - 2 * margin, height: 50)
         
@@ -159,25 +149,17 @@ class InvoiceDetailPDFViewController: UIViewController {
         let titleText = (invoice.invoiceTitle ?? "INVOICE").uppercased()
         titleText.draw(in: textRect, withAttributes: titleAttributes)
         
-        // Status/ID (Right)
+        // ID (Right)
         let idText = "INVOICE ID: \(invoice.id.uuidString.prefix(8).uppercased())"
-        let statusText = "STATUS: \(invoice.status.uppercased())"
         
-        let statusAttributes: [NSAttributedString.Key: Any] = [
+        let idAttributes: [NSAttributedString.Key: Any] = [
             .font: UIFont.boldSystemFont(ofSize: 12),
             .foregroundColor: UIColor.secondaryText
         ]
         
-        // Рисуем ID
-        let idSize = idText.size(withAttributes: statusAttributes)
+        let idSize = idText.size(withAttributes: idAttributes)
         let idRect = CGRect(x: pageRect.width - margin - idSize.width, y: y + 5, width: idSize.width, height: idSize.height)
-        idText.draw(in: idRect, withAttributes: statusAttributes)
-        
-        // Рисуем статус
-        let statusSize = statusText.size(withAttributes: statusAttributes)
-        let statusRect = CGRect(x: pageRect.width - margin - statusSize.width, y: y + 5 + idSize.height + 5, width: statusSize.width, height: statusSize.height)
-        statusText.draw(in: statusRect, withAttributes: statusAttributes)
-
+        idText.draw(in: idRect, withAttributes: idAttributes)
         
         y += 50
         
@@ -185,76 +167,81 @@ class InvoiceDetailPDFViewController: UIViewController {
         let line = UIBezierPath()
         line.move(to: CGPoint(x: margin, y: y + 5))
         line.addLine(to: CGPoint(x: pageRect.width - margin, y: y + 5))
-        UIColor.primaryLight.setStroke()
-        line.lineWidth = 2
+        UIColor.primary.setStroke()
+        line.lineWidth = 3
         line.stroke()
         
         return y + 15
     }
     
-    private func drawCompanyInfo(pageRect: CGRect, currentY: CGFloat, margin: CGFloat) -> CGFloat {
+    /**
+     Отрисовывает информацию об Отправителе (Mock) слева и Важные даты/статус справа.
+     */
+    private func drawCompanyInfo(pageRect: CGRect, currentY: CGFloat, margin: CGFloat, invoice: Invoice) -> CGFloat {
         var y = currentY
         let halfWidth = (pageRect.width - 2 * margin) / 2
         
-        let labelAttributes: [NSAttributedString.Key: Any] = [
-            .font: UIFont.boldSystemFont(ofSize: 10),
-            .foregroundColor: UIColor.secondaryText
-        ]
-        let valueAttributes: [NSAttributedString.Key: Any] = [
-            .font: UIFont.systemFont(ofSize: 12),
-            .foregroundColor: UIColor.primaryText
-        ]
-
-        let companyName = invoice.client?.clientName ?? ""
-        let companyAddress = invoice.client?.address ?? ""
-        let companyEmail = invoice.client?.email ?? ""
-        
-        // Draw Company Name/Header
-        let headerAttributes: [NSAttributedString.Key: Any] = [
+        // --- LEFT SIDE: SENDER (Mock Info) ---
+        let senderHeaderAttributes: [NSAttributedString.Key: Any] = [
             .font: UIFont.boldSystemFont(ofSize: 16),
             .foregroundColor: UIColor.primary
         ]
-        companyName.draw(at: CGPoint(x: margin, y: y), withAttributes: headerAttributes)
+        let senderDetailAttributes: [NSAttributedString.Key: Any] = [
+            .font: UIFont.systemFont(ofSize: 12),
+            .foregroundColor: UIColor.primaryText
+        ]
+        
+        // Draw Sender Header (Mock)
+        "FROM:".draw(at: CGPoint(x: margin, y: y), withAttributes: [.font: UIFont.boldSystemFont(ofSize: 12), .foregroundColor: UIColor.secondaryText])
         y += 20
         
-        // Draw Address
-        companyAddress.draw(at: CGPoint(x: margin, y: y), withAttributes: valueAttributes)
-        y += 35 // Multiline
+        // todo test111 это потом брать из общих настроек:
+        // Placeholder Company Info (фиктивные данные, т.к. нет модели Компании)
+        "My Company Name Inc.".draw(at: CGPoint(x: margin, y: y), withAttributes: senderHeaderAttributes)
+        y += 20
+        "123 Business Blvd, Suite 400".draw(at: CGPoint(x: margin, y: y), withAttributes: senderDetailAttributes)
+        y += 15
+        "City, State, 10001".draw(at: CGPoint(x: margin, y: y), withAttributes: senderDetailAttributes)
+        y += 15
+        "contact@mycompany.com".draw(at: CGPoint(x: margin, y: y), withAttributes: senderDetailAttributes)
         
-        // Draw Email
-        companyEmail.draw(at: CGPoint(x: margin, y: y), withAttributes: valueAttributes)
-        y += 25
+        let leftColumnMaxY = y + 10
         
-        // Draw Dates (on the right side)
+        // --- RIGHT SIDE: Dates, Status, Currency ---
         let dateX = margin + halfWidth
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .medium
         
         let invoiceDateText = "Invoice Date: \(dateFormatter.string(from: invoice.invoiceDate))"
         let dueDateText = "Due Date: \(dateFormatter.string(from: invoice.dueDate))"
-        let statusText = "Status: \(invoice.status)"
+        let statusText = "Status: \(invoice.status.rawValue)"
+        let currencyText = "Currency: \(invoice.currency.code) (\(invoice.currencySymbol))"
         
         let dateLabelAttributes: [NSAttributedString.Key: Any] = [
             .font: UIFont.boldSystemFont(ofSize: 12),
             .foregroundColor: UIColor.primaryText
         ]
         
-        y = currentY // Сброс Y для правой колонки
+        var rightY = currentY + 20 // Start Y for right column after "FROM:" header
         
         // Рисуем даты справа
-        invoiceDateText.draw(at: CGPoint(x: dateX, y: y), withAttributes: dateLabelAttributes)
-        y += 20
-        dueDateText.draw(at: CGPoint(x: dateX, y: y), withAttributes: dateLabelAttributes)
-        y += 20
-        statusText.draw(at: CGPoint(x: dateX, y: y), withAttributes: dateLabelAttributes)
-        
+        invoiceDateText.draw(at: CGPoint(x: dateX, y: rightY), withAttributes: dateLabelAttributes)
+        rightY += 20
+        dueDateText.draw(at: CGPoint(x: dateX, y: rightY), withAttributes: dateLabelAttributes)
+        rightY += 20
+        statusText.draw(at: CGPoint(x: dateX, y: rightY), withAttributes: dateLabelAttributes)
+        rightY += 20
+        currencyText.draw(at: CGPoint(x: dateX, y: rightY), withAttributes: dateLabelAttributes)
+
         // Возвращаем максимальный Y
-        return max(currentY + 80, y + 20)
+        return max(leftColumnMaxY, rightY + 10)
     }
 
-    private func drawClientInfo(pageRect: CGRect, currentY: CGFloat, margin: CGFloat) -> CGFloat {
+    /**
+     Отрисовывает информацию о Клиенте (Получателе)
+     */
+    private func drawClientInfo(pageRect: CGRect, currentY: CGFloat, margin: CGFloat, invoice: Invoice) -> CGFloat {
         var y = currentY
-        let halfWidth = (pageRect.width - 2 * margin) / 2
         let client = invoice.client
         
         // Заголовок "BILL TO"
@@ -265,8 +252,8 @@ class InvoiceDetailPDFViewController: UIViewController {
         "BILL TO:".draw(at: CGPoint(x: margin, y: y), withAttributes: headerAttributes)
         y += 20
         
-        guard let client = client, let clientName = client.clientName else {
-            "N/A (Client not specified)".draw(at: CGPoint(x: margin, y: y), withAttributes: [.font: UIFont.italicSystemFont(ofSize: 12), .foregroundColor: UIColor.error])
+        guard let client = client, let clientName = client.clientName, !clientName.isEmpty else {
+            "N/A (Client not specified)".draw(at: CGPoint(x: margin, y: y), withAttributes: [.font: UIFont.italicSystemFont(ofSize: 12), .foregroundColor: UIColor.secondaryText])
             return y + 30
         }
         
@@ -286,7 +273,7 @@ class InvoiceDetailPDFViewController: UIViewController {
         // Address
         if let address = client.address, !address.isEmpty {
             address.draw(at: CGPoint(x: margin, y: y), withAttributes: detailAttributes)
-            y += 35 // Multiline
+            y += 35 // Multiline space
         }
         
         // Email
@@ -295,18 +282,34 @@ class InvoiceDetailPDFViewController: UIViewController {
             y += 15
         }
         
+        // Phone Number
+        if let phone = client.phoneNumber, !phone.isEmpty {
+            phone.draw(at: CGPoint(x: margin, y: y), withAttributes: detailAttributes)
+            y += 15
+        }
+
+        // Client Type (если не New Client)
+        if client.clientType != .newClient {
+            let typeText = "Type: \(client.clientType.localized)"
+            typeText.draw(at: CGPoint(x: margin, y: y), withAttributes: detailAttributes)
+            y += 15
+        }
+        
         return y + 10
     }
     
-    private func drawItemsTable(pageRect: CGRect, currentY: CGFloat, margin: CGFloat) -> CGFloat {
+    /**
+     Отрисовывает таблицу позиций инвойса.
+     */
+    private func drawItemsTable(pageRect: CGRect, currentY: CGFloat, margin: CGFloat, invoice: Invoice) -> CGFloat {
         var y = currentY
         let pageWidth = pageRect.width - 2 * margin
-        let rowHeight: CGFloat = 25
+        let rowHeight: CGFloat = 35 // Увеличена высота для описания
         
-        let currency = invoice.currencySymbol
+        let currencySymbol = invoice.currencySymbol
         
         // Координаты колонок (доли от общей ширины)
-        let colWidths: [CGFloat] = [0.45, 0.1, 0.15, 0.15, 0.15]
+        let colWidths: [CGFloat] = [0.4, 0.1, 0.15, 0.15, 0.2]
         let headers = ["Item / Description", "Qty", "Unit Price", "Discount", "Line Total"]
         
         var currentX: CGFloat = margin
@@ -319,7 +322,7 @@ class InvoiceDetailPDFViewController: UIViewController {
         
         // --- 1. Draw Table Header ---
         let headerRect = CGRect(x: margin, y: y, width: pageWidth, height: rowHeight)
-        UIColor.primaryLight.setFill()
+        UIColor.primary.setFill() // Используем primary для заголовка
         UIRectFill(headerRect)
         
         let headerAttributes: [NSAttributedString.Key: Any] = [
@@ -334,84 +337,116 @@ class InvoiceDetailPDFViewController: UIViewController {
             
             // Выравнивание: Item/Description - по левому краю, остальные - по центру/правому
             let headerX: CGFloat = (index == 0) ? colStart + 5 : centeredX
-            header.draw(at: CGPoint(x: headerX, y: y + 7), withAttributes: headerAttributes)
+            header.draw(at: CGPoint(x: headerX, y: y + 10), withAttributes: headerAttributes)
         }
         y += rowHeight
         
         // --- 2. Draw Items ---
-        let itemValueAttributes: [NSAttributedString.Key: Any] = [
+        let nameAttributes: [NSAttributedString.Key: Any] = [
+            .font: UIFont.boldSystemFont(ofSize: 10),
+            .foregroundColor: UIColor.primaryText
+        ]
+        let descAttributes: [NSAttributedString.Key: Any] = [
+            .font: UIFont.systemFont(ofSize: 8),
+            .foregroundColor: UIColor.secondaryText
+        ]
+        let valueAttributes: [NSAttributedString.Key: Any] = [
             .font: UIFont.systemFont(ofSize: 10),
             .foregroundColor: UIColor.primaryText
         ]
         
         for (index, item) in invoice.items.enumerated() {
+            // TODO: Реализовать логику разбиения на страницы при необходимости
+            
             let rowRect = CGRect(x: margin, y: y, width: pageWidth, height: rowHeight)
             
-            // Чередование фона строк (для лучшей читаемости)
+            // Чередование фона строк
             if index % 2 != 0 {
                 UIColor.surface.setFill()
                 UIRectFill(rowRect)
             }
             
-            let name = item.name ?? "Item (No Name)"
-            let qty = String(format: "%.1f %@", item.quantity, String(item.unitType.localized.prefix(1)))
-            let unitPrice = "\(currency)\(String(format: "%.2f", item.unitPrice))"
-            let discountValue: String
+            // Расчет и форматирование значений
+            let qtyUnit = item.unitType == .item ? "" : " \(item.unitType.localized.prefix(1))"
+            let qty = String(format: "%.1f%@", item.quantity, qtyUnit)
+            let unitPrice = "\(currencySymbol)\(String(format: "%.2f", item.unitPrice))"
+            let discountValueString: String
+            
             if item.discountType == .percentage {
-                discountValue = String(format: "%.0f%%", item.discountValue)
+                // discountValue в модели - это доля (0.0 - 1.0)
+                discountValueString = String(format: "%.0f%%", item.discountValue * 100)
             } else {
-                discountValue = "\(currency)\(String(format: "%.2f", item.discountValue))"
+                discountValueString = "\(currencySymbol)\(String(format: "%.2f", item.discountValue))"
             }
-            let lineTotal = "\(currency)\(String(format: "%.2f", item.lineTotal))"
             
-            let values = [name, qty, unitPrice, discountValue, lineTotal]
+            let lineTotal = "\(currencySymbol)\(String(format: "%.2f", item.lineTotal))"
             
-            for (colIndex, value) in values.enumerated() {
+            let values = [
+                (name: item.name ?? "Item", description: item.description),
+                (qty, nil),
+                (unitPrice, nil),
+                (discountValueString, nil),
+                (lineTotal, nil)
+            ]
+            
+            for (colIndex, tuple) in values.enumerated() {
                 let colStart = colStarts[colIndex]
                 let colWidth = pageWidth * colWidths[colIndex]
                 
-                let textX: CGFloat
-                
-                // Выравнивание по правому краю для чисел, кроме первого столбца
-                if colIndex > 0 {
-                    let size = value.size(withAttributes: itemValueAttributes)
-                    textX = colStart + colWidth - size.width - 5 // 5pt отступ от правого края
+                if colIndex == 0 {
+                    // Name
+                    tuple.0.draw(at: CGPoint(x: colStart + 5, y: y + 4), withAttributes: nameAttributes)
+                    
+                    // Description (Multiline support in restricted area)
+                    if !tuple.1!.isEmpty {
+                        let descRect = CGRect(x: colStart + 5, y: y + 18, width: colWidth - 10, height: 15)
+                        tuple.1!.draw(in: descRect, withAttributes: descAttributes)
+                    }
+                    
                 } else {
-                    textX = colStart + 5 // 5pt отступ от левого края
+                    // Other columns: Qty, Prices, Discount, Total (Right-aligned)
+                    let value = tuple.0
+                    let size = value.size(withAttributes: valueAttributes)
+                    let textX = colStart + colWidth - size.width - 5 // 5pt отступ от правого края
+                    
+                    value.draw(at: CGPoint(x: textX, y: y + (rowHeight - size.height) / 2), withAttributes: valueAttributes)
                 }
-                
-                value.draw(at: CGPoint(x: textX, y: y + 7), withAttributes: itemValueAttributes)
             }
+            
+            // Draw horizontal line separator
+            let separator = UIBezierPath()
+            separator.move(to: CGPoint(x: margin, y: y + rowHeight))
+            separator.addLine(to: CGPoint(x: pageRect.width - margin, y: y + rowHeight))
+            UIColor.border.setStroke()
+            separator.lineWidth = 0.5
+            separator.stroke()
             
             y += rowHeight
         }
         
-        // Draw bottom table border
-        let bottomLine = UIBezierPath()
-        bottomLine.move(to: CGPoint(x: margin, y: y))
-        bottomLine.addLine(to: CGPoint(x: pageRect.width - margin, y: y))
-        UIColor.primaryLight.setStroke()
-        bottomLine.lineWidth = 1
-        bottomLine.stroke()
-        
         return y
     }
     
-    private func drawSummary(pageRect: CGRect, currentY: CGFloat, margin: CGFloat) -> CGFloat {
+    /**
+     Отрисовывает итоги (Subtotal, Tax, Discount, Grand Total) используя вычисляемые свойства модели.
+     */
+    private func drawSummary(pageRect: CGRect, currentY: CGFloat, margin: CGFloat, invoice: Invoice) -> CGFloat {
         var y = currentY
-        let summaryWidth: CGFloat = 180 // Ширина колонки итогов
+        let summaryWidth: CGFloat = 180
         let summaryX = pageRect.width - margin - summaryWidth
-        let currency = invoice.currencySymbol
+        let currencySymbol = invoice.currencySymbol
         
         // --- Subtotal ---
-        y = drawSummaryRow(y: y, x: summaryX, width: summaryWidth, label: "Subtotal:", value: invoice.subtotal, currency: currency, isBold: false)
+        y = drawSummaryRow(y: y, x: summaryX, width: summaryWidth, label: "Subtotal:", value: invoice.subtotal, currencySymbol: currencySymbol, isBold: false)
         
         // --- Tax ---
-        y = drawSummaryRow(y: y, x: summaryX, width: summaryWidth, label: "Tax (\(String(format: "%.1f", invoice.taxRate))%):", value: invoice.taxTotal, currency: currency, isBold: false)
+        let taxRateDisplay = String(format: "%.1f", invoice.taxRate * 100) // Отображаем в процентах
+        y = drawSummaryRow(y: y, x: summaryX, width: summaryWidth, label: "Tax (\(taxRateDisplay)%):", value: invoice.taxTotal, currencySymbol: currencySymbol, isBold: false)
         
-        // --- Total Discount (if any) ---
+        // --- Total Discount (на инвойс) ---
         if invoice.discount > 0 {
-            y = drawSummaryRow(y: y, x: summaryX, width: summaryWidth, label: "Invoice Discount:", value: -invoice.discount, currency: currency, isBold: false)
+            // Передаем отрицательное значение, чтобы показать вычитание
+            y = drawSummaryRow(y: y, x: summaryX, width: summaryWidth, label: "Invoice Discount:", value: -invoice.discount, currencySymbol: currencySymbol, isBold: false)
         }
         
         // Draw thick separator line
@@ -425,12 +460,15 @@ class InvoiceDetailPDFViewController: UIViewController {
         y += 5
         
         // --- Grand Total (Highlight) ---
-        y = drawSummaryRow(y: y, x: summaryX, width: summaryWidth, label: "GRAND TOTAL:", value: invoice.grandTotal, currency: currency, isBold: true, fontSize: 16, color: .primary)
+        y = drawSummaryRow(y: y, x: summaryX, width: summaryWidth, label: "GRAND TOTAL: ", value: invoice.grandTotal, currencySymbol: currencySymbol, isBold: true, fontSize: 16, color: .primary)
         
         return y
     }
     
-    private func drawSummaryRow(y: CGFloat, x: CGFloat, width: CGFloat, label: String, value: Double, currency: String, isBold: Bool, fontSize: CGFloat = 12, color: UIColor? = nil) -> CGFloat {
+    /**
+     Вспомогательная функция для отрисовки одной строки итогов.
+     */
+    private func drawSummaryRow(y: CGFloat, x: CGFloat, width: CGFloat, label: String, value: Double, currencySymbol: String, isBold: Bool, fontSize: CGFloat = 12, color: UIColor? = nil) -> CGFloat {
         let labelAttributes: [NSAttributedString.Key: Any] = [
             .font: isBold ? UIFont.boldSystemFont(ofSize: fontSize) : UIFont.systemFont(ofSize: fontSize),
             .foregroundColor: color ?? UIColor.primaryText
@@ -444,7 +482,8 @@ class InvoiceDetailPDFViewController: UIViewController {
         label.draw(at: CGPoint(x: x, y: y), withAttributes: labelAttributes)
         
         // Draw Value (Right in Summary Box)
-        let formattedValue = "\(currency)\(String(format: "%.2f", abs(value)))"
+        // Используем abs(value), так как знак уже подразумевается для Discount
+        let formattedValue = "\(currencySymbol)\(String(format: "%.2f", abs(value)))"
         let size = formattedValue.size(withAttributes: valueAttributes)
         let valueX = x + width - size.width
         formattedValue.draw(at: CGPoint(x: valueX, y: y), withAttributes: valueAttributes)
@@ -475,26 +514,29 @@ class InvoiceDetailPDFViewController: UIViewController {
     // MARK: - Actions
     
     @objc private func editTapped() {
+        guard let invoice = invoice else { return }
+
+        // Предполагаем, что класс EditInvoiceViewController существует
         let editInvoiceViewController = EditInvoiceViewController(invoice: invoice)
+        
+        // Обновление PDF после редактирования
         editInvoiceViewController.popEditInvoiceViewControllerHandler = { [weak self] updatedInvoice in
             self?.invoice = updatedInvoice
             self?.generateAndLoadPDF()
-            self?.title = self?.invoice.invoiceTitle ?? "Invoice Preview"
+            self?.title = self?.invoice?.invoiceTitle ?? "Invoice Preview"
         }
         self.navigationController?.pushViewController(editInvoiceViewController, animated: true)
     }
     
     private func sendButtonTapped() {
-        let pdfData = generatePDF()
+        guard let invoice = invoice else { return }
+        let pdfData = generatePDF(for: invoice)
         
-        // Сохраняем PDF временно во временную директорию
         let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent("\(invoice.invoiceTitle ?? "Invoice").pdf")
         try? pdfData.write(to: tempURL)
         
-        // Создаём системный share sheet
         let activityVC = UIActivityViewController(activityItems: [tempURL], applicationActivities: nil)
         
-        // Для iPad — обязательное требование (иначе краш)
         if let popover = activityVC.popoverPresentationController {
             popover.sourceView = self.view
             popover.sourceRect = CGRect(x: self.view.bounds.midX, y: self.view.bounds.midY, width: 0, height: 0)
@@ -502,28 +544,6 @@ class InvoiceDetailPDFViewController: UIViewController {
         }
         
         present(activityVC, animated: true)
-        
-        // Логика отправки PDF по почте - решил лучше: UIActivityViewController
-//        let pdfData = generatePDF()
-//        
-//        if MFMailComposeViewController.canSendMail() {
-//            let mail = MFMailComposeViewController()
-//            mail.mailComposeDelegate = self
-//            mail.setSubject("Invoice: \(invoice.invoiceTitle ?? "Untitled Invoice")")
-//            mail.setToRecipients([invoice.client?.email ?? ""]) // Установить получателя, если есть
-//            
-//            mail.setMessageBody("Dear \(invoice.client?.clientName ?? "Client"),\n\nPlease find attached the invoice for your review. The total amount is \(invoice.currencySymbol)\(String(format: "%.2f", invoice.grandTotal)).\n\nSincerely,\nYour Team", isHTML: false)
-//            
-//            // Прикрепляем PDF
-//            mail.addAttachmentData(pdfData, mimeType: "application/pdf", fileName: "\(invoice.invoiceTitle ?? "Invoice").pdf")
-//            
-//            present(mail, animated: true)
-//        } else {
-//            // Если почта не настроена
-//            let alert = UIAlertController(title: "Cannot Send Mail", message: "The device is not configured to send mail. PDF data is generated.", preferredStyle: .alert)
-//            alert.addAction(UIAlertAction(title: "OK", style: .default))
-//            present(alert, animated: true)
-//        }
     }
 }
 
@@ -535,8 +555,6 @@ extension InvoiceDetailPDFViewController: MFMailComposeViewControllerDelegate {
         
         if let error = error {
             print("Mail composition failed with error: \(error.localizedDescription)")
-        } else if result == .sent {
-            // Опционально: показать сообщение об успехе
         }
     }
 }

@@ -189,7 +189,7 @@ class InvoiceDetailViewController: UIViewController {
         // Header
         titleLabel.text = invoice.invoiceTitle
         clientLabel.text = invoice.client?.clientName ?? "No Client Selected"
-        statusLabel.text = invoice.status
+        statusLabel.text = invoice.status.rawValue
         
         // Dates
         let dateFormatter = DateFormatter()
@@ -231,7 +231,7 @@ class InvoiceDetailViewController: UIViewController {
         totalLabel.text = "Total: \(total.formatted(.currency(code: "USD")))"
         
         // Update status appearance
-        InvoiceDetailViewController.updateStatusLabelAppearance(statusLabel, status: invoice.status)
+        InvoiceDetailViewController.updateStatusLabelAppearance(statusLabel, status: invoice.status.rawValue)
     }
 
     // MARK: - Helpers
@@ -330,7 +330,7 @@ class InvoiceDetailViewController: UIViewController {
             discount: 50.00, // $50 flat discount
             invoiceDate: Calendar.current.date(byAdding: .day, value: -10, to: Date())!,
             dueDate: Calendar.current.date(byAdding: .day, value: 20, to: Date())!,
-            status: "Pending"
+            status: .pending
         )
         // Add one more item to show scrolling/list length
         invoice.items.append(InvoiceItem(description: "Server Hosting (Monthly)", quantity: 1.0, unitPrice: 200.00))
