@@ -30,7 +30,7 @@ class NewInvoiceViewController: UIViewController {
         return tf
     }()
     
-    private let clientCard = UIView()
+    let clientCard = UIView()
     private let clientLabel: UILabel = {
         let lbl = UILabel()
         lbl.text = "CLIENT"
@@ -62,7 +62,7 @@ class NewInvoiceViewController: UIViewController {
     }()
     
     // Dates Section
-    private let datesCard = UIView()
+    let datesCard = UIView()
     
     private let dateContainer = UIView()
     private let dateHeaderLabel: UILabel = {
@@ -97,7 +97,7 @@ class NewInvoiceViewController: UIViewController {
     }()
     
     // Items Section
-    private let itemsHeaderLabel: UILabel = {
+    let itemsHeaderLabel: UILabel = {
         let lbl = UILabel()
         lbl.text = "ITEMS"
         lbl.font = .systemFont(ofSize: 11, weight: .semibold)
@@ -265,7 +265,7 @@ class NewInvoiceViewController: UIViewController {
     }()
 
     // Status Section (Добавляем после Dates Card, перед Items Section)
-    private let statusCard = UIView()
+    let statusCard = UIView()
     
     private let statusLabel: UILabel = {
         let lbl = UILabel()
@@ -740,7 +740,7 @@ class NewInvoiceViewController: UIViewController {
         }
     }
     
-    private func updateInvoiceSummary() {
+    func updateInvoiceSummary() {
         let taxRateInput = Double(taxTextField.text ?? "0") ?? 0.0
         currentInvoice.taxRate = max(0, taxRateInput)
         let discountInput = Double(discountTextField.text ?? "0") ?? 0.0

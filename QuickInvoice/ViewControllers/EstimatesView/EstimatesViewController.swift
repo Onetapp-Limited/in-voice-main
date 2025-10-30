@@ -1,61 +1,62 @@
 import UIKit
 import SnapKit
 
-
-class InvoicesViewController: UIViewController {
+class EstimatesViewController: UIViewController {
     
     // MARK: - Data Grouping Properties
-    private var groupedInvoices: [String: [Invoice]] = [:]
+    private var groupedEstimates: [String: [Estimate]] = [:]
     private var sortedSections: [String] = []
     
-    private var allInvoices: [Invoice] = []
+    private var allEstimates: [Estimate] = []
     
-    var filteredInvoices: [Invoice] = [] {
+    var filteredEstimates: [Estimate] = [] {
         didSet {
-            groupInvoicesByMonth(filteredInvoices)
-            invoiceTableView.reloadData()
+            groupEstimatesByMonth(filteredEstimates)
+            estimatesTableView.reloadData()
         }
     }
     
-    private var invoiceService: InvoiceService? {
+    private var estimateService: EstimateService? {
         do {
-            return try InvoiceService()
+            return try EstimateService()
         } catch {
-            print("Failed to initialize InvoiceService: \(error)")
+            print("Failed to initialize EstimateService: \(error)")
             return nil
         }
     }
     
-    // MARK: - UI Elements (Оставлены без изменений, как в финальной версии)
+    // MARK: - UI Elements (Соответствуют стилю InvoicesViewController)
     
-    lazy var invoiceTableView: UITableView = {
+    lazy var estimatesTableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .plain)
         tableView.separatorStyle = .none
-        tableView.backgroundColor = UIColor.background
+        tableView.backgroundColor = UIColor.background // Ваш кастомный цвет
         tableView.rowHeight = 85
         return tableView
     }()
     
-    lazy var invoicesSearchBar: UISearchBar = {
+    lazy var estimatesSearchBar: UISearchBar = {
         let searchBar = UISearchBar()
-        searchBar.placeholder = "Search Invoices"
-        searchBar.barTintColor = UIColor.background
+        searchBar.placeholder = "Search Estimates"
+        searchBar.barTintColor = UIColor.background // Ваш кастомный цвет
         searchBar.searchBarStyle = .minimal
         if let textField = searchBar.value(forKey: "searchField") as? UITextField {
-            textField.backgroundColor = UIColor.surface
-            textField.textColor = UIColor.primaryText
+            textField.backgroundColor = UIColor.surface // Ваш кастомный цвет
+            textField.textColor = UIColor.primaryText // Ваш кастомный цвет
             textField.layer.cornerRadius = 10
             textField.clipsToBounds = true
         }
         return searchBar
     }()
     
-    lazy var createInvoiceButton: GradientButton = {
+    lazy var createEstimateButton: GradientButton = {
+        // NOTE: Используем GradientButton по аналогии с InvoicesViewController
         let button = GradientButton(type: .custom)
-        button.setTitle("Create New Invoice", for: .normal)
+        button.setTitle("Create New Estimate", for: .normal)
         button.setTitleColor(.white, for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
         
+        // NOTE: Системная иконка "plus" используется для визуального стиля (как у вас)
         let plusConfig = UIImage.SymbolConfiguration(pointSize: 20, weight: .medium)
         let plusImage = UIImage(systemName: "plus", withConfiguration: plusConfig)?
             .withRenderingMode(.alwaysTemplate)
@@ -64,7 +65,7 @@ class InvoicesViewController: UIViewController {
         
         button.titleEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: -10)
         
-        button.addTarget(self, action: #selector(createInvoiceButtonTapped), for: .touchUpInside)
+        button.addTarget(self, action: #selector(createEstimateButtonTapped), for: .touchUpInside)
         return button
     }()
     
@@ -73,7 +74,7 @@ class InvoicesViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = UIColor.background
+        view.backgroundColor = UIColor.background // Ваш кастомный цвет
         setupNavigationBar()
         setupUI()
         setup()
@@ -83,24 +84,25 @@ class InvoicesViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         // Обновляем данные при каждом появлении
-        allInvoices = fetchInvoices()
-        filteredInvoices = allInvoices
+        allEstimates = fetchEstimates()
+        filteredEstimates = allEstimates
     }
     
     // MARK: - Setup
     
     private func setupNavigationBar() {
         
-        // 1. Левый элемент: Иконка + Title "InvoiceFly"
-        let logoImage = UIImage(systemName: "doc.text.image.fill")?.withTintColor(.accent, renderingMode: .alwaysOriginal)
+        // 1. Левый элемент: Иконка + Title "InvoiceFly" (по аналогии)
+        // NOTE: Заменил иконку на "dollarsign.square.fill", более подходящую для Estimates
+        let logoImage = UIImage(systemName: "dollarsign.square.fill")?.withTintColor(UIColor.accent, renderingMode: .alwaysOriginal) // Ваш кастомный цвет
         let logoImageView = UIImageView(image: logoImage)
         logoImageView.contentMode = .scaleAspectFit
         logoImageView.snp.makeConstraints { make in make.size.equalTo(24) }
         
         let titleLabel = UILabel()
-        titleLabel.text = "InvoiceFly"
+        titleLabel.text = "Estimates" // Изменено на "Estimates"
         titleLabel.font = UIFont.systemFont(ofSize: 22, weight: .bold)
-        titleLabel.textColor = .primaryText
+        titleLabel.textColor = UIColor.primaryText // Ваш кастомный цвет
         
         let leftStack = UIStackView(arrangedSubviews: [UIView(), logoImageView, titleLabel, UIView()])
         leftStack.axis = .horizontal
@@ -109,7 +111,7 @@ class InvoicesViewController: UIViewController {
         let leftBarItem = UIBarButtonItem(customView: leftStack)
         navigationItem.leftBarButtonItem = leftBarItem
         
-        // 2. Правый элемент: PRO Badge
+        // 2. Правый элемент: PRO Badge (по аналогии)
         let proButton = UIButton(type: .custom)
         proButton.setTitle("PRO", for: .normal)
         proButton.setTitleColor(.white, for: .normal)
@@ -119,6 +121,9 @@ class InvoicesViewController: UIViewController {
         proButton.setImage(starIcon, for: .normal)
         proButton.tintColor = .white
         
+        // NOTE: Используем кастомный цвет для PRO Badge (если нет своего 'gold', используем 'accent' или определенный UIColor)
+        // В вашем примере использовался RGB. Если в вашем Asset Catalog есть цвет "Gold", используйте его.
+        // Здесь оставлен ваш оригинальный цвет для PRO Badge.
         proButton.backgroundColor = UIColor(red: 0.9, green: 0.7, blue: 0.2, alpha: 1.0)
         proButton.contentEdgeInsets = UIEdgeInsets(top: 5, left: 10, bottom: 5, right: 10)
         proButton.layer.cornerRadius = 10
@@ -129,10 +134,10 @@ class InvoicesViewController: UIViewController {
         let rightBarItem = UIBarButtonItem(customView: proButton)
         navigationItem.rightBarButtonItem = rightBarItem
         
-        // 3. Общие настройки Navigation Bar
+        // 3. Общие настройки Navigation Bar (по аналогии)
         let appearance = UINavigationBarAppearance()
         appearance.configureWithOpaqueBackground()
-        appearance.backgroundColor = UIColor.background
+        appearance.backgroundColor = UIColor.background // Ваш кастомный цвет
         navigationController?.navigationBar.standardAppearance = appearance
         navigationController?.navigationBar.scrollEdgeAppearance = appearance
         navigationController?.navigationBar.compactAppearance = appearance
@@ -141,50 +146,53 @@ class InvoicesViewController: UIViewController {
     
     func setupUI() {
         
-        view.addSubview(invoicesSearchBar)
-        view.addSubview(invoiceTableView)
-        view.addSubview(createInvoiceButton)
+        view.addSubview(estimatesSearchBar)
+        view.addSubview(estimatesTableView)
+        view.addSubview(createEstimateButton)
         
         // Констрейнты для Search Bar
-        invoicesSearchBar.snp.makeConstraints { make in
+        estimatesSearchBar.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
             make.leading.trailing.equalToSuperview()
         }
         
         // Констрейнты для Кнопки (снизу)
-        createInvoiceButton.snp.makeConstraints { make in
+        createEstimateButton.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(24)
             make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).inset(24)
             make.height.equalTo(50)
         }
         
         // Констрейнты для TableView (заканчивается над кнопкой)
-        invoiceTableView.snp.makeConstraints { make in
-            make.top.equalTo(invoicesSearchBar.snp.bottom)
+        estimatesTableView.snp.makeConstraints { make in
+            make.top.equalTo(estimatesSearchBar.snp.bottom)
             make.leading.trailing.equalToSuperview()
-            make.bottom.equalTo(createInvoiceButton.snp.top).offset(-16)
+            make.bottom.equalTo(createEstimateButton.snp.top).offset(-16)
         }
     }
     
     func setup() {
-        invoiceTableView.delegate = self
-        invoiceTableView.dataSource = self
+        estimatesTableView.delegate = self
+        estimatesTableView.dataSource = self
         
-        invoicesSearchBar.delegate = self
+        estimatesSearchBar.delegate = self
         
-        invoiceTableView.register(InvoiceTableViewCell.self, forCellReuseIdentifier: InvoiceTableViewCell.reuseIdentifier)
+        // NOTE: Регистрация новой ячейки
+        estimatesTableView.register(EstimateTableViewCell.self, forCellReuseIdentifier: EstimateTableViewCell.reuseIdentifier)
     }
     
     // MARK: - Data Logic (Grouping)
     
-    private func groupInvoicesByMonth(_ invoices: [Invoice]) {
-        groupedInvoices = Dictionary(grouping: invoices) { invoice -> String in
-            // Группируем по месяцу и году создания счета
-            return DateFormatter.monthYear.string(from: invoice.creationDate)
+    private func groupEstimatesByMonth(_ estimates: [Estimate]) {
+        groupedEstimates = Dictionary(grouping: estimates) { estimate -> String in
+            // Группируем по месяцу и году создания
+            // NOTE: Предполагается, что DateFormatter.monthYear доступен
+            return DateFormatter.monthYear.string(from: estimate.creationDate)
         }
         
         // Сортируем ключи (секции) по дате (самый новый месяц должен быть первым)
-        sortedSections = groupedInvoices.keys.sorted { key1, key2 in
+        sortedSections = groupedEstimates.keys.sorted { key1, key2 in
+            // NOTE: Предполагается, что DateFormatter.monthYear доступен
             guard let date1 = DateFormatter.monthYear.date(from: key1),
                   let date2 = DateFormatter.monthYear.date(from: key2) else {
                 return false
@@ -193,19 +201,16 @@ class InvoicesViewController: UIViewController {
         }
     }
     
-    // MARK: - Data Fetching (ВОССТАНОВЛЕНО)
+    // MARK: - Data Fetching
     
-    private func fetchInvoices() -> [Invoice] {
-        // Восстанавливаем оригинальную логику запроса к сервису
-        let fetchedInvoices: [Invoice] = invoiceService?.getAllInvoices() ?? []
-        
-        // Сортировка по дате (новейшие в начале) перед группировкой
-        return fetchedInvoices.sorted(by: { $0.creationDate > $1.creationDate })
+    private func fetchEstimates() -> [Estimate] {
+        let fetchedEstimates: [Estimate] = estimateService?.getAllEstimates() ?? []
+        return fetchedEstimates.sorted(by: { $0.creationDate > $1.creationDate })
     }
     
-    private func deleteInvoice(invoice: Invoice) {
+    private func deleteEstimate(estimate: Estimate) {
         do {
-            try invoiceService?.deleteInvoice(id: invoice.id)
+            try estimateService?.deleteEstimate(id: estimate.id)
         } catch {
             print(error)
         }
@@ -213,8 +218,8 @@ class InvoicesViewController: UIViewController {
     
     // MARK: - Actions
     
-    @objc func createInvoiceButtonTapped() {
-        self.navigationController?.pushViewController(NewInvoiceViewController(), animated: true)
+    @objc func createEstimateButtonTapped() {
+        navigationController?.pushViewController(NewEstimateViewController(), animated: true)
     }
     
     @objc func proBadgeTapped() {
@@ -238,7 +243,7 @@ class InvoicesViewController: UIViewController {
 }
 
 // MARK: - Table View Delegate and Data Source
-extension InvoicesViewController: UITableViewDelegate, UITableViewDataSource {
+extension EstimatesViewController: UITableViewDelegate, UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
         return sortedSections.count
@@ -246,17 +251,17 @@ extension InvoicesViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         let sectionTitle = sortedSections[section]
-        return groupedInvoices[sectionTitle]?.count ?? 0
+        return groupedEstimates[sectionTitle]?.count ?? 0
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let headerView = UIView()
-        headerView.backgroundColor = .background
+        headerView.backgroundColor = UIColor.background // Ваш кастомный цвет
         
         let titleLabel = UILabel()
         titleLabel.text = sortedSections[section]
         titleLabel.font = UIFont.systemFont(ofSize: 18, weight: .bold)
-        titleLabel.textColor = .primaryText
+        titleLabel.textColor = UIColor.primaryText // Ваш кастомный цвет
         
         headerView.addSubview(titleLabel)
         titleLabel.snp.makeConstraints { make in
@@ -271,13 +276,13 @@ extension InvoicesViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: InvoiceTableViewCell.reuseIdentifier, for: indexPath) as? InvoiceTableViewCell else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: EstimateTableViewCell.reuseIdentifier, for: indexPath) as? EstimateTableViewCell else {
             return UITableViewCell()
         }
         
         let sectionTitle = sortedSections[indexPath.section]
-        if let invoice = groupedInvoices[sectionTitle]?[indexPath.row] {
-            cell.configure(with: invoice)
+        if let estimate = groupedEstimates[sectionTitle]?[indexPath.row] {
+            cell.configure(with: estimate)
         }
         
         return cell
@@ -285,10 +290,12 @@ extension InvoicesViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let sectionTitle = sortedSections[indexPath.section]
-        if let selectedInvoice = groupedInvoices[sectionTitle]?[indexPath.row] {
-            let invoiceDetailPDFVC = InvoiceDetailPDFViewController()
-            invoiceDetailPDFVC.invoice = selectedInvoice
-            self.navigationController?.pushViewController(invoiceDetailPDFVC, animated: true)
+        if let selectedEstimate = groupedEstimates[sectionTitle]?[indexPath.row] {
+            // NOTE: Замените на ваш EstimateDetailViewController
+            // let detailVC = EstimateDetailPDFViewController()
+            // detailVC.estimate = selectedEstimate
+            // self.navigationController?.pushViewController(detailVC, animated: true)
+            print("Selected Estimate: \(selectedEstimate.estimateTitle ?? "")")
         }
     }
     
@@ -297,23 +304,23 @@ extension InvoicesViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             let sectionTitle = sortedSections[indexPath.section]
-            guard let invoiceToDelete = groupedInvoices[sectionTitle]?[indexPath.row] else { return }
+            guard let estimateToDelete = groupedEstimates[sectionTitle]?[indexPath.row] else { return }
             
             // 1. Удаляем через service
-            deleteInvoice(invoice: invoiceToDelete)
+            deleteEstimate(estimate: estimateToDelete)
             
-            // 2. Обновляем локальные данные (все счета)
-            allInvoices.removeAll { $0.id == invoiceToDelete.id }
+            // 2. Обновляем локальные данные (все оценки)
+            allEstimates.removeAll { $0.id == estimateToDelete.id }
             
             // 3. Перезапускаем фильтрацию/группировку
-            if let searchText = invoicesSearchBar.text, !searchText.isEmpty {
-                 filteredInvoices = allInvoices.filter({ (invoice) -> Bool in
-                    let titleMatch = invoice.invoiceTitle?.range(of: searchText, options: .caseInsensitive) != nil
-                     let clientMatch = invoice.client?.clientName?.range(of: searchText, options: .caseInsensitive) != nil
+            if let searchText = estimatesSearchBar.text, !searchText.isEmpty {
+                filteredEstimates = allEstimates.filter({ (estimate) -> Bool in
+                    let titleMatch = estimate.estimateTitle?.range(of: searchText, options: .caseInsensitive) != nil
+                    let clientMatch = estimate.client?.clientName?.range(of: searchText, options: .caseInsensitive) != nil
                     return titleMatch || clientMatch
                 })
             } else {
-                filteredInvoices = allInvoices
+                filteredEstimates = allEstimates
             }
             // tableView.reloadData() вызовется через didSet
         }
@@ -321,15 +328,15 @@ extension InvoicesViewController: UITableViewDelegate, UITableViewDataSource {
 }
 
 // MARK: - Search Bar Delegate
-extension InvoicesViewController: UISearchBarDelegate {
+extension EstimatesViewController: UISearchBarDelegate {
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         if searchText.isEmpty {
-            filteredInvoices = allInvoices
+            filteredEstimates = allEstimates
         } else {
-            filteredInvoices = allInvoices.filter({ (invoice) -> Bool in
-                let titleMatch = invoice.invoiceTitle?.range(of: searchText, options: .caseInsensitive) != nil
-                let clientMatch = invoice.client?.clientName?.range(of: searchText, options: .caseInsensitive) != nil
+            filteredEstimates = allEstimates.filter({ (estimate) -> Bool in
+                let titleMatch = estimate.estimateTitle?.range(of: searchText, options: .caseInsensitive) != nil
+                let clientMatch = estimate.client?.clientName?.range(of: searchText, options: .caseInsensitive) != nil
                 return titleMatch || clientMatch
             })
         }
@@ -342,6 +349,6 @@ extension InvoicesViewController: UISearchBarDelegate {
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         searchBar.text = nil
         searchBar.resignFirstResponder()
-        filteredInvoices = allInvoices
+        filteredEstimates = allEstimates
     }
 }

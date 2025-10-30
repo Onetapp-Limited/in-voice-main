@@ -180,7 +180,7 @@ class InvoiceService: InvoiceServiceProtocol {
 
     init() throws {
         // ⚠️ УВЕЛИЧИВАЕМ ВЕРСИЮ СХЕМЫ
-        let currentSchemaVersion: UInt64 = 4
+        let currentSchemaVersion: UInt64 = 5
 
         let config = Realm.Configuration(
             schemaVersion: currentSchemaVersion,

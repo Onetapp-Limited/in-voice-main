@@ -10,14 +10,23 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         let tabBarController = UITabBarController()
         
-        let homeVC = HomeViewController()
-        let homeNavController = UINavigationController(rootViewController: homeVC)
-        homeNavController.tabBarItem = UITabBarItem(
-            title: "Home",
-            image: UIImage(systemName: "house"), 
+        let invoicesVC = InvoicesViewController()
+        let invoicesNavVC = UINavigationController(rootViewController: invoicesVC)
+        invoicesNavVC.tabBarItem = UITabBarItem(
+            title: "Invoices",
+            image: UIImage(systemName: "doc.text"),
             tag: 0
         )
-        homeVC.title = "Main Dashboard"
+        invoicesNavVC.title = "Invoices"
+        
+        let estimatesViewController = EstimatesViewController()
+        let estimatesNavController = UINavigationController(rootViewController: estimatesViewController)
+        estimatesNavController.tabBarItem = UITabBarItem(
+            title: "Estimates",
+            image: UIImage(systemName: "number.circle"),
+            tag: 0
+        )
+        estimatesNavController.title = "Estimates"
         
         let dummyVC2 = self.createDummyViewController(
             title: "Clients",
@@ -28,16 +37,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             systemImageName: "tag"
         )
         
-        
-        let invoicesVC = InvoicesViewController()
-        let invoicesNavVC = UINavigationController(rootViewController: invoicesVC)
-        invoicesNavVC.tabBarItem = UITabBarItem(
-            title: "Invoices",
-            image: UIImage(systemName: "doc.text"),
-            tag: 0
-        )
-        invoicesNavVC.title = "Invoices"
-        
         let dummyVC5 = self.createDummyViewController(
             title: "Settings",
             systemImageName: "gear"
@@ -45,7 +44,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         tabBarController.viewControllers = [
             invoicesNavVC,
-            homeNavController,
+            estimatesNavController,
             dummyVC2,
             dummyVC3,
             dummyVC5
