@@ -4,11 +4,18 @@ import SnapKit
 class InvoiceItemCell: UITableViewCell {
     static let reuseIdentifier = "InvoiceItemCell"
     
-    private let cardView = UIView()
+    // 💡 Добавляем titleLabel
+    private let titleLabel: UILabel = {
+        let lbl = UILabel()
+        lbl.font = .systemFont(ofSize: 18, weight: .bold) // Более крупный и жирный шрифт для заголовка
+        lbl.textColor = .primaryText
+        return lbl
+    }()
+    
     private let descriptionLabel: UILabel = {
         let lbl = UILabel()
         lbl.font = .systemFont(ofSize: 16, weight: .semibold)
-        lbl.textColor = .primaryText
+        lbl.textColor = .secondaryText // Сделаем этот текст немного менее заметным
         return lbl
     }()
     
@@ -27,6 +34,7 @@ class InvoiceItemCell: UITableViewCell {
         return lbl
     }()
     
+    private let cardView = UIView()
     var cardTappedHandler: (() -> Void)?
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -48,6 +56,8 @@ class InvoiceItemCell: UITableViewCell {
         cardView.layer.borderColor = UIColor.border.cgColor
         cardView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(cardTapped)))
         
+        // 💡 Добавляем titleLabel в cardView
+        cardView.addSubview(titleLabel)
         cardView.addSubview(descriptionLabel)
         cardView.addSubview(detailsLabel)
         cardView.addSubview(totalLabel)
@@ -56,11 +66,20 @@ class InvoiceItemCell: UITableViewCell {
             make.edges.equalToSuperview().inset(UIEdgeInsets(top: 4, left: 0, bottom: 4, right: 0))
         }
         
-        descriptionLabel.snp.makeConstraints { make in
+        // 💡 Ограничения для titleLabel
+        titleLabel.snp.makeConstraints { make in
             make.top.leading.equalToSuperview().inset(16)
             make.trailing.equalTo(totalLabel.snp.leading).offset(-12)
         }
         
+        // 💡 Изменяем ограничения для descriptionLabel (ставим его под titleLabel)
+        descriptionLabel.snp.makeConstraints { make in
+            make.top.equalTo(titleLabel.snp.bottom).offset(2) // Небольшой отступ
+            make.leading.equalToSuperview().inset(16)
+            make.trailing.equalTo(totalLabel.snp.leading).offset(-12)
+        }
+        
+        // 💡 Изменяем ограничения для detailsLabel (ставим его под descriptionLabel)
         detailsLabel.snp.makeConstraints { make in
             make.top.equalTo(descriptionLabel.snp.bottom).offset(4)
             make.leading.equalToSuperview().inset(16)
@@ -74,10 +93,11 @@ class InvoiceItemCell: UITableViewCell {
         }
     }
     
-    func configure(with item: InvoiceItem) {
+    func configure(with item: InvoiceItem, currency: Currency) {
+        titleLabel.text = item.name
         descriptionLabel.text = item.description
-        detailsLabel.text = "\(item.quantity.formatted(.number.precision(.fractionLength(0...2)))) × \(item.unitPrice.formatted(.currency(code: "USD")))"
-        totalLabel.text = item.lineTotal.formatted(.currency(code: "USD"))
+        detailsLabel.text = "\(item.quantity.formatted(.number.precision(.fractionLength(0...2)))) × \(item.unitPrice.formatted(.currency(code: currency.code)))"
+        totalLabel.text = item.lineTotal.formatted(.currency(code: currency.code))
     }
     
     @objc private func cardTapped() {

@@ -924,7 +924,7 @@ extension NewInvoiceViewController: UITableViewDataSource, UITableViewDelegate {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: InvoiceItemCell.reuseIdentifier, for: indexPath) as? InvoiceItemCell else {
             return UITableViewCell()
         }
-        cell.configure(with: currentInvoice.items[indexPath.row])
+        cell.configure(with: currentInvoice.items[indexPath.row], currency: currentInvoice.currency)
         cell.cardTappedHandler = { [weak self] in
             self?.tableView(tableView, didSelectRowAt: indexPath)
         }
