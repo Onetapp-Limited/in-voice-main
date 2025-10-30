@@ -25,7 +25,35 @@ class EstimatesViewController: UIViewController {
         }
     }
     
-    // MARK: - UI Elements (Соответствуют стилю InvoicesViewController)
+    // MARK: - UI Elements
+    
+    // ⭐ НОВОЕ: Баннер для основной информации
+    private lazy var infoBannerView: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor.secondary // Ваш кастомный secondary цвет
+        view.layer.cornerRadius = 12
+        view.clipsToBounds = true
+        return view
+    }()
+    
+    // ⭐ НОВОЕ: Заголовок баннера
+    private lazy var bannerTitleLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Manage Estimates" // Грамотный тайтл
+        label.font = UIFont.systemFont(ofSize: 18, weight: .bold)
+        label.textColor = .white
+        return label
+    }()
+    
+    // ⭐ НОВОЕ: Подзаголовок баннера
+    private lazy var bannerSubtitleLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Create and track your estimates, convert them to invoices later." // Грамотный сабтайтл
+        label.font = UIFont.systemFont(ofSize: 14, weight: .regular)
+        label.textColor = .white.withAlphaComponent(0.8)
+        label.numberOfLines = 0
+        return label
+    }()
     
     lazy var estimatesTableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .plain)
@@ -50,13 +78,11 @@ class EstimatesViewController: UIViewController {
     }()
     
     lazy var createEstimateButton: GradientButton = {
-        // NOTE: Используем GradientButton по аналогии с InvoicesViewController
         let button = GradientButton(type: .custom)
         button.setTitle("Create New Estimate", for: .normal)
         button.setTitleColor(.white, for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
         
-        // NOTE: Системная иконка "plus" используется для визуального стиля (как у вас)
         let plusConfig = UIImage.SymbolConfiguration(pointSize: 20, weight: .medium)
         let plusImage = UIImage(systemName: "plus", withConfiguration: plusConfig)?
             .withRenderingMode(.alwaysTemplate)
@@ -83,7 +109,7 @@ class EstimatesViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        // Обновляем данные при каждом появлении
+        
         allEstimates = fetchEstimates()
         filteredEstimates = allEstimates
     }
@@ -100,9 +126,9 @@ class EstimatesViewController: UIViewController {
         logoImageView.snp.makeConstraints { make in make.size.equalTo(24) }
         
         let titleLabel = UILabel()
-        titleLabel.text = "Estimates" // Изменено на "Estimates"
+        titleLabel.text = "Estimates"
         titleLabel.font = UIFont.systemFont(ofSize: 22, weight: .bold)
-        titleLabel.textColor = UIColor.primaryText // Ваш кастомный цвет
+        titleLabel.textColor = UIColor.primaryText
         
         let leftStack = UIStackView(arrangedSubviews: [UIView(), logoImageView, titleLabel, UIView()])
         leftStack.axis = .horizontal
@@ -111,7 +137,7 @@ class EstimatesViewController: UIViewController {
         let leftBarItem = UIBarButtonItem(customView: leftStack)
         navigationItem.leftBarButtonItem = leftBarItem
         
-        // 2. Правый элемент: PRO Badge (по аналогии)
+        // 2. Правый элемент
         let proButton = UIButton(type: .custom)
         proButton.setTitle("PRO", for: .normal)
         proButton.setTitleColor(.white, for: .normal)
@@ -121,9 +147,6 @@ class EstimatesViewController: UIViewController {
         proButton.setImage(starIcon, for: .normal)
         proButton.tintColor = .white
         
-        // NOTE: Используем кастомный цвет для PRO Badge (если нет своего 'gold', используем 'accent' или определенный UIColor)
-        // В вашем примере использовался RGB. Если в вашем Asset Catalog есть цвет "Gold", используйте его.
-        // Здесь оставлен ваш оригинальный цвет для PRO Badge.
         proButton.backgroundColor = UIColor(red: 0.9, green: 0.7, blue: 0.2, alpha: 1.0)
         proButton.contentEdgeInsets = UIEdgeInsets(top: 5, left: 10, bottom: 5, right: 10)
         proButton.layer.cornerRadius = 10
@@ -134,10 +157,10 @@ class EstimatesViewController: UIViewController {
         let rightBarItem = UIBarButtonItem(customView: proButton)
         navigationItem.rightBarButtonItem = rightBarItem
         
-        // 3. Общие настройки Navigation Bar (по аналогии)
+        // 3. Общие настройки
         let appearance = UINavigationBarAppearance()
         appearance.configureWithOpaqueBackground()
-        appearance.backgroundColor = UIColor.background // Ваш кастомный цвет
+        appearance.backgroundColor = UIColor.background
         navigationController?.navigationBar.standardAppearance = appearance
         navigationController?.navigationBar.scrollEdgeAppearance = appearance
         navigationController?.navigationBar.compactAppearance = appearance
@@ -147,6 +170,12 @@ class EstimatesViewController: UIViewController {
     func setupUI() {
         
         view.addSubview(estimatesSearchBar)
+        
+        // ⭐ НОВОЕ: Добавляем баннер
+        view.addSubview(infoBannerView)
+        infoBannerView.addSubview(bannerTitleLabel)
+        infoBannerView.addSubview(bannerSubtitleLabel)
+
         view.addSubview(estimatesTableView)
         view.addSubview(createEstimateButton)
         
@@ -156,6 +185,23 @@ class EstimatesViewController: UIViewController {
             make.leading.trailing.equalToSuperview()
         }
         
+        // ⭐ НОВОЕ: Констрейнты для баннера (под Search Bar)
+        infoBannerView.snp.makeConstraints { make in
+            make.top.equalTo(estimatesSearchBar.snp.bottom).offset(8)
+            make.leading.trailing.equalToSuperview().inset(16)
+        }
+        
+        bannerTitleLabel.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(20)
+            make.leading.trailing.equalToSuperview().inset(16)
+        }
+        
+        bannerSubtitleLabel.snp.makeConstraints { make in
+            make.top.equalTo(bannerTitleLabel.snp.bottom).offset(4)
+            make.leading.trailing.equalToSuperview().inset(16)
+            make.bottom.equalToSuperview().offset(-20)
+        }
+        
         // Констрейнты для Кнопки (снизу)
         createEstimateButton.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(24)
@@ -163,9 +209,9 @@ class EstimatesViewController: UIViewController {
             make.height.equalTo(50)
         }
         
-        // Констрейнты для TableView (заканчивается над кнопкой)
+        // Констрейнты для TableView (начинается под баннером и заканчивается над кнопкой)
         estimatesTableView.snp.makeConstraints { make in
-            make.top.equalTo(estimatesSearchBar.snp.bottom)
+            make.top.equalTo(infoBannerView.snp.bottom).offset(16) // Смещение после баннера
             make.leading.trailing.equalToSuperview()
             make.bottom.equalTo(createEstimateButton.snp.top).offset(-16)
         }
@@ -177,7 +223,6 @@ class EstimatesViewController: UIViewController {
         
         estimatesSearchBar.delegate = self
         
-        // NOTE: Регистрация новой ячейки
         estimatesTableView.register(EstimateTableViewCell.self, forCellReuseIdentifier: EstimateTableViewCell.reuseIdentifier)
     }
     
@@ -186,13 +231,11 @@ class EstimatesViewController: UIViewController {
     private func groupEstimatesByMonth(_ estimates: [Estimate]) {
         groupedEstimates = Dictionary(grouping: estimates) { estimate -> String in
             // Группируем по месяцу и году создания
-            // NOTE: Предполагается, что DateFormatter.monthYear доступен
             return DateFormatter.monthYear.string(from: estimate.creationDate)
         }
         
         // Сортируем ключи (секции) по дате (самый новый месяц должен быть первым)
         sortedSections = groupedEstimates.keys.sorted { key1, key2 in
-            // NOTE: Предполагается, что DateFormatter.monthYear доступен
             guard let date1 = DateFormatter.monthYear.date(from: key1),
                   let date2 = DateFormatter.monthYear.date(from: key2) else {
                 return false
@@ -254,20 +297,45 @@ extension EstimatesViewController: UITableViewDelegate, UITableViewDataSource {
         return groupedEstimates[sectionTitle]?.count ?? 0
     }
     
+    // ⭐ ОБНОВЛЕНО: Добавлен расчет суммы и отображение в заголовке
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let headerView = UIView()
-        headerView.backgroundColor = UIColor.background // Ваш кастомный цвет
+        headerView.backgroundColor = UIColor.background
         
-        let titleLabel = UILabel()
-        titleLabel.text = sortedSections[section]
-        titleLabel.font = UIFont.systemFont(ofSize: 18, weight: .bold)
-        titleLabel.textColor = UIColor.primaryText // Ваш кастомный цвет
+        let sectionTitle = sortedSections[section]
         
-        headerView.addSubview(titleLabel)
-        titleLabel.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview().inset(16)
+        // Расчет общей суммы для секции
+        let totalAmount = groupedEstimates[sectionTitle]?.reduce(0.0) { $0 + $1.grandTotal } ?? 0.0
+        // Используем валюту первой сметы в секции для отображения символа
+        let currencySymbol = groupedEstimates[sectionTitle]?.first?.currencySymbol ?? "$"
+        
+        // 1. Лейбл с месяцем
+        let monthLabel = UILabel()
+        monthLabel.text = sectionTitle
+        monthLabel.font = UIFont.systemFont(ofSize: 18, weight: .bold)
+        monthLabel.textColor = UIColor.primaryText
+        
+        // 2. Лейбл с суммой
+        let totalLabel = UILabel()
+        let formattedTotal = String(format: "%.2f", totalAmount)
+        totalLabel.text = "\(currencySymbol)\(formattedTotal) Total Estimated" // Короткое пояснение
+        totalLabel.font = UIFont.systemFont(ofSize: 15, weight: .medium)
+        totalLabel.textColor = UIColor.secondaryText // Более приглушенный цвет
+        totalLabel.textAlignment = .right
+        
+        // Стек для размещения заголовка и суммы
+        let stackView = UIStackView(arrangedSubviews: [monthLabel, totalLabel])
+        stackView.axis = .horizontal
+        stackView.alignment = .bottom
+        stackView.spacing = 10
+        
+        headerView.addSubview(stackView)
+        stackView.snp.makeConstraints { make in
+            make.leading.equalToSuperview().offset(16)
+            make.trailing.equalToSuperview().offset(-16)
             make.bottom.equalToSuperview().inset(8)
         }
+        
         return headerView
     }
     
@@ -291,11 +359,10 @@ extension EstimatesViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let sectionTitle = sortedSections[indexPath.section]
         if let selectedEstimate = groupedEstimates[sectionTitle]?[indexPath.row] {
-            // NOTE: Замените на ваш EstimateDetailViewController
-            // let detailVC = EstimateDetailPDFViewController()
-            // detailVC.estimate = selectedEstimate
-            // self.navigationController?.pushViewController(detailVC, animated: true)
-            print("Selected Estimate: \(selectedEstimate.estimateTitle ?? "")")
+            let invoiceDetailPDFVC = InvoiceDetailPDFViewController()
+            invoiceDetailPDFVC.invoice = mapEstimateToInvoice(selectedEstimate)
+            invoiceDetailPDFVC.isEstimate = true
+            self.navigationController?.pushViewController(invoiceDetailPDFVC, animated: true)
         }
     }
     
@@ -313,7 +380,8 @@ extension EstimatesViewController: UITableViewDelegate, UITableViewDataSource {
             allEstimates.removeAll { $0.id == estimateToDelete.id }
             
             // 3. Перезапускаем фильтрацию/группировку
-            if let searchText = estimatesSearchBar.text, !searchText.isEmpty {
+            let searchText = estimatesSearchBar.text ?? ""
+            if !searchText.isEmpty {
                 filteredEstimates = allEstimates.filter({ (estimate) -> Bool in
                     let titleMatch = estimate.estimateTitle?.range(of: searchText, options: .caseInsensitive) != nil
                     let clientMatch = estimate.client?.clientName?.range(of: searchText, options: .caseInsensitive) != nil
@@ -324,6 +392,22 @@ extension EstimatesViewController: UITableViewDelegate, UITableViewDataSource {
             }
             // tableView.reloadData() вызовется через didSet
         }
+    }
+    
+    func mapEstimateToInvoice(_ estimate: Estimate) -> Invoice {
+        return Invoice(
+            id: estimate.id,
+            invoiceTitle: estimate.estimateTitle,
+            client: estimate.client,
+            items: estimate.items,
+            taxRate: estimate.taxRate,
+            discount: estimate.discount,
+            discountType: estimate.discountType,
+            creationDate: estimate.creationDate,
+            status: estimate.status,
+            currency: estimate.currency,
+            totalAmount: estimate.totalAmount
+        )
     }
 }
 

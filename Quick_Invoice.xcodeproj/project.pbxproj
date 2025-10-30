@@ -12,6 +12,7 @@
 		104AD7C22EB360870014E550 /* EstimatesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 104AD7C12EB360820014E550 /* EstimatesModel.swift */; };
 		104AD7C42EB360C80014E550 /* EstimateService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 104AD7C32EB360C50014E550 /* EstimateService.swift */; };
 		104AD7C72EB365950014E550 /* NewEstimateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 104AD7C62EB365940014E550 /* NewEstimateViewController.swift */; };
+		104AD7C92EB373E90014E550 /* EditEstimateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 104AD7C82EB373E10014E550 /* EditEstimateViewController.swift */; };
 		1051E60E2EAF912200D576BC /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 1051E60D2EAF912200D576BC /* RealmSwift */; };
 		1051E6112EAF91C100D576BC /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 1051E6102EAF91C100D576BC /* SnapKit */; };
 		1051E6142EAF9CC900D576BC /* NewClientViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1051E6132EAF9CC800D576BC /* NewClientViewController.swift */; };
@@ -64,6 +65,7 @@
 		104AD7C12EB360820014E550 /* EstimatesModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EstimatesModel.swift; sourceTree = "<group>"; };
 		104AD7C32EB360C50014E550 /* EstimateService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EstimateService.swift; sourceTree = "<group>"; };
 		104AD7C62EB365940014E550 /* NewEstimateViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewEstimateViewController.swift; sourceTree = "<group>"; };
+		104AD7C82EB373E10014E550 /* EditEstimateViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditEstimateViewController.swift; sourceTree = "<group>"; };
 		1051E6132EAF9CC800D576BC /* NewClientViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewClientViewController.swift; sourceTree = "<group>"; };
 		1051E6162EAFA36000D576BC /* NewInvoiceItemViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewInvoiceItemViewController.swift; sourceTree = "<group>"; };
 		1051E6192EB0F17900D576BC /* InvoiceDetailPDFViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvoiceDetailPDFViewController.swift; sourceTree = "<group>"; };
@@ -124,6 +126,7 @@
 		104AD7C52EB365910014E550 /* NewEstimateViewController */ = {
 			isa = PBXGroup;
 			children = (
+				104AD7C82EB373E10014E550 /* EditEstimateViewController.swift */,
 				104AD7C62EB365940014E550 /* NewEstimateViewController.swift */,
 			);
 			path = NewEstimateViewController;
@@ -387,6 +390,7 @@
 				109204622EAF7D5900F0C7FE /* InvoiceItemCell.swift in Sources */,
 				95A6BC0E24ECEA2B00BC3088 /* EditInformationViewController.swift in Sources */,
 				9557D59624EE1B5400E2DD8A /* PDFPreviewViewController.swift in Sources */,
+				104AD7C92EB373E90014E550 /* EditEstimateViewController.swift in Sources */,
 				95355585253E0E6D00A3AECB /* SharePopoverViewController.swift in Sources */,
 				104AD7C02EB35FFE0014E550 /* EstimateTableViewCell.swift in Sources */,
 				9520F87F24D27CBB006CDC05 /* SceneDelegate.swift in Sources */,

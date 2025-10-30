@@ -1,7 +1,7 @@
 import UIKit
 import SnapKit
 
-class EditInvoiceViewController: NewInvoiceViewController {
+class EditEstimateViewController: NewEstimateViewController {
     
     init(invoice: Invoice) {
         super.init(nibName: nil, bundle: nil)
@@ -16,20 +16,15 @@ class EditInvoiceViewController: NewInvoiceViewController {
         super.viewDidLoad()
         
         title = "Edit Invoice"
-        saveButton.setTitle("Update Invoice", for: .normal)
+        saveButton.setTitle("Update Estimate", for: .normal)
     }
     
     @objc override func saveInvoiceTapped() {
         currentInvoice.invoiceTitle = titleTextField.text
         currentInvoice.totalAmount = totalAmountLabel.text ?? ""
         
-        print("--- Updating Invoice \(currentInvoice.id) ---")
-        print("Title: \(currentInvoice.invoiceTitle ?? "")")
-        print("Total: \(totalAmountLabel.text ?? "")")
-        print("----------------------")
-        
         do {
-            try invoiceService?.updateInvoice(currentInvoice)
+            try estimateService?.updateEstimate(mapInvoiceToEstimate(currentInvoice))
             print("Invoice updated successfully!")
             popEditInvoiceViewControllerHandler?(currentInvoice)
         } catch {

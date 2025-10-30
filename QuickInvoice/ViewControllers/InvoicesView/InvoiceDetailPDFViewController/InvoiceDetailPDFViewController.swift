@@ -7,6 +7,7 @@ class InvoiceDetailPDFViewController: UIViewController {
 
     // MARK: - Properties
     
+    var isEstimate: Bool = false
     var invoice: Invoice?
     private let pdfView = PDFView()
     
@@ -228,14 +229,16 @@ class InvoiceDetailPDFViewController: UIViewController {
         var rightY = currentY + 20 // Start Y for right column after "FROM:" header
         
         // Рисуем даты справа
-        invoiceDateText.draw(at: CGPoint(x: dateX, y: rightY), withAttributes: dateLabelAttributes)
-        rightY += 20
-        dueDateText.draw(at: CGPoint(x: dateX, y: rightY), withAttributes: dateLabelAttributes)
-        rightY += 20
+        if !isEstimate {
+            invoiceDateText.draw(at: CGPoint(x: dateX, y: rightY), withAttributes: dateLabelAttributes)
+            rightY += 20
+            dueDateText.draw(at: CGPoint(x: dateX, y: rightY), withAttributes: dateLabelAttributes)
+            rightY += 20
+        }
         statusText.draw(at: CGPoint(x: dateX, y: rightY), withAttributes: dateLabelAttributes)
         rightY += 20
         currencyText.draw(at: CGPoint(x: dateX, y: rightY), withAttributes: dateLabelAttributes)
-
+        
         // Возвращаем максимальный Y
         return max(leftColumnMaxY, rightY + 10)
     }
@@ -547,7 +550,9 @@ class InvoiceDetailPDFViewController: UIViewController {
         ]
         
         let footerRect = CGRect(x: margin, y: y, width: pageRect.width - 2 * margin, height: 40)
-        footerText.draw(in: footerRect, withAttributes: attributes)
+        if !isEstimate {
+            footerText.draw(in: footerRect, withAttributes: attributes)
+        }
         
         return y + 40
     }
@@ -557,8 +562,7 @@ class InvoiceDetailPDFViewController: UIViewController {
     @objc private func editTapped() {
         guard let invoice = invoice else { return }
 
-        let editInvoiceViewController = EditInvoiceViewController(invoice: invoice)
-        
+        let editInvoiceViewController = isEstimate ? EditEstimateViewController(invoice: invoice) : EditInvoiceViewController(invoice: invoice)
         editInvoiceViewController.popEditInvoiceViewControllerHandler = { [weak self] updatedInvoice in
             self?.invoice = updatedInvoice
             self?.generateAndLoadPDF()

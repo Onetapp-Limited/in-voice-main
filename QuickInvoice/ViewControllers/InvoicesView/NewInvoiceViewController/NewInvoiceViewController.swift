@@ -3,6 +3,8 @@ import SnapKit
 
 class NewInvoiceViewController: UIViewController {
     
+    var popEditInvoiceViewControllerHandler: ((Invoice) -> Void)? // не удалять юзается у наследников класса
+
     // MARK: - Properties
     var currentInvoice: Invoice = Invoice()
     var invoiceService: InvoiceService? {
