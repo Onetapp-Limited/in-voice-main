@@ -28,10 +28,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         )
         estimatesNavController.title = "Estimates"
         
-        let dummyVC2 = self.createDummyViewController(
+        let сlientsViewController = ClientsViewController()
+        let сlientsNavController = UINavigationController(rootViewController: сlientsViewController)
+        сlientsNavController.tabBarItem = UITabBarItem(
             title: "Clients",
-            systemImageName: "person.3"
+            image: UIImage(systemName: "person.3"),
+            tag: 0
         )
+        сlientsNavController.title = "Clients"
+        
         let dummyVC3 = self.createDummyViewController(
             title: "Items",
             systemImageName: "tag"
@@ -45,7 +50,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         tabBarController.viewControllers = [
             invoicesNavVC,
             estimatesNavController,
-            dummyVC2,
+            сlientsNavController,
             dummyVC3,
             dummyVC5
         ]

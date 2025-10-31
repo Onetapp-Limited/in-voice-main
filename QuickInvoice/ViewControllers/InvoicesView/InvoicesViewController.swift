@@ -1,7 +1,6 @@
 import UIKit
 import SnapKit
 
-
 class InvoicesViewController: UIViewController {
     
     // MARK: - Data Grouping Properties

@@ -87,7 +87,7 @@ enum ClientType: String, Codable, CaseIterable {
     var localized: String { return self.rawValue }
 }
 
-struct Client: Codable {
+struct Client: Codable, Hashable {
     var id: UUID?
     var clientName: String?
     var email: String?
