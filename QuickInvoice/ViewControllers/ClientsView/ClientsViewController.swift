@@ -382,6 +382,39 @@ extension ClientsViewController: UITableViewDelegate, UITableViewDataSource {
 
         present(navController, animated: true)
     }
+    
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let deleteAction = UIContextualAction(style: .destructive, title: "Delete") { [weak self] (action, view, completionHandler) in
+            self?.handleDeleteClient(at: indexPath)
+            completionHandler(true)
+        }
+        
+        deleteAction.backgroundColor = .systemRed
+        deleteAction.image = UIImage(systemName: "trash.fill")
+        
+        let configuration = UISwipeActionsConfiguration(actions: [deleteAction])
+        
+        configuration.performsFirstActionWithFullSwipe = true
+        
+        return configuration
+    }
+    
+    private func handleDeleteClient(at indexPath: IndexPath) {
+        let clientToDelete = filteredClients[indexPath.row]
+        
+        guard let clientID = clientToDelete.id else {
+            print("❌ Error: Attempted to delete client without an ID.")
+            return
+        }
+        
+        do {
+            try clientsService?.deleteClient(id: clientID)
+            fetchInvoices()
+            print("✅ Client successfully deleted: \(clientID.uuidString)")
+        } catch {
+            print("🛑 Error deleting client: \(error)")
+        }
+    }
 }
 
 extension ClientsViewController: NewClientViewControllerDelegate {
@@ -389,10 +422,10 @@ extension ClientsViewController: NewClientViewControllerDelegate {
         print("Client saved: \(client)")
         do {
             if let clientID = client.id, clientsService?.getClient(id: clientID) != nil {
-                print("66666666 updateClient")
+                print("updateClient")
                 try clientsService?.updateClient(client)
             } else {
-                print("66666666 saveClient")
+                print("saveClient")
                 try clientsService?.save(client: client)
             }
             fetchInvoices()
