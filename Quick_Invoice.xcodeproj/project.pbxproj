@@ -16,6 +16,7 @@
 		104AD7CC2EB4E5210014E550 /* ClientsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 104AD7CB2EB4E5180014E550 /* ClientsViewController.swift */; };
 		104AD7CE2EB4E7DA0014E550 /* ClientTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 104AD7CD2EB4E7D10014E550 /* ClientTableViewCell.swift */; };
 		104AD9482EB8F9410014E550 /* ClientsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 104AD9472EB8F9400014E550 /* ClientsService.swift */; };
+		104AD94B2EB9582A0014E550 /* ExistingClientsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 104AD94A2EB958290014E550 /* ExistingClientsViewController.swift */; };
 		1051E60E2EAF912200D576BC /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 1051E60D2EAF912200D576BC /* RealmSwift */; };
 		1051E6112EAF91C100D576BC /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 1051E6102EAF91C100D576BC /* SnapKit */; };
 		1051E6142EAF9CC900D576BC /* NewClientViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1051E6132EAF9CC800D576BC /* NewClientViewController.swift */; };
@@ -72,6 +73,7 @@
 		104AD7CB2EB4E5180014E550 /* ClientsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientsViewController.swift; sourceTree = "<group>"; };
 		104AD7CD2EB4E7D10014E550 /* ClientTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientTableViewCell.swift; sourceTree = "<group>"; };
 		104AD9472EB8F9400014E550 /* ClientsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientsService.swift; sourceTree = "<group>"; };
+		104AD94A2EB958290014E550 /* ExistingClientsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExistingClientsViewController.swift; sourceTree = "<group>"; };
 		1051E6132EAF9CC800D576BC /* NewClientViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewClientViewController.swift; sourceTree = "<group>"; };
 		1051E6162EAFA36000D576BC /* NewInvoiceItemViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewInvoiceItemViewController.swift; sourceTree = "<group>"; };
 		1051E6192EB0F17900D576BC /* InvoiceDetailPDFViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvoiceDetailPDFViewController.swift; sourceTree = "<group>"; };
@@ -141,10 +143,19 @@
 		104AD7CA2EB4E50E0014E550 /* ClientsView */ = {
 			isa = PBXGroup;
 			children = (
+				104AD9492EB958250014E550 /* ExistingClientsViewController */,
 				104AD7CD2EB4E7D10014E550 /* ClientTableViewCell.swift */,
 				104AD7CB2EB4E5180014E550 /* ClientsViewController.swift */,
 			);
 			path = ClientsView;
+			sourceTree = "<group>";
+		};
+		104AD9492EB958250014E550 /* ExistingClientsViewController */ = {
+			isa = PBXGroup;
+			children = (
+				104AD94A2EB958290014E550 /* ExistingClientsViewController.swift */,
+			);
+			path = ExistingClientsViewController;
 			sourceTree = "<group>";
 		};
 		1051E6122EAF9CC400D576BC /* NewClientViewController */ = {
@@ -397,6 +408,7 @@
 				9520F87D24D27CBB006CDC05 /* AppDelegate.swift in Sources */,
 				1092045B2EAF7A2E00F0C7FE /* GradientButton+.swift in Sources */,
 				109204622EAF7D5900F0C7FE /* InvoiceItemCell.swift in Sources */,
+				104AD94B2EB9582A0014E550 /* ExistingClientsViewController.swift in Sources */,
 				95A6BC0E24ECEA2B00BC3088 /* EditInformationViewController.swift in Sources */,
 				9557D59624EE1B5400E2DD8A /* PDFPreviewViewController.swift in Sources */,
 				104AD7C92EB373E90014E550 /* EditEstimateViewController.swift in Sources */,

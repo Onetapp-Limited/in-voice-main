@@ -42,8 +42,9 @@ class ClientsViewController: UIViewController {
     var allInvoices: [Invoice] = [] {
         didSet {
 //            let uniqueClients = Set(allInvoices.compactMap { $0.client }.filter { $0.id != nil })
-            let clientsFromDB = clientsService?.getAllClients() ?? []
 //            allClients = Array(uniqueClients).sorted(by: { $0.clientName ?? "" < $1.clientName ?? "" }) + clientsFromDB
+            
+            let clientsFromDB = clientsService?.getAllClients() ?? []
             allClients = clientsFromDB
             filteredClients = allClients
         }
@@ -148,7 +149,6 @@ class ClientsViewController: UIViewController {
         super.viewDidLoad()
         
         view.backgroundColor = UIColor.background
-        fetchInvoices()
         setupNavigationBar()
         setupUI()
         setup()
@@ -157,6 +157,7 @@ class ClientsViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         // Обновляем состояние таблицы (если данные уже были установлены)
+        fetchInvoices()
         updateEmptyState()
     }
     

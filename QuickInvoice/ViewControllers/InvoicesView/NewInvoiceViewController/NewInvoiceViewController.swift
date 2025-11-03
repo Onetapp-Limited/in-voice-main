@@ -779,11 +779,48 @@ class NewInvoiceViewController: UIViewController {
     }
     
     @objc private func selectClientTapped() {
-        print("Select Client Tapped")
+        print("Select Client Tapped - Showing Action Sheet")
+
+        let actionSheet = UIAlertController(title: "Add Client", message: nil, preferredStyle: .actionSheet)
+
+        // 2. Действие для создания нового клиента
+        let createNewAction = UIAlertAction(title: "Create New Client", style: .default) { [weak self] _ in
+            self?.presentNewClientVC()
+        }
+        actionSheet.addAction(createNewAction)
+
+        let selectExistingAction = UIAlertAction(title: "Select Existing", style: .default) { [weak self] _ in
+            self?.presentExistingClientsVC()
+        }
+        actionSheet.addAction(selectExistingAction)
+
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        actionSheet.addAction(cancelAction)
+        
+        // Для iPad необходимо настроить popoverPresentationController
+        if let popoverController = actionSheet.popoverPresentationController {
+            popoverController.sourceView = self.view
+            popoverController.sourceRect = CGRect(x: self.view.bounds.midX, y: self.view.bounds.midY, width: 0, height: 0)
+            popoverController.permittedArrowDirections = [] // Не показывать стрелку
+        }
+
+        // 6. Отображаем Action Sheet
+        present(actionSheet, animated: true, completion: nil)
+    }
+
+    private func presentNewClientVC() {
         let clientToEdit = currentInvoice.client ?? Client()
         let newClientVC = NewClientViewController(client: clientToEdit)
         newClientVC.delegate = self
         let navController = UINavigationController(rootViewController: newClientVC)
+
+        present(navController, animated: true)
+    }
+
+    private func presentExistingClientsVC() {
+        let existingClientsVC = ExistingClientsViewController()
+        existingClientsVC.delegate = self
+        let navController = UINavigationController(rootViewController: existingClientsVC)
 
         present(navController, animated: true)
     }
@@ -996,5 +1033,14 @@ extension NewInvoiceViewController: NewInvoiceItemViewControllerDelegate {
         updateTableViewHeight()
         updateInvoiceSummary()
         itemsTableView.reloadData()
+    }
+}
+
+extension NewInvoiceViewController: ExistingClientsViewControllerDelegate {
+    func didSelectClient(_ client: Client) {
+        print("Client chosen: \(client)")
+        currentInvoice.client = client
+        clientNameLabel.text = client.clientName
+        clientNameLabel.textColor = .primaryText
     }
 }
