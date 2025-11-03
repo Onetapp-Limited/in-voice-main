@@ -15,6 +15,7 @@
 		104AD7C92EB373E90014E550 /* EditEstimateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 104AD7C82EB373E10014E550 /* EditEstimateViewController.swift */; };
 		104AD7CC2EB4E5210014E550 /* ClientsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 104AD7CB2EB4E5180014E550 /* ClientsViewController.swift */; };
 		104AD7CE2EB4E7DA0014E550 /* ClientTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 104AD7CD2EB4E7D10014E550 /* ClientTableViewCell.swift */; };
+		104AD9482EB8F9410014E550 /* ClientsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 104AD9472EB8F9400014E550 /* ClientsService.swift */; };
 		1051E60E2EAF912200D576BC /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 1051E60D2EAF912200D576BC /* RealmSwift */; };
 		1051E6112EAF91C100D576BC /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 1051E6102EAF91C100D576BC /* SnapKit */; };
 		1051E6142EAF9CC900D576BC /* NewClientViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1051E6132EAF9CC800D576BC /* NewClientViewController.swift */; };
@@ -70,6 +71,7 @@
 		104AD7C82EB373E10014E550 /* EditEstimateViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditEstimateViewController.swift; sourceTree = "<group>"; };
 		104AD7CB2EB4E5180014E550 /* ClientsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientsViewController.swift; sourceTree = "<group>"; };
 		104AD7CD2EB4E7D10014E550 /* ClientTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientTableViewCell.swift; sourceTree = "<group>"; };
+		104AD9472EB8F9400014E550 /* ClientsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientsService.swift; sourceTree = "<group>"; };
 		1051E6132EAF9CC800D576BC /* NewClientViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewClientViewController.swift; sourceTree = "<group>"; };
 		1051E6162EAFA36000D576BC /* NewInvoiceItemViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewInvoiceItemViewController.swift; sourceTree = "<group>"; };
 		1051E6192EB0F17900D576BC /* InvoiceDetailPDFViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvoiceDetailPDFViewController.swift; sourceTree = "<group>"; };
@@ -231,6 +233,7 @@
 		1092046A2EAF89B900F0C7FE /* Data */ = {
 			isa = PBXGroup;
 			children = (
+				104AD9472EB8F9400014E550 /* ClientsService.swift */,
 				104AD7C32EB360C50014E550 /* EstimateService.swift */,
 				1092046B2EAF89C100F0C7FE /* InvoiceService.swift */,
 			);
@@ -410,6 +413,7 @@
 				109202F92EAF763B00F0C7FE /* InvoiceTableViewCell.swift in Sources */,
 				95A6BC1424ECECBD00BC3088 /* InvoicesViewController.swift in Sources */,
 				109202F62EAF6E9900F0C7FE /* HomeCollectionViewCell.swift in Sources */,
+				104AD9482EB8F9410014E550 /* ClientsService.swift in Sources */,
 				104AD7CC2EB4E5210014E550 /* ClientsViewController.swift in Sources */,
 				1051E61D2EB0FC7A00D576BC /* EditInvoiceViewController.swift in Sources */,
 				1051E61A2EB0F17A00D576BC /* InvoiceDetailPDFViewController.swift in Sources */,

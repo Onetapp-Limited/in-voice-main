@@ -30,17 +30,21 @@ class ClientsViewController: UIViewController {
         }
     }
     
+    var clientsService: ClientsService? {
+        do {
+            return try ClientsService()
+        } catch {
+            return nil
+        }
+    }
+    
     // Входные данные (Все счета), передаются снаружи
     var allInvoices: [Invoice] = [] {
         didSet {
-            // Извлекаем уникальных клиентов из счетов
-            let uniqueClients = Set(allInvoices.compactMap { $0.client }.filter { $0.id != nil })
-            
-            // Если вам нужно сохранить порядок создания, можно использовать дополнительную логику.
-            // Для простоты, сначала отсортируем по имени, если порядок не важен.
-            allClients = Array(uniqueClients).sorted(by: { $0.clientName ?? "" < $1.clientName ?? "" })
-            
-            // Инициализируем отфильтрованный список
+//            let uniqueClients = Set(allInvoices.compactMap { $0.client }.filter { $0.id != nil })
+            let clientsFromDB = clientsService?.getAllClients() ?? []
+//            allClients = Array(uniqueClients).sorted(by: { $0.clientName ?? "" < $1.clientName ?? "" }) + clientsFromDB
+            allClients = clientsFromDB
             filteredClients = allClients
         }
     }
@@ -337,8 +341,12 @@ class ClientsViewController: UIViewController {
     // MARK: - Actions
     
     @objc func createClientButtonTapped() {
-        // TODO: Переход на экран создания клиента
-        print("Add New Client button tapped")
+        let clientToEdit = Client()
+        let newClientVC = NewClientViewController(client: clientToEdit)
+        newClientVC.delegate = self
+        let navController = UINavigationController(rootViewController: newClientVC)
+
+        present(navController, animated: true)
     }
     
     @objc func proBadgeTapped() {
@@ -368,7 +376,28 @@ extension ClientsViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let selectedClient = filteredClients[indexPath.row]
-        // TODO: Переход на экран с деталями клиента
-        print("Selected Client: \(selectedClient.clientName ?? "")")
+        let newClientVC = NewClientViewController(client: selectedClient)
+        newClientVC.delegate = self
+        let navController = UINavigationController(rootViewController: newClientVC)
+
+        present(navController, animated: true)
+    }
+}
+
+extension ClientsViewController: NewClientViewControllerDelegate {
+    func didSaveClient(_ client: Client) {
+        print("Client saved: \(client)")
+        do {
+            if let clientID = client.id, clientsService?.getClient(id: clientID) != nil {
+                print("66666666 updateClient")
+                try clientsService?.updateClient(client)
+            } else {
+                print("66666666 saveClient")
+                try clientsService?.save(client: client)
+            }
+            fetchInvoices()
+        } catch {
+            print("Error saving client: \(error)")
+        }
     }
 }
