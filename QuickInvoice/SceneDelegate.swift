@@ -42,17 +42,21 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             systemImageName: "tag"
         )
         
-        let dummyVC5 = self.createDummyViewController(
+        let settingsViewController = SettingsViewController()
+        let settingsNavViewController = UINavigationController(rootViewController: settingsViewController)
+        settingsNavViewController.tabBarItem = UITabBarItem(
             title: "Settings",
-            systemImageName: "gear"
+            image: UIImage(systemName: "gear"),
+            tag: 0
         )
+        settingsNavViewController.title = "Settings"
         
         tabBarController.viewControllers = [
             invoicesNavVC,
             estimatesNavController,
             сlientsNavController,
             dummyVC3,
-            dummyVC5
+            settingsNavViewController
         ]
         
         // 7. Устанавливаем TabBarController как корневой контроллер
@@ -64,7 +68,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window.makeKeyAndVisible()
     }
     
-    // Вспомогательная функция для создания заглушек
+    // todo test111 - delete it
     private func createDummyViewController(title: String, systemImageName: String) -> UIViewController {
         let vc = UIViewController()
         

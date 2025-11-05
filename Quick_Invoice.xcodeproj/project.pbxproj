@@ -23,7 +23,9 @@
 		1051E6172EAFA36100D576BC /* NewInvoiceItemViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1051E6162EAFA36000D576BC /* NewInvoiceItemViewController.swift */; };
 		1051E61A2EB0F17A00D576BC /* InvoiceDetailPDFViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1051E6192EB0F17900D576BC /* InvoiceDetailPDFViewController.swift */; };
 		1051E61D2EB0FC7A00D576BC /* EditInvoiceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1051E61C2EB0FC7900D576BC /* EditInvoiceViewController.swift */; };
-		109202F62EAF6E9900F0C7FE /* HomeCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 109202F52EAF6E9800F0C7FE /* HomeCollectionViewCell.swift */; };
+		107315A72EBB547F008E7C35 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 107315A62EBB547B008E7C35 /* SettingsViewController.swift */; };
+		107315A82EBB5FDD008E7C35 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 1051E60D2EAF912200D576BC /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		107315AA2EBB6157008E7C35 /* SettingsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 107315A92EBB6156008E7C35 /* SettingsCell.swift */; };
 		109202F92EAF763B00F0C7FE /* InvoiceTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 109202F82EAF763A00F0C7FE /* InvoiceTableViewCell.swift */; };
 		109204592EAF784200F0C7FE /* Colors+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 109204582EAF783D00F0C7FE /* Colors+.swift */; };
 		1092045B2EAF7A2E00F0C7FE /* GradientButton+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1092045A2EAF7A2D00F0C7FE /* GradientButton+.swift */; };
@@ -39,12 +41,7 @@
 		9520F88624D27CBC006CDC05 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9520F88524D27CBC006CDC05 /* Assets.xcassets */; };
 		9520F88924D27CBC006CDC05 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9520F88724D27CBC006CDC05 /* LaunchScreen.storyboard */; };
 		95355583253DFFCD00A3AECB /* CSVCreator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95355582253DFFCD00A3AECB /* CSVCreator.swift */; };
-		95355585253E0E6D00A3AECB /* SharePopoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95355584253E0E6D00A3AECB /* SharePopoverViewController.swift */; };
 		95355587253E1E5300A3AECB /* Extension+ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95355586253E1E5300A3AECB /* Extension+ViewController.swift */; };
-		9552529D253F635D00DDF5D7 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9552529C253F635D00DDF5D7 /* SettingsViewController.swift */; };
-		9557D59624EE1B5400E2DD8A /* PDFPreviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9557D59524EE1B5400E2DD8A /* PDFPreviewViewController.swift */; };
-		95A6BC0924ECD48800BC3088 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95A6BC0824ECD48800BC3088 /* HomeViewController.swift */; };
-		95A6BC0E24ECEA2B00BC3088 /* EditInformationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95A6BC0D24ECEA2B00BC3088 /* EditInformationViewController.swift */; };
 		95A6BC1424ECECBD00BC3088 /* InvoicesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95A6BC1324ECECBD00BC3088 /* InvoicesViewController.swift */; };
 		95A6BC1724ECEFDE00BC3088 /* PDFCreator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95A6BC1624ECEFDE00BC3088 /* PDFCreator.swift */; };
 		95FDD331253E29720001D2FA /* Extension+Float.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95FDD330253E29720001D2FA /* Extension+Float.swift */; };
@@ -57,6 +54,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				107315A82EBB5FDD008E7C35 /* RealmSwift in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -78,7 +76,8 @@
 		1051E6162EAFA36000D576BC /* NewInvoiceItemViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewInvoiceItemViewController.swift; sourceTree = "<group>"; };
 		1051E6192EB0F17900D576BC /* InvoiceDetailPDFViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvoiceDetailPDFViewController.swift; sourceTree = "<group>"; };
 		1051E61C2EB0FC7900D576BC /* EditInvoiceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditInvoiceViewController.swift; sourceTree = "<group>"; };
-		109202F52EAF6E9800F0C7FE /* HomeCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeCollectionViewCell.swift; sourceTree = "<group>"; };
+		107315A62EBB547B008E7C35 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
+		107315A92EBB6156008E7C35 /* SettingsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsCell.swift; sourceTree = "<group>"; };
 		109202F82EAF763A00F0C7FE /* InvoiceTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvoiceTableViewCell.swift; sourceTree = "<group>"; };
 		109204582EAF783D00F0C7FE /* Colors+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Colors+.swift"; sourceTree = "<group>"; };
 		1092045A2EAF7A2D00F0C7FE /* GradientButton+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GradientButton+.swift"; sourceTree = "<group>"; };
@@ -96,12 +95,7 @@
 		9520F88824D27CBC006CDC05 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		9520F88A24D27CBC006CDC05 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		95355582253DFFCD00A3AECB /* CSVCreator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSVCreator.swift; sourceTree = "<group>"; };
-		95355584253E0E6D00A3AECB /* SharePopoverViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharePopoverViewController.swift; sourceTree = "<group>"; };
 		95355586253E1E5300A3AECB /* Extension+ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+ViewController.swift"; sourceTree = "<group>"; };
-		9552529C253F635D00DDF5D7 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
-		9557D59524EE1B5400E2DD8A /* PDFPreviewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFPreviewViewController.swift; sourceTree = "<group>"; };
-		95A6BC0824ECD48800BC3088 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
-		95A6BC0D24ECEA2B00BC3088 /* EditInformationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditInformationViewController.swift; sourceTree = "<group>"; };
 		95A6BC1324ECECBD00BC3088 /* InvoicesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvoicesViewController.swift; sourceTree = "<group>"; };
 		95A6BC1624ECEFDE00BC3088 /* PDFCreator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFCreator.swift; sourceTree = "<group>"; };
 		95FDD330253E29720001D2FA /* Extension+Float.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+Float.swift"; sourceTree = "<group>"; };
@@ -190,21 +184,13 @@
 			path = EditInvoiceViewController;
 			sourceTree = "<group>";
 		};
-		109202F32EAF6E7700F0C7FE /* HomeView */ = {
+		107315A52EBB5471008E7C35 /* SettingsView */ = {
 			isa = PBXGroup;
 			children = (
-				109202F42EAF6E9200F0C7FE /* Subviews */,
-				95A6BC0824ECD48800BC3088 /* HomeViewController.swift */,
-				109202F52EAF6E9800F0C7FE /* HomeCollectionViewCell.swift */,
+				107315A92EBB6156008E7C35 /* SettingsCell.swift */,
+				107315A62EBB547B008E7C35 /* SettingsViewController.swift */,
 			);
-			path = HomeView;
-			sourceTree = "<group>";
-		};
-		109202F42EAF6E9200F0C7FE /* Subviews */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Subviews;
+			path = SettingsView;
 			sourceTree = "<group>";
 		};
 		109202F72EAF762A00F0C7FE /* InvoicesView */ = {
@@ -285,13 +271,10 @@
 		95A6BC0A24ECD82600BC3088 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
+				107315A52EBB5471008E7C35 /* SettingsView */,
 				104AD7CA2EB4E50E0014E550 /* ClientsView */,
 				104AD7BC2EB35D850014E550 /* EstimatesView */,
 				109202F72EAF762A00F0C7FE /* InvoicesView */,
-				109202F32EAF6E7700F0C7FE /* HomeView */,
-				9552529C253F635D00DDF5D7 /* SettingsViewController.swift */,
-				95A6BC0D24ECEA2B00BC3088 /* EditInformationViewController.swift */,
-				95B1571924FF1C550018EE56 /* InvoiceVCs */,
 				95FDD332253E297E0001D2FA /* Extensions */,
 			);
 			path = ViewControllers;
@@ -304,15 +287,6 @@
 				95A6BC1624ECEFDE00BC3088 /* PDFCreator.swift */,
 			);
 			path = Docs;
-			sourceTree = "<group>";
-		};
-		95B1571924FF1C550018EE56 /* InvoiceVCs */ = {
-			isa = PBXGroup;
-			children = (
-				9557D59524EE1B5400E2DD8A /* PDFPreviewViewController.swift */,
-				95355584253E0E6D00A3AECB /* SharePopoverViewController.swift */,
-			);
-			path = InvoiceVCs;
 			sourceTree = "<group>";
 		};
 		95FDD332253E297E0001D2FA /* Extensions */ = {
@@ -407,24 +381,20 @@
 				1051E6172EAFA36100D576BC /* NewInvoiceItemViewController.swift in Sources */,
 				9520F87D24D27CBB006CDC05 /* AppDelegate.swift in Sources */,
 				1092045B2EAF7A2E00F0C7FE /* GradientButton+.swift in Sources */,
+				107315A72EBB547F008E7C35 /* SettingsViewController.swift in Sources */,
 				109204622EAF7D5900F0C7FE /* InvoiceItemCell.swift in Sources */,
 				104AD94B2EB9582A0014E550 /* ExistingClientsViewController.swift in Sources */,
-				95A6BC0E24ECEA2B00BC3088 /* EditInformationViewController.swift in Sources */,
-				9557D59624EE1B5400E2DD8A /* PDFPreviewViewController.swift in Sources */,
 				104AD7C92EB373E90014E550 /* EditEstimateViewController.swift in Sources */,
-				95355585253E0E6D00A3AECB /* SharePopoverViewController.swift in Sources */,
 				104AD7C02EB35FFE0014E550 /* EstimateTableViewCell.swift in Sources */,
 				9520F87F24D27CBB006CDC05 /* SceneDelegate.swift in Sources */,
 				95FDD331253E29720001D2FA /* Extension+Float.swift in Sources */,
 				95355587253E1E5300A3AECB /* Extension+ViewController.swift in Sources */,
-				95A6BC0924ECD48800BC3088 /* HomeViewController.swift in Sources */,
 				95355583253DFFCD00A3AECB /* CSVCreator.swift in Sources */,
 				104AD7CE2EB4E7DA0014E550 /* ClientTableViewCell.swift in Sources */,
 				104AD7C22EB360870014E550 /* EstimatesModel.swift in Sources */,
 				1092045E2EAF7B9F00F0C7FE /* NewInvoiceViewController.swift in Sources */,
 				109202F92EAF763B00F0C7FE /* InvoiceTableViewCell.swift in Sources */,
 				95A6BC1424ECECBD00BC3088 /* InvoicesViewController.swift in Sources */,
-				109202F62EAF6E9900F0C7FE /* HomeCollectionViewCell.swift in Sources */,
 				104AD9482EB8F9410014E550 /* ClientsService.swift in Sources */,
 				104AD7CC2EB4E5210014E550 /* ClientsViewController.swift in Sources */,
 				1051E61D2EB0FC7A00D576BC /* EditInvoiceViewController.swift in Sources */,
@@ -436,9 +406,9 @@
 				95A6BC1724ECEFDE00BC3088 /* PDFCreator.swift in Sources */,
 				1092046C2EAF89D500F0C7FE /* InvoiceService.swift in Sources */,
 				104AD7BE2EB35D990014E550 /* EstimatesViewController.swift in Sources */,
-				9552529D253F635D00DDF5D7 /* SettingsViewController.swift in Sources */,
 				104AD7C42EB360C80014E550 /* EstimateService.swift in Sources */,
 				104AD7C72EB365950014E550 /* NewEstimateViewController.swift in Sources */,
+				107315AA2EBB6157008E7C35 /* SettingsCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -579,7 +549,7 @@
 				BUILD_LIBRARY_FOR_DISTRIBUTION = NO;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = J69S7C24HU;
 				INFOPLIST_FILE = QuickInvoice/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "InvoiceFly Pro";
 				IPHONEOS_DEPLOYMENT_TARGET = 15;
@@ -588,7 +558,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.QuickInvoice.app.Main;
+				PRODUCT_BUNDLE_IDENTIFIER = com.QuickInvoice.app.Main23;
 				PRODUCT_NAME = "Quick Invoice";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -606,7 +576,7 @@
 				BUILD_LIBRARY_FOR_DISTRIBUTION = NO;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = J69S7C24HU;
 				INFOPLIST_FILE = QuickInvoice/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "InvoiceFly Pro";
 				IPHONEOS_DEPLOYMENT_TARGET = 15;
@@ -615,7 +585,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.QuickInvoice.app.Main;
+				PRODUCT_BUNDLE_IDENTIFIER = com.QuickInvoice.app.Main23;
 				PRODUCT_NAME = "Quick Invoice";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
