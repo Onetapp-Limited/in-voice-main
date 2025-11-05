@@ -37,10 +37,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         )
         сlientsNavController.title = "Clients"
         
-        let dummyVC3 = self.createDummyViewController(
-            title: "Items",
-            systemImageName: "tag"
+        let reportsViewController = ReportsViewController()
+        let reportsNavViewController = UINavigationController(rootViewController: reportsViewController)
+        reportsNavViewController.tabBarItem = UITabBarItem(
+            title: "Reports",
+            image: UIImage(systemName: "chart.bar"),
+            tag: 0
         )
+        reportsNavViewController.title = "Reports"
         
         let settingsViewController = SettingsViewController()
         let settingsNavViewController = UINavigationController(rootViewController: settingsViewController)
@@ -55,7 +59,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             invoicesNavVC,
             estimatesNavController,
             сlientsNavController,
-            dummyVC3,
+            reportsNavViewController,
             settingsNavViewController
         ]
         
@@ -66,28 +70,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         self.window = window
         self.window?.overrideUserInterfaceStyle = .light
         window.makeKeyAndVisible()
-    }
-    
-    // todo test111 - delete it
-    private func createDummyViewController(title: String, systemImageName: String) -> UIViewController {
-        let vc = UIViewController()
-        
-        // Создаем Navigation Controller для каждой заглушки
-        let navController = UINavigationController(rootViewController: vc)
-        
-        // Настраиваем Tab Bar Item
-        navController.tabBarItem = UITabBarItem(
-            title: title,
-            image: UIImage(systemName: systemImageName),
-            tag: 0
-        )
-        // Настраиваем заголовок
-        vc.title = title
-        
-        // Для наглядности
-        vc.view.backgroundColor = .systemBackground
-        
-        return navController
     }
 }
 

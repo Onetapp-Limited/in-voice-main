@@ -26,6 +26,10 @@
 		107315A72EBB547F008E7C35 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 107315A62EBB547B008E7C35 /* SettingsViewController.swift */; };
 		107315A82EBB5FDD008E7C35 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 1051E60D2EAF912200D576BC /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		107315AA2EBB6157008E7C35 /* SettingsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 107315A92EBB6156008E7C35 /* SettingsCell.swift */; };
+		107315AD2EBB6237008E7C35 /* ReportsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 107315AC2EBB6232008E7C35 /* ReportsViewController.swift */; };
+		107315AF2EBB6462008E7C35 /* InvoicesReportViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 107315AE2EBB6461008E7C35 /* InvoicesReportViewController.swift */; };
+		107315B12EBB6472008E7C35 /* ExpensesReportViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 107315B02EBB6471008E7C35 /* ExpensesReportViewController.swift */; };
+		107315B32EBB6480008E7C35 /* BalanceReportViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 107315B22EBB647C008E7C35 /* BalanceReportViewController.swift */; };
 		109202F92EAF763B00F0C7FE /* InvoiceTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 109202F82EAF763A00F0C7FE /* InvoiceTableViewCell.swift */; };
 		109204592EAF784200F0C7FE /* Colors+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 109204582EAF783D00F0C7FE /* Colors+.swift */; };
 		1092045B2EAF7A2E00F0C7FE /* GradientButton+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1092045A2EAF7A2D00F0C7FE /* GradientButton+.swift */; };
@@ -78,6 +82,10 @@
 		1051E61C2EB0FC7900D576BC /* EditInvoiceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditInvoiceViewController.swift; sourceTree = "<group>"; };
 		107315A62EBB547B008E7C35 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		107315A92EBB6156008E7C35 /* SettingsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsCell.swift; sourceTree = "<group>"; };
+		107315AC2EBB6232008E7C35 /* ReportsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportsViewController.swift; sourceTree = "<group>"; };
+		107315AE2EBB6461008E7C35 /* InvoicesReportViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvoicesReportViewController.swift; sourceTree = "<group>"; };
+		107315B02EBB6471008E7C35 /* ExpensesReportViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpensesReportViewController.swift; sourceTree = "<group>"; };
+		107315B22EBB647C008E7C35 /* BalanceReportViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BalanceReportViewController.swift; sourceTree = "<group>"; };
 		109202F82EAF763A00F0C7FE /* InvoiceTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvoiceTableViewCell.swift; sourceTree = "<group>"; };
 		109204582EAF783D00F0C7FE /* Colors+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Colors+.swift"; sourceTree = "<group>"; };
 		1092045A2EAF7A2D00F0C7FE /* GradientButton+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GradientButton+.swift"; sourceTree = "<group>"; };
@@ -193,6 +201,17 @@
 			path = SettingsView;
 			sourceTree = "<group>";
 		};
+		107315AB2EBB6225008E7C35 /* ReportsView */ = {
+			isa = PBXGroup;
+			children = (
+				107315B22EBB647C008E7C35 /* BalanceReportViewController.swift */,
+				107315B02EBB6471008E7C35 /* ExpensesReportViewController.swift */,
+				107315AE2EBB6461008E7C35 /* InvoicesReportViewController.swift */,
+				107315AC2EBB6232008E7C35 /* ReportsViewController.swift */,
+			);
+			path = ReportsView;
+			sourceTree = "<group>";
+		};
 		109202F72EAF762A00F0C7FE /* InvoicesView */ = {
 			isa = PBXGroup;
 			children = (
@@ -271,6 +290,7 @@
 		95A6BC0A24ECD82600BC3088 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
+				107315AB2EBB6225008E7C35 /* ReportsView */,
 				107315A52EBB5471008E7C35 /* SettingsView */,
 				104AD7CA2EB4E50E0014E550 /* ClientsView */,
 				104AD7BC2EB35D850014E550 /* EstimatesView */,
@@ -376,6 +396,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				107315AD2EBB6237008E7C35 /* ReportsViewController.swift in Sources */,
 				109204602EAF7CEE00F0C7FE /* DateFormatter.swift in Sources */,
 				109204652EAF7DCB00F0C7FE /* InvoiceDetailVC.swift in Sources */,
 				1051E6172EAFA36100D576BC /* NewInvoiceItemViewController.swift in Sources */,
@@ -394,6 +415,7 @@
 				104AD7C22EB360870014E550 /* EstimatesModel.swift in Sources */,
 				1092045E2EAF7B9F00F0C7FE /* NewInvoiceViewController.swift in Sources */,
 				109202F92EAF763B00F0C7FE /* InvoiceTableViewCell.swift in Sources */,
+				107315B12EBB6472008E7C35 /* ExpensesReportViewController.swift in Sources */,
 				95A6BC1424ECECBD00BC3088 /* InvoicesViewController.swift in Sources */,
 				104AD9482EB8F9410014E550 /* ClientsService.swift in Sources */,
 				104AD7CC2EB4E5210014E550 /* ClientsViewController.swift in Sources */,
@@ -401,11 +423,13 @@
 				1051E61A2EB0F17A00D576BC /* InvoiceDetailPDFViewController.swift in Sources */,
 				109204592EAF784200F0C7FE /* Colors+.swift in Sources */,
 				1051E6142EAF9CC900D576BC /* NewClientViewController.swift in Sources */,
+				107315B32EBB6480008E7C35 /* BalanceReportViewController.swift in Sources */,
 				109204692EAF7E2100F0C7FE /* InvoiceDetailItemCell.swift in Sources */,
 				109204672EAF7DFE00F0C7FE /* InvoiceModel.swift in Sources */,
 				95A6BC1724ECEFDE00BC3088 /* PDFCreator.swift in Sources */,
 				1092046C2EAF89D500F0C7FE /* InvoiceService.swift in Sources */,
 				104AD7BE2EB35D990014E550 /* EstimatesViewController.swift in Sources */,
+				107315AF2EBB6462008E7C35 /* InvoicesReportViewController.swift in Sources */,
 				104AD7C42EB360C80014E550 /* EstimateService.swift in Sources */,
 				104AD7C72EB365950014E550 /* NewEstimateViewController.swift in Sources */,
 				107315AA2EBB6157008E7C35 /* SettingsCell.swift in Sources */,
