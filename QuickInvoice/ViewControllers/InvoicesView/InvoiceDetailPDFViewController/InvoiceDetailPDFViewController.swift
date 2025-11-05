@@ -11,6 +11,24 @@ class InvoiceDetailPDFViewController: UIViewController {
     var invoice: Invoice?
     private let pdfView = PDFView()
     
+    private var estimateService: EstimateService? {
+        do {
+            return try EstimateService()
+        } catch {
+            print("Failed to initialize EstimateService: \(error)")
+            return nil
+        }
+    }
+    
+    private var invoiceService: InvoiceService? {
+        do {
+            return try InvoiceService()
+        } catch {
+            print("Failed to initialize InvoiceService: \(error)")
+            return nil
+        }
+    }
+    
     // Вспомогательный enum для определения типа символа в строке итогов
     enum SummarySymbolType {
         case currency
@@ -19,9 +37,32 @@ class InvoiceDetailPDFViewController: UIViewController {
     
     // MARK: - UI Elements
     
+    private lazy var convertButton: UIButton = {
+        var config = UIButton.Configuration.filled()
+        config.title = "Convert Estimate to Invoice"
+        config.image = UIImage(systemName: "repeat.circle.fill")
+        config.imagePadding = 10
+        
+        config.baseBackgroundColor = .secondary
+        config.baseForegroundColor = .white
+        config.buttonSize = .large
+        
+        let button = UIButton(configuration: config, primaryAction: UIAction { [weak self] _ in
+            self?.convertButtonTapped() // Новый обработчик
+        })
+        button.layer.cornerRadius = 14
+        // Можно использовать менее яркую тень, чтобы не конкурировала с sendButton
+        button.layer.shadowColor = UIColor.black.withAlphaComponent(0.2).cgColor
+        button.layer.shadowOpacity = 0.2
+        button.layer.shadowRadius = 4
+        button.layer.shadowOffset = CGSize(width: 0, height: 2)
+        return button
+    }()
+    
     private lazy var sendButton: UIButton = {
         var config = UIButton.Configuration.filled()
-        config.title = "Send Invoice (PDF)"
+        // ⭐ ОБНОВЛЕНИЕ ТЕКСТА: Если это Estimate, меняем текст на "Send Estimate (PDF)"
+        config.title = isEstimate ? "Send Estimate (PDF)" : "Send Invoice (PDF)"
         config.image = UIImage(systemName: "paperplane.fill")
         config.imagePadding = 10
         // Использование предполагаемых кастомных цветов
@@ -65,23 +106,47 @@ class InvoiceDetailPDFViewController: UIViewController {
     private func setupUI() {
         view.backgroundColor = .background
         
-        title = invoice?.invoiceTitle ?? "Invoice Preview"
+        // ⭐ ОБНОВЛЕНИЕ TITLE: если isEstimate, меняем заголовок
+        title = isEstimate ? "Estimate Preview" : (invoice?.invoiceTitle ?? "Invoice Preview")
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Edit", style: .plain, target: self, action: #selector(editTapped))
         
         view.addSubview(pdfView)
         view.addSubview(sendButton)
         
+        var bottomOffset: CGFloat = 10 // Начальный отступ снизу
+        var topOfButtonsConstraint: ConstraintRelatableTarget = view.safeAreaLayoutGuide
+        
+        // ⭐ УСЛОВИЕ: Добавляем кнопку Convert, если это Estimate
+        if isEstimate {
+            view.addSubview(convertButton)
+            
+            // 1. Располагаем кнопку Convert над Send Button
+            convertButton.snp.makeConstraints { make in
+                make.leading.trailing.equalToSuperview().inset(20)
+                make.bottom.equalTo(sendButton.snp.top).offset(-10)
+                make.height.equalTo(56)
+            }
+            // Смещаем якорь для PDFView
+            topOfButtonsConstraint = convertButton.snp.top
+        } else {
+            // Если это не Estimate, pdfView будет привязан к верхней части sendButton
+            topOfButtonsConstraint = sendButton.snp.top
+        }
+        
+        // 2. Располагаем Send Button внизу
         sendButton.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(20)
-            make.bottom.equalTo(view.safeAreaLayoutGuide).inset(10)
+            make.bottom.equalTo(view.safeAreaLayoutGuide).inset(bottomOffset)
             make.height.equalTo(56)
         }
         
+        // 3. Располагаем PDFView
         pdfView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide)
             make.leading.trailing.equalToSuperview()
-            make.bottom.equalTo(sendButton.snp.top).offset(-10)
+            // Привязываем нижний край либо к sendButton, либо к convertButton
+            make.bottom.equalTo(topOfButtonsConstraint).offset(-10)
         }
         
         pdfView.autoScales = true
@@ -243,9 +308,6 @@ class InvoiceDetailPDFViewController: UIViewController {
         return max(leftColumnMaxY, rightY + 10)
     }
 
-    /**
-     Отрисовывает информацию о Клиенте (Получателе)
-     */
     private func drawClientInfo(pageRect: CGRect, currentY: CGFloat, margin: CGFloat, invoice: Invoice) -> CGFloat {
         var y = currentY
         let client = invoice.client
@@ -304,9 +366,6 @@ class InvoiceDetailPDFViewController: UIViewController {
         return y + 10
     }
     
-    /**
-     Отрисовывает таблицу позиций инвойса.
-     */
     private func drawItemsTable(pageRect: CGRect, currentY: CGFloat, margin: CGFloat, invoice: Invoice) -> CGFloat {
         var y = currentY
         let pageWidth = pageRect.width - 2 * margin
@@ -433,9 +492,6 @@ class InvoiceDetailPDFViewController: UIViewController {
         return y
     }
     
-    /**
-     Отрисовывает итоги (Subtotal, Tax, Discount, Grand Total) используя вычисляемые свойства модели.
-     */
     private func drawSummary(pageRect: CGRect, currentY: CGFloat, margin: CGFloat, invoice: Invoice) -> CGFloat {
         var y = currentY
         let summaryWidth: CGFloat = 180
@@ -489,17 +545,11 @@ class InvoiceDetailPDFViewController: UIViewController {
         
         y += 5
         
-        // --- Grand Total (Highlight) ---
         y = drawSummaryRow(y: y, x: summaryX, width: summaryWidth, label: "GRAND TOTAL: ", value: invoice.grandTotal, currencySymbol: currencySymbol, symbolType: .currency, isBold: true, fontSize: 16, color: .primary)
         
         return y
     }
     
-    /**
-     Вспомогательная функция для отрисовки одной строки итогов.
-     
-     ⭐ ИЗМЕНЕНИЕ: Добавлен `valueToDisplay` и `symbolType` для гибкого отображения процентов/валюты.
-     */
     private func drawSummaryRow(y: CGFloat, x: CGFloat, width: CGFloat, label: String, value: Double, currencySymbol: String, symbolType: SummarySymbolType, valueToDisplay: Double? = nil, isBold: Bool, fontSize: CGFloat = 12, color: UIColor? = nil) -> CGFloat {
         
         let displayValue = valueToDisplay ?? abs(value) // Используем явно переданное значение (для процентов) или абсолютное значение суммы (для валюты)
@@ -513,18 +563,13 @@ class InvoiceDetailPDFViewController: UIViewController {
             .foregroundColor: color ?? UIColor.primaryText
         ]
         
-        // Draw Label (Left in Summary Box)
         label.draw(at: CGPoint(x: x, y: y), withAttributes: labelAttributes)
         
-        // Форматирование значения
         let formattedValue: String
-        
         switch symbolType {
         case .currency:
-            // Валюта: добавляем символ в начале
             formattedValue = "\(currencySymbol)\(String(format: "%.2f", abs(displayValue)))"
         case .percent:
-            // Процент: добавляем символ в конце
             formattedValue = String(format: "%.0f%%", displayValue)
         }
         
@@ -559,6 +604,14 @@ class InvoiceDetailPDFViewController: UIViewController {
 
     // MARK: - Actions
     
+    private func convertButtonTapped() {
+        guard let invoice else { return }
+        
+        try? invoiceService?.save(invoice: invoice)
+        try? estimateService?.deleteEstimate(id: invoice.id)
+        navigationController?.popViewController(animated: true)
+    }
+    
     @objc private func editTapped() {
         guard let invoice = invoice else { return }
 
@@ -568,14 +621,15 @@ class InvoiceDetailPDFViewController: UIViewController {
             self?.generateAndLoadPDF()
             self?.title = self?.invoice?.invoiceTitle ?? "Invoice Preview"
         }
-        self.navigationController?.pushViewController(editInvoiceViewController, animated: true)
+        navigationController?.pushViewController(editInvoiceViewController, animated: true)
     }
     
     private func sendButtonTapped() {
         guard let invoice = invoice else { return }
         let pdfData = generatePDF(for: invoice)
         
-        let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent("\(invoice.invoiceTitle ?? "Invoice").pdf")
+        let titlePrefix = isEstimate ? "Estimate" : "Invoice" // ⭐ ОБНОВЛЕНИЕ
+        let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent("\(titlePrefix)-\(invoice.invoiceTitle ?? "Document").pdf")
         try? pdfData.write(to: tempURL)
         
         let activityVC = UIActivityViewController(activityItems: [tempURL], applicationActivities: nil)
