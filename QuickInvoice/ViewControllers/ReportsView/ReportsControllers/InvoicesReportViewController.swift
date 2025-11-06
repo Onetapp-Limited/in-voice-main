@@ -19,7 +19,7 @@ class InvoicesReportViewController: UIViewController {
         } ?? []
     }
     
-    private lazy var dailyIncomeData: [Double] = self.processDailyIncome()
+    private lazy var dailyIncomeData: (values: [Double], dates: [Date]) = self.processDailyIncome()
     
     private lazy var mockSummary = setupMockSummary()
 
@@ -184,9 +184,18 @@ class InvoicesReportViewController: UIViewController {
     // MARK: - Chart Data Setup
     
     private func setupChartData(for chartView: ChartViewBase) {
-        let entries = dailyIncomeData.enumerated().map { (index, value) -> ChartDataEntry in
+        // 🔑 ИЗМЕНЕНИЕ 3.1: Используем dailyIncomeData.values
+        let entries = dailyIncomeData.values.enumerated().map { (index, value) -> ChartDataEntry in
+            // X-значение - это по-прежнему индекс (0, 1, 2...), но теперь мы его форматируем
             ChartDataEntry(x: Double(index), y: value)
         }
+        
+        // 🔑 ИЗМЕНЕНИЕ 3.2: Создаем и применяем DateAxisValueFormatter
+        let dateFormatter = DateAxisValueFormatter(dates: dailyIncomeData.dates)
+        
+        chartView.xAxis.valueFormatter = dateFormatter
+        chartView.xAxis.granularity = 1.0 // Метка для каждого дня
+        chartView.xAxis.labelPosition = .bottom // Метки внизу
         
         // Обертка для конверсии ChartDataEntry → BarChartDataEntry
         func barEntries(from chartEntries: [ChartDataEntry]) -> [BarChartDataEntry] {
@@ -321,8 +330,8 @@ class InvoicesReportViewController: UIViewController {
         return Double(cleaned) ?? 0
     }
     
-    private func processDailyIncome() -> [Double] {
-        guard let invoices = invoiceService?.getAllInvoices() else { return [] }
+    private func processDailyIncome() -> (values: [Double], dates: [Date]) {
+        guard let invoices = invoiceService?.getAllInvoices() else { return ([], []) }
         
         let groupedByDate = Dictionary(grouping: invoices) { invoice -> Date in
             let date = invoice.invoiceDate
@@ -336,7 +345,9 @@ class InvoicesReportViewController: UIViewController {
         
         let sortedDates = dailyTotals.keys.sorted()
         
-        return sortedDates.map { dailyTotals[$0]! }
+        let values = sortedDates.map { dailyTotals[$0]! }
+        
+        return (values, sortedDates) // Возвращаем обе части данных
     }
     
     private func setupMockSummary() -> (paid: Double, unpaid: Double, total: Double) {
