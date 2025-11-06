@@ -605,6 +605,8 @@ class InvoiceDetailPDFViewController: UIViewController {
     // MARK: - Actions
     
     private func convertButtonTapped() {
+        invoice?.status = .readyToSend
+
         guard let invoice else { return }
         
         try? invoiceService?.save(invoice: invoice)
