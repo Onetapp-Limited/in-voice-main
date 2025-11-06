@@ -5,12 +5,10 @@ class ReportsViewController: UIViewController {
     
     // MARK: - UI Elements
     
-    lazy var segmentedControl: UISegmentedControl = {
+    private lazy var segmentedControl: UISegmentedControl = {
         let items = ["Invoices", "Expenses", "Balance"]
         let segmented = UISegmentedControl(items: items)
         
-        // Стиль, соответствующий приложению:
-        // Используем цвета из палитры
         segmented.selectedSegmentTintColor = UIColor.primary
         segmented.backgroundColor = UIColor.surface
         
@@ -27,13 +25,12 @@ class ReportsViewController: UIViewController {
         segmented.setTitleTextAttributes(normalAttributes, for: .normal)
         segmented.setTitleTextAttributes(selectedAttributes, for: .selected)
         
-        segmented.selectedSegmentIndex = 0 // По умолчанию выбран Invoices
+        segmented.selectedSegmentIndex = 0
         segmented.addTarget(self, action: #selector(segmentChanged), for: .valueChanged)
         return segmented
     }()
     
-    // Контейнер для отображения текущего View Controller
-    let containerView: UIView = {
+    private let containerView: UIView = {
         let view = UIView()
         view.backgroundColor = .background
         return view
@@ -55,13 +52,12 @@ class ReportsViewController: UIViewController {
         view.backgroundColor = UIColor.background
         setupNavigationBar()
         setupUI()
-        display(childViewController: invoicesReportVC) // Показываем Invoices по умолчанию
+        display(childViewController: invoicesReportVC)
     }
     
     // MARK: - Setup
     
     private func setupNavigationBar() {
-        // Навигационный бар в стиле "InvoiceFly"
         navigationItem.title = "Reports"
         let appearance = UINavigationBarAppearance()
         appearance.configureWithOpaqueBackground()
@@ -78,7 +74,6 @@ class ReportsViewController: UIViewController {
         view.addSubview(segmentedControl)
         view.addSubview(containerView)
         
-        // Constraints
         segmentedControl.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(16)
             make.leading.trailing.equalToSuperview().inset(20)
@@ -86,15 +81,15 @@ class ReportsViewController: UIViewController {
         }
         
         containerView.snp.makeConstraints { make in
-            make.top.equalTo(segmentedControl.snp.bottom).offset(16)
-            make.leading.trailing.bottom.equalToSuperview()
+            make.top.equalTo(segmentedControl.snp.bottom).offset(20)
+            make.leading.trailing.equalToSuperview()
+            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
         }
     }
     
     // MARK: - Child VC Management
     
     @objc private func segmentChanged(_ sender: UISegmentedControl) {
-        // Скрываем текущий контроллер
         currentChildVC?.willMove(toParent: nil)
         currentChildVC?.view.removeFromSuperview()
         currentChildVC?.removeFromParent()
@@ -124,3 +119,4 @@ class ReportsViewController: UIViewController {
         currentChildVC = childViewController
     }
 }
+
