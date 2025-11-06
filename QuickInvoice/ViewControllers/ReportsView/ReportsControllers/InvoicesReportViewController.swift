@@ -1,5 +1,6 @@
 import UIKit
 import SnapKit
+import DGCharts
 
 class InvoicesReportViewController: UIViewController {
     
@@ -18,9 +19,31 @@ class InvoicesReportViewController: UIViewController {
         } ?? []
     }
     
+    private lazy var dailyIncomeData: [Double] = self.processDailyIncome()
+    
     private lazy var mockSummary = setupMockSummary()
 
     private lazy var mockClientSales: [(client: String, earned: Double, paid: Double)] = setupMockClientSales()
+    
+    // MARK: - Chart Views
+    
+    // Реальный Line Chart из библиотеки Charts
+    private lazy var lineChartView: LineChartView = {
+        let chart = LineChartView()
+        chart.noDataText = "No data for Line Chart."
+        chart.backgroundColor = .surface
+        return chart
+    }()
+    
+    // Реальный Bar Chart из библиотеки Charts
+    private lazy var barChartView: BarChartView = {
+        let chart = BarChartView()
+        chart.noDataText = "No data for Bar Chart."
+        chart.backgroundColor = .surface
+        return chart
+    }()
+    
+    // MARK: - UI Components
     
     private lazy var scrollView: UIScrollView = {
         let sv = UIScrollView()
@@ -34,8 +57,6 @@ class InvoicesReportViewController: UIViewController {
         let view = UIView()
         return view
     }()
-    
-    // MARK: - Summary Cards
     
     private lazy var summaryStackView: UIStackView = {
         let stack = UIStackView()
@@ -83,8 +104,6 @@ class InvoicesReportViewController: UIViewController {
         return container
     }
     
-    // MARK: - Chart Section
-    
     private lazy var chartContainer: UIView = {
         let view = UIView()
         view.backgroundColor = .surface
@@ -98,18 +117,18 @@ class InvoicesReportViewController: UIViewController {
     
     private lazy var chartTitleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Monthly Income"
+        label.text = "Daily Income"
         label.font = UIFont.systemFont(ofSize: 18, weight: .bold)
         label.textColor = .primaryText
         return label
     }()
     
     private lazy var chartTypeSegment: UISegmentedControl = {
-        let items = ["Chart", "Table"]
+        let items = ["Bar", "Line"]
         let segment = UISegmentedControl(items: items)
         segment.selectedSegmentTintColor = UIColor.primaryLight
         segment.backgroundColor = UIColor.backgroundSecondary
-        segment.selectedSegmentIndex = 0
+        segment.selectedSegmentIndex = 1
         
         let font = UIFont.systemFont(ofSize: 13, weight: .medium)
         segment.setTitleTextAttributes([.font: font], for: .normal)
@@ -118,21 +137,6 @@ class InvoicesReportViewController: UIViewController {
         segment.addTarget(self, action: #selector(toggleChartType), for: .valueChanged)
         return segment
     }()
-    
-    private lazy var chartPlaceholder: UILabel = {
-        let label = UILabel()
-        label.text = "📊\n\nLine Chart\nMonthly Income Trends"
-        label.textColor = .secondaryText
-        label.textAlignment = .center
-        label.numberOfLines = 0
-        label.font = UIFont.systemFont(ofSize: 15, weight: .medium)
-        label.backgroundColor = .backgroundSecondary
-        label.layer.cornerRadius = 8
-        label.clipsToBounds = true
-        return label
-    }()
-    
-    // MARK: - Sales Table Section
     
     private lazy var salesTitleLabel: UILabel = {
         let label = UILabel()
@@ -172,7 +176,52 @@ class InvoicesReportViewController: UIViewController {
         view.backgroundColor = .background
         setupTableView()
         setupUI()
+        // Настройка и отображение данных
+        renderChartData()
+        updateChartDisplay()
     }
+    
+    // MARK: - Chart Data Setup
+    
+    private func setupChartData(for chartView: ChartViewBase) {
+        let entries = dailyIncomeData.enumerated().map { (index, value) -> ChartDataEntry in
+            ChartDataEntry(x: Double(index), y: value)
+        }
+        
+        // Обертка для конверсии ChartDataEntry → BarChartDataEntry
+        func barEntries(from chartEntries: [ChartDataEntry]) -> [BarChartDataEntry] {
+            chartEntries.map { BarChartDataEntry(x: $0.x, y: $0.y) }
+        }
+        
+        if let lineChart = chartView as? LineChartView {
+            let dataSet = LineChartDataSet(entries: entries, label: "Daily Income")
+            dataSet.colors = [.systemMint]
+            dataSet.circleColors = [.systemMint]
+            dataSet.lineWidth = 2.0
+            dataSet.circleRadius = 4.0
+            dataSet.drawValuesEnabled = false
+            
+            lineChart.data = LineChartData(dataSet: dataSet)
+            
+        } else if let barChart = chartView as? BarChartView {
+            let barEntries = barEntries(from: entries)
+            let dataSet = BarChartDataSet(entries: barEntries, label: "Daily Income")
+            dataSet.colors = [.systemOrange]
+            dataSet.drawValuesEnabled = false
+            
+            barChart.data = BarChartData(dataSet: dataSet)
+        }
+        
+        chartView.animate(yAxisDuration: 0.5)
+    }
+
+    private func renderChartData() {
+        // Загружаем данные в оба графика
+        setupChartData(for: lineChartView)
+        setupChartData(for: barChartView)
+    }
+    
+    // MARK: - UI Setup
     
     private func setupUI() {
         view.addSubview(scrollView)
@@ -188,7 +237,9 @@ class InvoicesReportViewController: UIViewController {
         
         chartContainer.addSubview(chartTitleLabel)
         chartContainer.addSubview(chartTypeSegment)
-        chartContainer.addSubview(chartPlaceholder)
+        
+        chartContainer.addSubview(lineChartView)
+        chartContainer.addSubview(barChartView)
         
         salesTableContainer.addSubview(salesTableView)
         
@@ -225,14 +276,17 @@ class InvoicesReportViewController: UIViewController {
         chartTypeSegment.snp.makeConstraints { make in
             make.centerY.equalTo(chartTitleLabel)
             make.trailing.equalToSuperview().offset(-16)
-            make.width.equalTo(140)
+            make.width.equalTo(120)
             make.height.equalTo(32)
         }
         
-        chartPlaceholder.snp.makeConstraints { make in
-            make.top.equalTo(chartTitleLabel.snp.bottom).offset(16)
-            make.leading.trailing.equalToSuperview().inset(16)
-            make.bottom.equalToSuperview().offset(-16)
+        let chartViews: [UIView] = [lineChartView, barChartView]
+        chartViews.forEach { view in
+            view.snp.makeConstraints { make in
+                make.top.equalTo(chartTitleLabel.snp.bottom).offset(16)
+                make.leading.trailing.equalToSuperview().inset(16)
+                make.bottom.equalToSuperview().offset(-16)
+            }
         }
         
         salesTitleLabel.snp.makeConstraints { make in
@@ -258,29 +312,41 @@ class InvoicesReportViewController: UIViewController {
         salesTableView.register(ClientSalesCell.self, forCellReuseIdentifier: ClientSalesCell.reuseIdentifier)
     }
     
+    // MARK: - Data Processing
+    
+    private func parseTotalAmount(_ value: String) -> Double {
+        let cleaned = value
+            .replacingOccurrences(of: "[^0-9.,-]", with: "", options: .regularExpression)
+            .replacingOccurrences(of: ",", with: ".")
+        return Double(cleaned) ?? 0
+    }
+    
+    private func processDailyIncome() -> [Double] {
+        guard let invoices = invoiceService?.getAllInvoices() else { return [] }
+        
+        let groupedByDate = Dictionary(grouping: invoices) { invoice -> Date in
+            let date = invoice.invoiceDate
+            let calendar = Calendar.current
+            return calendar.startOfDay(for: date)
+        }
+        
+        let dailyTotals = groupedByDate.compactMapValues { dailyInvoices in
+            dailyInvoices.reduce(0) { $0 + parseTotalAmount($1.totalAmount) }
+        }
+        
+        let sortedDates = dailyTotals.keys.sorted()
+        
+        return sortedDates.map { dailyTotals[$0]! }
+    }
+    
     private func setupMockSummary() -> (paid: Double, unpaid: Double, total: Double) {
         guard let invoices = invoiceService?.getAllInvoices() else {
             return (0, 0, 0)
         }
 
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .currency
-        formatter.locale = Locale(identifier: "en_US")
-
-        func parse(_ value: String) -> Double {
-            if let number = formatter.number(from: value) {
-                return number.doubleValue
-            }
-            // запасной вариант — убрать лишние символы и пробелы
-            let cleaned = value
-                .replacingOccurrences(of: "[^0-9.,-]", with: "", options: .regularExpression)
-                .replacingOccurrences(of: ",", with: ".")
-            return Double(cleaned) ?? 0
-        }
-
-        let paid = invoices.filter { $0.status == .paid }.reduce(0) { $0 + parse($1.totalAmount) }
-        let unpaid = invoices.filter { $0.status != .paid }.reduce(0) { $0 + parse($1.totalAmount) }
-        let total = invoices.reduce(0) { $0 + parse($1.totalAmount) }
+        let paid = invoices.filter { $0.status == .paid }.reduce(0) { $0 + parseTotalAmount($1.totalAmount) }
+        let unpaid = invoices.filter { $0.status != .paid }.reduce(0) { $0 + parseTotalAmount($1.totalAmount) }
+        let total = invoices.reduce(0) { $0 + parseTotalAmount($1.totalAmount) }
 
         return (paid, unpaid, total)
     }
@@ -290,35 +356,40 @@ class InvoicesReportViewController: UIViewController {
             return []
         }
         
-        // Хелпер для парсинга totalAmount из строки
-        func parse(_ value: String) -> Double {
-            let cleaned = value
-                .replacingOccurrences(of: "[^0-9.,-]", with: "", options: .regularExpression)
-                .replacingOccurrences(of: ",", with: ".")
-            return Double(cleaned) ?? 0
-        }
-        
-        // Группируем по имени клиента
         let grouped = Dictionary(grouping: invoices) { invoice in
             invoice.client?.clientName ?? "Unknown Client"
         }
         
-        // Для каждого клиента считаем суммы
         let result = grouped.map { (clientName, clientInvoices) -> (client: String, earned: Double, paid: Double) in
-            let earned = clientInvoices.reduce(0) { $0 + parse($1.totalAmount) }
+            let earned = clientInvoices.reduce(0) { $0 + parseTotalAmount($1.totalAmount) }
             let paid = clientInvoices
                 .filter { $0.status == .paid }
-                .reduce(0) { $0 + parse($1.totalAmount) }
+                .reduce(0) { $0 + parseTotalAmount($1.totalAmount) }
             return (client: clientName, earned: earned, paid: paid)
         }
         
-        // Можно отсортировать по заработку, если хочешь красиво
         return result.sorted { $0.earned > $1.earned }
     }
     
+    // MARK: - Actions
+    
     @objc private func toggleChartType(_ sender: UISegmentedControl) {
-        let isChart = sender.selectedSegmentIndex == 0
-        chartPlaceholder.text = isChart ? "📊\n\nLine Chart\nMonthly Income Trends" : "📋\n\nTable View\nMonthly Income Data"
+        updateChartDisplay()
+    }
+    
+    private func updateChartDisplay() {
+        let selectedIndex = chartTypeSegment.selectedSegmentIndex
+        
+        lineChartView.isHidden = true
+        barChartView.isHidden = true
+        
+        if selectedIndex == 0 { // Bar
+            barChartView.isHidden = false
+            chartTitleLabel.text = "Daily Income"
+        } else if selectedIndex == 1 { // Line
+            lineChartView.isHidden = false
+            chartTitleLabel.text = "Daily Income"
+        }
     }
 }
 

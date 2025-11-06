@@ -33,6 +33,8 @@
 		107315B72EBC9E1D008E7C35 /* ClientSalesCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 107315B62EBC9E1C008E7C35 /* ClientSalesCell.swift */; };
 		107315B92EBC9E45008E7C35 /* ExpenseCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 107315B82EBC9E45008E7C35 /* ExpenseCell.swift */; };
 		107315BB2EBC9E77008E7C35 /* Int+formattedWithSeparator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 107315BA2EBC9E76008E7C35 /* Int+formattedWithSeparator.swift */; };
+		107315BE2EBCAAE9008E7C35 /* DGCharts in Frameworks */ = {isa = PBXBuildFile; productRef = 107315BD2EBCAAE9008E7C35 /* DGCharts */; };
+		107315C02EBCABF7008E7C35 /* DGCharts in Frameworks */ = {isa = PBXBuildFile; productRef = 107315BF2EBCABF7008E7C35 /* DGCharts */; };
 		109202F92EAF763B00F0C7FE /* InvoiceTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 109202F82EAF763A00F0C7FE /* InvoiceTableViewCell.swift */; };
 		109204592EAF784200F0C7FE /* Colors+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 109204582EAF783D00F0C7FE /* Colors+.swift */; };
 		1092045B2EAF7A2E00F0C7FE /* GradientButton+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1092045A2EAF7A2D00F0C7FE /* GradientButton+.swift */; };
@@ -120,7 +122,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				107315C02EBCABF7008E7C35 /* DGCharts in Frameworks */,
 				1051E60E2EAF912200D576BC /* RealmSwift in Frameworks */,
+				107315BE2EBCAAE9008E7C35 /* DGCharts in Frameworks */,
 				1051E6112EAF91C100D576BC /* SnapKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -394,6 +398,7 @@
 			packageReferences = (
 				1051E60A2EAF912200D576BC /* XCRemoteSwiftPackageReference "realm-swift" */,
 				1051E60F2EAF91C100D576BC /* XCRemoteSwiftPackageReference "SnapKit" */,
+				107315BC2EBCAAE9008E7C35 /* XCRemoteSwiftPackageReference "Charts" */,
 			);
 			productRefGroup = 9520F87A24D27CBB006CDC05 /* Products */;
 			projectDirPath = "";
@@ -688,6 +693,14 @@
 				minimumVersion = 5.7.1;
 			};
 		};
+		107315BC2EBCAAE9008E7C35 /* XCRemoteSwiftPackageReference "Charts" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/danielgindi/Charts.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.1.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -700,6 +713,15 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 1051E60F2EAF91C100D576BC /* XCRemoteSwiftPackageReference "SnapKit" */;
 			productName = SnapKit;
+		};
+		107315BD2EBCAAE9008E7C35 /* DGCharts */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 107315BC2EBCAAE9008E7C35 /* XCRemoteSwiftPackageReference "Charts" */;
+			productName = DGCharts;
+		};
+		107315BF2EBCABF7008E7C35 /* DGCharts */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = DGCharts;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
