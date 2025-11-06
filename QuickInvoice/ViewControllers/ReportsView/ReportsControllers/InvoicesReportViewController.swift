@@ -3,13 +3,24 @@ import SnapKit
 
 class InvoicesReportViewController: UIViewController {
     
-    private var mockMonthlyData: [Double] = [5000, 7500, 12000, 15000, 10500, 18000]
-    private var mockSummary = (paid: 25000.0, unpaid: 8000.0, total: 33000.0)
-    private var mockClientSales: [(client: String, earned: Double, paid: Double)] = [
-        ("Tech Innovators Co.", 15000.0, 10000.0),
-        ("Global Dynamics Inc.", 8000.0, 8000.0),
-        ("Sunrise Marketing Agency", 10000.0, 7000.0)
-    ]
+    private var invoiceService: InvoiceService? {
+        do {
+            return try InvoiceService()
+        } catch {
+            print("Failed to initialize InvoiceService: \(error)")
+            return nil
+        }
+    }
+    
+    private var mockMonthlyData: [Double] {
+        invoiceService?.getAllInvoices().map { invoice in
+            invoice.items.reduce(0) { $0 + $1.lineTotal }
+        } ?? []
+    }
+    
+    private lazy var mockSummary = setupMockSummary()
+
+    private lazy var mockClientSales: [(client: String, earned: Double, paid: Double)] = setupMockClientSales()
     
     private lazy var scrollView: UIScrollView = {
         let sv = UIScrollView()
@@ -245,6 +256,64 @@ class InvoicesReportViewController: UIViewController {
         salesTableView.delegate = self
         salesTableView.dataSource = self
         salesTableView.register(ClientSalesCell.self, forCellReuseIdentifier: ClientSalesCell.reuseIdentifier)
+    }
+    
+    private func setupMockSummary() -> (paid: Double, unpaid: Double, total: Double) {
+        guard let invoices = invoiceService?.getAllInvoices() else {
+            return (0, 0, 0)
+        }
+
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+        formatter.locale = Locale(identifier: "en_US")
+
+        func parse(_ value: String) -> Double {
+            if let number = formatter.number(from: value) {
+                return number.doubleValue
+            }
+            // запасной вариант — убрать лишние символы и пробелы
+            let cleaned = value
+                .replacingOccurrences(of: "[^0-9.,-]", with: "", options: .regularExpression)
+                .replacingOccurrences(of: ",", with: ".")
+            return Double(cleaned) ?? 0
+        }
+
+        let paid = invoices.filter { $0.status == .paid }.reduce(0) { $0 + parse($1.totalAmount) }
+        let unpaid = invoices.filter { $0.status != .paid }.reduce(0) { $0 + parse($1.totalAmount) }
+        let total = invoices.reduce(0) { $0 + parse($1.totalAmount) }
+
+        return (paid, unpaid, total)
+    }
+    
+    private func setupMockClientSales() -> [(client: String, earned: Double, paid: Double)] {
+        guard let invoices = invoiceService?.getAllInvoices() else {
+            return []
+        }
+        
+        // Хелпер для парсинга totalAmount из строки
+        func parse(_ value: String) -> Double {
+            let cleaned = value
+                .replacingOccurrences(of: "[^0-9.,-]", with: "", options: .regularExpression)
+                .replacingOccurrences(of: ",", with: ".")
+            return Double(cleaned) ?? 0
+        }
+        
+        // Группируем по имени клиента
+        let grouped = Dictionary(grouping: invoices) { invoice in
+            invoice.client?.clientName ?? "Unknown Client"
+        }
+        
+        // Для каждого клиента считаем суммы
+        let result = grouped.map { (clientName, clientInvoices) -> (client: String, earned: Double, paid: Double) in
+            let earned = clientInvoices.reduce(0) { $0 + parse($1.totalAmount) }
+            let paid = clientInvoices
+                .filter { $0.status == .paid }
+                .reduce(0) { $0 + parse($1.totalAmount) }
+            return (client: clientName, earned: earned, paid: paid)
+        }
+        
+        // Можно отсортировать по заработку, если хочешь красиво
+        return result.sorted { $0.earned > $1.earned }
     }
     
     @objc private func toggleChartType(_ sender: UISegmentedControl) {
