@@ -56,7 +56,31 @@ enum InvoiceStatus: String, Codable, CaseIterable {
     case pending = "Pending"
 }
 
-// --- InvoiceItem: ИСПРАВЛЕНИЕ lineTotal ---
+// MARK: - CompanyInfo Model
+struct CompanyInfo: Codable {
+    var name: String = "My Company"
+    var street: String = ""
+    var cityStateZip: String = ""
+    var email: String = ""
+    
+    // Вспомогательная функция для получения данных компании из UserDefaults
+    static func load() -> CompanyInfo? {
+        if let savedData = UserDefaults.standard.data(forKey: "userCompanyInfo"),
+           let decodedCompany = try? JSONDecoder().decode(CompanyInfo.self, from: savedData) {
+            return decodedCompany
+        }
+        return nil // Возвращаем nil, если нет сохраненных данных
+    }
+    
+    // Вспомогательная функция для сохранения данных компании в UserDefaults
+    func save() {
+        if let encoded = try? JSONEncoder().encode(self) {
+            UserDefaults.standard.set(encoded, forKey: "userCompanyInfo")
+        }
+    }
+}
+
+// --- InvoiceItem: ---
 
 struct InvoiceItem: Codable {
     var id = UUID()
@@ -117,6 +141,8 @@ struct Invoice: Codable {
     
     var status: InvoiceStatus = .draft
     var currency: Currency = .USD
+    
+    var senderCompany: CompanyInfo?
     
     var totalAmount: String = ""
 

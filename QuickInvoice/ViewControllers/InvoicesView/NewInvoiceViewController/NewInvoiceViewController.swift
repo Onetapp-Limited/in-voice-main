@@ -16,6 +16,7 @@ class NewInvoiceViewController: UIViewController {
     }
     private let itemCellHeight: CGFloat = 80
     private var tableViewHeightConstraint: Constraint!
+    private var companyInfo: CompanyInfo?
     
     // MARK: - UI Elements
     private let scrollView = UIScrollView()
@@ -306,6 +307,39 @@ class NewInvoiceViewController: UIViewController {
         return iv
     }()
     
+    // Your Company Section
+    let companyCard = UIView()
+    private let companyLabel: UILabel = {
+        let lbl = UILabel()
+        lbl.text = "YOUR COMPANY"
+        lbl.font = .systemFont(ofSize: 11, weight: .semibold)
+        lbl.textColor = .secondaryText
+        return lbl
+    }()
+    
+    private let companyNameLabel: UILabel = {
+        let lbl = UILabel()
+        lbl.text = "Add Your Company" // Default text
+        lbl.font = .systemFont(ofSize: 17, weight: .medium)
+        lbl.textColor = .secondaryText // Set to secondary initially
+        return lbl
+    }()
+    
+    private let companyChevron: UIImageView = {
+        let iv = UIImageView()
+        iv.image = UIImage(systemName: "chevron.right")
+        iv.tintColor = .iconSecondary
+        iv.contentMode = .scaleAspectFit
+        return iv
+    }()
+    
+    private lazy var companyButton: UIButton = {
+        let btn = UIButton(type: .system)
+        btn.backgroundColor = .clear
+        btn.addTarget(self, action: #selector(editCompanyInfoTapped), for: .touchUpInside) // Добавляем таргет
+        return btn
+    }()
+    
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -359,6 +393,7 @@ class NewInvoiceViewController: UIViewController {
         }
         
         setupHeaderCard()
+        setupCompanyCard()
         setupClientCard()
         setupDatesCard()
         setupStatusCard() // ОБНОВЛЕНО
@@ -367,6 +402,7 @@ class NewInvoiceViewController: UIViewController {
         setupSaveButton()
         
         loadInvoiceData()
+        loadCompanyInfo()
     }
     
     private func setupHeaderCard() {
@@ -457,6 +493,40 @@ class NewInvoiceViewController: UIViewController {
         }
     }
     
+    private func setupCompanyCard() {
+        styleCard(companyCard)
+        contentView.addSubview(companyCard)
+        companyCard.addSubview(companyLabel)
+        companyCard.addSubview(companyNameLabel)
+        companyCard.addSubview(companyChevron)
+        companyCard.addSubview(companyButton)
+        
+        companyCard.snp.makeConstraints { make in
+            make.top.equalTo(headerCard.snp.bottom).offset(16) // Размещаем под HeaderCard
+            make.leading.trailing.equalToSuperview().inset(16)
+        }
+        
+        companyLabel.snp.makeConstraints { make in
+            make.top.leading.equalToSuperview().inset(16)
+        }
+        
+        companyNameLabel.snp.makeConstraints { make in
+            make.top.equalTo(companyLabel.snp.bottom).offset(6)
+            make.leading.equalToSuperview().inset(16)
+            make.bottom.equalToSuperview().inset(16)
+        }
+        
+        companyChevron.snp.makeConstraints { make in
+            make.centerY.equalTo(companyNameLabel)
+            make.trailing.equalToSuperview().inset(16)
+            make.width.height.equalTo(16)
+        }
+        
+        companyButton.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+    }
+    
     private func setupClientCard() {
         styleCard(clientCard)
         contentView.addSubview(clientCard)
@@ -466,7 +536,7 @@ class NewInvoiceViewController: UIViewController {
         clientCard.addSubview(clientButton)
         
         clientCard.snp.makeConstraints { make in
-            make.top.equalTo(headerCard.snp.bottom).offset(16)
+            make.top.equalTo(companyCard.snp.bottom).offset(16)
             make.leading.trailing.equalToSuperview().inset(16)
         }
         
@@ -764,6 +834,25 @@ class NewInvoiceViewController: UIViewController {
         currentInvoice.totalAmount = totalAmountLabel.text ?? ""
     }
     
+    private func loadCompanyInfo() {
+        self.companyInfo = CompanyInfo.load() // Пытаемся загрузить данные
+        updateCompanyDisplay()
+    }
+    
+    private func updateCompanyDisplay() {
+        if let company = self.companyInfo {
+            // Если данные есть, отображаем название компании
+            companyNameLabel.text = company.name
+            companyNameLabel.textColor = .primaryText
+            // Также сохраняем компанию в инвойсе, чтобы она была доступна для PDF-рендера
+            currentInvoice.senderCompany = company
+        } else {
+            // Если данных нет, отображаем заглушку
+            companyNameLabel.text = "Add Your Company"
+            companyNameLabel.textColor = .secondaryText
+        }
+    }
+    
     // MARK: - Actions
     @objc func dismissSelf() {
         navigationController?.popViewController(animated: true)
@@ -949,6 +1038,22 @@ class NewInvoiceViewController: UIViewController {
         }
         
         present(actionSheet, animated: true)
+    }
+    
+    @objc private func editCompanyInfoTapped() {
+        let vc = CompanyInfoViewController()
+        
+        vc.companyInfo = self.companyInfo ?? CompanyInfo()
+        
+        vc.didSaveCompanyInfo = { [weak self] newCompanyInfo in
+            guard let self = self else { return }
+            self.companyInfo = newCompanyInfo // Обновляем локальную модель
+            newCompanyInfo.save() // Сохраняем в UserDefaults
+            self.updateCompanyDisplay() // Обновляем метку на экране
+        }
+        
+        let nav = UINavigationController(rootViewController: vc)
+        present(nav, animated: true)
     }
 }
 

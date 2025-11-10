@@ -264,15 +264,15 @@ class InvoiceDetailPDFViewController: UIViewController {
         "FROM:".draw(at: CGPoint(x: margin, y: y), withAttributes: [.font: UIFont.boldSystemFont(ofSize: 12), .foregroundColor: UIColor.secondaryText])
         y += 20
         
-        // todo test111 это потом брать из общих настроек:
-        // Placeholder Company Info (фиктивные данные, т.к. нет модели Компании)
-        "My Company Name Inc.".draw(at: CGPoint(x: margin, y: y), withAttributes: senderHeaderAttributes)
+        // company data
+        let senderCompany = invoice.senderCompany ?? CompanyInfo.load()
+        (senderCompany?.name ?? "").draw(at: CGPoint(x: margin, y: y), withAttributes: senderHeaderAttributes)
         y += 20
-        "123 Business Blvd, Suite 400".draw(at: CGPoint(x: margin, y: y), withAttributes: senderDetailAttributes)
+        (senderCompany?.street ?? "").draw(at: CGPoint(x: margin, y: y), withAttributes: senderDetailAttributes)
         y += 15
-        "City, State, 10001".draw(at: CGPoint(x: margin, y: y), withAttributes: senderDetailAttributes)
+        ((senderCompany?.cityStateZip ?? "")).draw(at: CGPoint(x: margin, y: y), withAttributes: senderDetailAttributes)
         y += 15
-        "contact@mycompany.com".draw(at: CGPoint(x: margin, y: y), withAttributes: senderDetailAttributes)
+        (senderCompany?.email ?? "").draw(at: CGPoint(x: margin, y: y), withAttributes: senderDetailAttributes)
         
         let leftColumnMaxY = y + 10
         
