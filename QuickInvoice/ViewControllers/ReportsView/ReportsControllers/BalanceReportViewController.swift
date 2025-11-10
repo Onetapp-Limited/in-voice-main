@@ -3,9 +3,46 @@ import SnapKit
 
 class BalanceReportViewController: UIViewController {
     
-    private var mockIncomeTotal: Double = 33000.0
-    private var mockExpenseTotal: Double = 2500.0
-    private var mockBalance: Double { mockIncomeTotal - mockExpenseTotal }
+    private var invoiceService: InvoiceService? {
+        do {
+            return try InvoiceService()
+        } catch {
+            print("Failed to initialize InvoiceService: \(error)")
+            return nil
+        }
+    }
+    
+    // 🔑 2. Хранение реальных данных
+    private var totalIncome: Double = 0.0
+    private var totalExpenses: Double = 0.0
+    private var netBalance: Double { totalIncome - totalExpenses }
+
+    private func parseTotalAmount(_ value: String) -> Double {
+        let cleaned = value
+            .replacingOccurrences(of: "[^0-9.,-]", with: "", options: .regularExpression)
+            .replacingOccurrences(of: ",", with: ".")
+        return Double(cleaned) ?? 0
+    }
+    
+    // MARK: - Data Calculation
+
+    private func calculateTotalIncome() -> Double {
+        guard let invoices = invoiceService?.getAllInvoices() else {
+            return 0.0
+        }
+        let total = invoices.reduce(0) { $0 + parseTotalAmount($1.totalAmount) }
+        return total
+    }
+
+    private func calculateTotalExpenses() -> Double {
+        guard let invoices = invoiceService?.getAllInvoices() else {
+            return 0.0
+        }
+        let totalExpense = invoices.reduce(0) { $0 + $1.taxTotal }
+        return totalExpense
+    }
+
+    // MARK: - UI Components (Обновляем lazy var для использования реальных данных через функцию)
     
     private lazy var scrollView: UIScrollView = {
         let sv = UIScrollView()
@@ -30,15 +67,16 @@ class BalanceReportViewController: UIViewController {
         container.layer.shadowRadius = 12
         
         let titleLabel = UILabel()
-        titleLabel.text = "Current Balance"
+        titleLabel.text = "Current Net Balance"
         titleLabel.font = UIFont.systemFont(ofSize: 18, weight: .medium)
         titleLabel.textColor = .secondaryText
         titleLabel.textAlignment = .center
         
         let valueLabel = UILabel()
-        valueLabel.text = "$\(Int(mockBalance).formattedWithSeparator)"
+        valueLabel.tag = 101 // Устанавливаем тэг для быстрого обновления
+        valueLabel.text = "$\(Int(self.netBalance).formattedWithSeparator)" // Используем netBalance
         valueLabel.font = UIFont.systemFont(ofSize: 48, weight: .heavy)
-        valueLabel.textColor = mockBalance >= 0 ? .success : .error
+        valueLabel.textColor = self.netBalance >= 0 ? .systemGreen : .systemRed
         valueLabel.textAlignment = .center
         valueLabel.adjustsFontSizeToFitWidth = true
         valueLabel.minimumScaleFactor = 0.7
@@ -71,7 +109,7 @@ class BalanceReportViewController: UIViewController {
         return container
     }()
     
-    private func createDetailRow(title: String, value: Double, color: UIColor) -> UIView {
+    private func createDetailRow(title: String, value: Double, color: UIColor, tag: Int) -> UIView {
         let container = UIView()
         
         let titleLabel = UILabel()
@@ -80,6 +118,7 @@ class BalanceReportViewController: UIViewController {
         titleLabel.textColor = .primaryText
         
         let valueLabel = UILabel()
+        valueLabel.tag = tag // Устанавливаем тэг для обновления
         valueLabel.text = "$\(Int(value).formattedWithSeparator)"
         valueLabel.font = UIFont.systemFont(ofSize: 18, weight: .bold)
         valueLabel.textColor = color
@@ -100,8 +139,9 @@ class BalanceReportViewController: UIViewController {
         return container
     }
     
-    private lazy var incomeRow = createDetailRow(title: "Total Income", value: mockIncomeTotal, color: .primary)
-    private lazy var expensesRow = createDetailRow(title: "Total Expenses", value: mockExpenseTotal, color: .error)
+    // Обновляем инициализацию с тэгами
+    private lazy var incomeRow = createDetailRow(title: "Total Income", value: 0, color: .primary, tag: 102)
+    private lazy var expensesRow = createDetailRow(title: "Total Expenses (VAT/Tax)", value: 0, color: .error, tag: 103)
     
     private lazy var separator: UIView = {
         let view = UIView()
@@ -109,13 +149,54 @@ class BalanceReportViewController: UIViewController {
         return view
     }()
     
-    private lazy var netBalanceRow = createDetailRow(title: "Net Balance", value: mockBalance, color: mockBalance >= 0 ? .success : .error)
+    private lazy var netBalanceRow = createDetailRow(title: "Net Balance", value: 0, color: netBalance >= 0 ? .success : .error, tag: 104)
+    
+    // MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .background
+        // Сначала настраиваем UI
         setupUI()
+        // Затем загружаем и отображаем данные
+        updateDataAndUI()
     }
+    
+    // 🔑 5. Функция для загрузки данных и обновления UI
+    private func updateDataAndUI() {
+        // 1. Загрузка данных
+        self.totalIncome = calculateTotalIncome()
+        self.totalExpenses = calculateTotalExpenses()
+        
+        let currentBalance = self.netBalance
+        let balanceColor: UIColor = currentBalance >= 0 ? .systemGreen : .systemRed
+        
+        // 2. Обновление UI-элементов по тегам
+        
+        // Обновление Главной Карточки (BalanceCard)
+        if let balanceValueLabel = balanceCard.viewWithTag(101) as? UILabel {
+            balanceValueLabel.text = "$\(Int(currentBalance).formattedWithSeparator)"
+            balanceValueLabel.textColor = balanceColor
+        }
+        
+        // Обновление Total Income Row
+        if let incomeValueLabel = incomeRow.viewWithTag(102) as? UILabel {
+            incomeValueLabel.text = "$\(Int(self.totalIncome).formattedWithSeparator)"
+        }
+        
+        // Обновление Total Expenses Row
+        if let expensesValueLabel = expensesRow.viewWithTag(103) as? UILabel {
+            expensesValueLabel.text = "$\(Int(self.totalExpenses).formattedWithSeparator)"
+        }
+        
+        // Обновление Net Balance Row
+        if let netBalanceValueLabel = netBalanceRow.viewWithTag(104) as? UILabel {
+            netBalanceValueLabel.text = "$\(Int(currentBalance).formattedWithSeparator)"
+            netBalanceValueLabel.textColor = balanceColor
+        }
+    }
+    
+    // MARK: - UI Setup (Без изменений)
     
     private func setupUI() {
         view.addSubview(scrollView)
