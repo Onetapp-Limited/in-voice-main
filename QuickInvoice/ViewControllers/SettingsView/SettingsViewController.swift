@@ -1,13 +1,13 @@
 import UIKit
 import SnapKit
-import StoreKit // Используется для запроса оценки приложения
+import StoreKit
 
 class SettingsViewController: UIViewController {
 
     enum Constants {
         
         enum Links {
-            // Заглушки, которые нужно будет заменить на актуальные URL/Email
+            // todo test111 Заглушки, которые нужно будет заменить на актуальные URL/Email
             static let privacyPolicyURL = "https://www.invoicefly.com/privacy"
             static let termsOfServiceURL = "https://www.invoicefly.com/terms"
             static let contactUsEmail = "support@invoicefly.com"
@@ -92,23 +92,57 @@ class SettingsViewController: UIViewController {
     }
     
     // MARK: - Setup
-    
+
     private func setupNavigationBar() {
-        title = Constants.Settings.screenTitle
         
-        // Настройки Navigation Bar (соответствует стилю InvoicesVC)
+        // 1. Левый элемент: Иконка + Title "InvoiceFly"
+        let logoImage = UIImage(systemName: "gearshape.fill")?.withTintColor(.accent, renderingMode: .alwaysOriginal)
+        let logoImageView = UIImageView(image: logoImage)
+        logoImageView.contentMode = .scaleAspectFit
+        logoImageView.snp.makeConstraints { make in make.size.equalTo(24) }
+        
+        let titleLabel = UILabel()
+        titleLabel.text = "Settings"
+        titleLabel.font = UIFont.systemFont(ofSize: 22, weight: .bold)
+        titleLabel.textColor = .primaryText
+        
+        let leftStack = UIStackView(arrangedSubviews: [UIView(), logoImageView, titleLabel, UIView()])
+        leftStack.axis = .horizontal
+        leftStack.spacing = 8
+        
+        let leftBarItem = UIBarButtonItem(customView: leftStack)
+        navigationItem.leftBarButtonItem = leftBarItem
+        
+        // 2. Правый элемент: PRO Badge
+        let proButton = UIButton(type: .custom)
+        proButton.setTitle("PRO", for: .normal)
+        proButton.setTitleColor(.white, for: .normal)
+        proButton.titleLabel?.font = UIFont.systemFont(ofSize: 12, weight: .heavy)
+        
+        let starIcon = UIImage(systemName: "crown.fill", withConfiguration: UIImage.SymbolConfiguration(pointSize: 10, weight: .bold))
+        proButton.setImage(starIcon, for: .normal)
+        proButton.tintColor = .white
+        
+        proButton.backgroundColor = UIColor(red: 0.9, green: 0.7, blue: 0.2, alpha: 1.0)
+        proButton.contentEdgeInsets = UIEdgeInsets(top: 5, left: 10, bottom: 5, right: 10)
+        proButton.layer.cornerRadius = 10
+        proButton.clipsToBounds = true
+        
+        proButton.addTarget(self, action: #selector(proBadgeTapped), for: .touchUpInside)
+        
+        let rightBarItem = UIBarButtonItem(customView: proButton)
+        navigationItem.rightBarButtonItem = rightBarItem
+        
+        // 3. Общие настройки Navigation Bar
         let appearance = UINavigationBarAppearance()
         appearance.configureWithOpaqueBackground()
         appearance.backgroundColor = UIColor.background
-        appearance.titleTextAttributes = [.foregroundColor: UIColor.primaryText,
-                                          .font: UIFont.systemFont(ofSize: 20, weight: .semibold)]
-        
-        navigationItem.standardAppearance = appearance
-        navigationItem.scrollEdgeAppearance = appearance
-        navigationItem.compactAppearance = appearance
+        navigationController?.navigationBar.standardAppearance = appearance
+        navigationController?.navigationBar.scrollEdgeAppearance = appearance
+        navigationController?.navigationBar.compactAppearance = appearance
         navigationController?.navigationBar.isTranslucent = false
     }
-
+    
     private func setupUI() {
         view.addSubview(settingsTableView)
         
@@ -174,6 +208,13 @@ class SettingsViewController: UIViewController {
             message: Constants.Settings.emailAlertMessage,
             preferredStyle: .alert
         )
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        present(alert, animated: true)
+    }
+    
+    @objc func proBadgeTapped() {
+        print("PRO Badge Tapped - Opening Paywall from Settings")
+        let alert = UIAlertController(title: "Go PRO", message: "Unlock advanced features!", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default))
         present(alert, animated: true)
     }

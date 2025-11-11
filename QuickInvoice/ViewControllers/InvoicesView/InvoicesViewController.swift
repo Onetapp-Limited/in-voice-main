@@ -97,7 +97,7 @@ class InvoicesViewController: UIViewController {
         logoImageView.snp.makeConstraints { make in make.size.equalTo(24) }
         
         let titleLabel = UILabel()
-        titleLabel.text = "InvoiceFly"
+        titleLabel.text = "Invoices"
         titleLabel.font = UIFont.systemFont(ofSize: 22, weight: .bold)
         titleLabel.textColor = .primaryText
         
