@@ -38,6 +38,7 @@
 		107315C22EBCBB53008E7C35 /* DateAxisValueFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 107315C12EBCBB52008E7C35 /* DateAxisValueFormatter.swift */; };
 		107315C52EC1E62E008E7C35 /* CompanyInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 107315C42EC1E62C008E7C35 /* CompanyInfoViewController.swift */; };
 		107315C72EC356D0008E7C35 /* TemplatePreviewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 107315C62EC356CF008E7C35 /* TemplatePreviewCell.swift */; };
+		107315C92EC35985008E7C35 /* InvoiceTemplateStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 107315C82EC35984008E7C35 /* InvoiceTemplateStyle.swift */; };
 		109202F92EAF763B00F0C7FE /* InvoiceTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 109202F82EAF763A00F0C7FE /* InvoiceTableViewCell.swift */; };
 		109204592EAF784200F0C7FE /* Colors+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 109204582EAF783D00F0C7FE /* Colors+.swift */; };
 		1092045B2EAF7A2E00F0C7FE /* GradientButton+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1092045A2EAF7A2D00F0C7FE /* GradientButton+.swift */; };
@@ -100,6 +101,7 @@
 		107315C12EBCBB52008E7C35 /* DateAxisValueFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateAxisValueFormatter.swift; sourceTree = "<group>"; };
 		107315C42EC1E62C008E7C35 /* CompanyInfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompanyInfoViewController.swift; sourceTree = "<group>"; };
 		107315C62EC356CF008E7C35 /* TemplatePreviewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemplatePreviewCell.swift; sourceTree = "<group>"; };
+		107315C82EC35984008E7C35 /* InvoiceTemplateStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvoiceTemplateStyle.swift; sourceTree = "<group>"; };
 		109202F82EAF763A00F0C7FE /* InvoiceTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvoiceTableViewCell.swift; sourceTree = "<group>"; };
 		109204582EAF783D00F0C7FE /* Colors+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Colors+.swift"; sourceTree = "<group>"; };
 		1092045A2EAF7A2D00F0C7FE /* GradientButton+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GradientButton+.swift"; sourceTree = "<group>"; };
@@ -195,6 +197,7 @@
 		1051E6182EB0F17500D576BC /* InvoiceDetailPDFViewController */ = {
 			isa = PBXGroup;
 			children = (
+				107315C82EC35984008E7C35 /* InvoiceTemplateStyle.swift */,
 				107315C62EC356CF008E7C35 /* TemplatePreviewCell.swift */,
 				1051E6192EB0F17900D576BC /* InvoiceDetailPDFViewController.swift */,
 			);
@@ -458,6 +461,7 @@
 				104AD7C02EB35FFE0014E550 /* EstimateTableViewCell.swift in Sources */,
 				9520F87F24D27CBB006CDC05 /* SceneDelegate.swift in Sources */,
 				95FDD331253E29720001D2FA /* Extension+Float.swift in Sources */,
+				107315C92EC35985008E7C35 /* InvoiceTemplateStyle.swift in Sources */,
 				95355587253E1E5300A3AECB /* Extension+ViewController.swift in Sources */,
 				95355583253DFFCD00A3AECB /* CSVCreator.swift in Sources */,
 				104AD7CE2EB4E7DA0014E550 /* ClientTableViewCell.swift in Sources */,
