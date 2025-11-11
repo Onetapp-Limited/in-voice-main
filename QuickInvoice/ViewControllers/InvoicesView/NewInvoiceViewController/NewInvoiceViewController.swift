@@ -17,7 +17,8 @@ class NewInvoiceViewController: UIViewController {
     private let itemCellHeight: CGFloat = 80
     private var tableViewHeightConstraint: Constraint!
     private var companyInfo: CompanyInfo?
-    
+    private var activeTextField: UITextField?
+
     // MARK: - UI Elements
     private let scrollView = UIScrollView()
     private let contentView = UIView()
@@ -346,6 +347,43 @@ class NewInvoiceViewController: UIViewController {
         setupViewController()
         setupUI()
         updateInvoiceSummary()
+        setupKeyboardHandling()
+    }
+    
+    private func setupKeyboardHandling() {
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShowHandler), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHideHandler), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    @objc func keyboardWillShowHandler(notification: NSNotification) {
+        guard let userInfo = notification.userInfo,
+              let keyboardFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect,
+              let activeTextField = activeTextField
+        else { return }
+        
+        let contentInsets = UIEdgeInsets(top: 0, left: 0, bottom: keyboardFrame.height, right: 0)
+        scrollView.contentInset = contentInsets
+        scrollView.scrollIndicatorInsets = contentInsets
+        
+        var aRect = self.view.frame
+        aRect.size.height -= keyboardFrame.height
+        
+        let fieldFrameInView = activeTextField.convert(activeTextField.bounds, to: self.view)
+
+        if !aRect.contains(fieldFrameInView.origin) {
+            let scrollPoint = CGPoint(x: 0, y: fieldFrameInView.origin.y - keyboardFrame.height / 2)
+            scrollView.setContentOffset(scrollPoint, animated: true)
+        }
+    }
+    
+    @objc func keyboardWillHideHandler(notification: NSNotification) {
+        let contentInsets = UIEdgeInsets.zero
+        scrollView.contentInset = contentInsets
+        scrollView.scrollIndicatorInsets = contentInsets
     }
     
     // MARK: - Setup
@@ -1103,6 +1141,10 @@ extension NewInvoiceViewController: UITableViewDataSource, UITableViewDelegate {
 
 // MARK: - UITextFieldDelegate
 extension NewInvoiceViewController: UITextFieldDelegate {
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        self.activeTextField = textField
+    }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
         if textField == taxTextField || textField == discountTextField {
