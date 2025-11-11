@@ -38,12 +38,8 @@ class ClientsViewController: UIViewController {
         }
     }
     
-    // Входные данные (Все счета), передаются снаружи
     var allInvoices: [Invoice] = [] {
         didSet {
-//            let uniqueClients = Set(allInvoices.compactMap { $0.client }.filter { $0.id != nil })
-//            allClients = Array(uniqueClients).sorted(by: { $0.clientName ?? "" < $1.clientName ?? "" }) + clientsFromDB
-            
             let clientsFromDB = clientsService?.getAllClients() ?? []
             allClients = clientsFromDB
             filteredClients = allClients
@@ -54,7 +50,6 @@ class ClientsViewController: UIViewController {
     
     var filteredClients: [Client] = [] {
         didSet {
-            // Обновляем состояние пустого экрана
             updateEmptyState()
             clientsTableView.reloadData()
         }
@@ -107,7 +102,6 @@ class ClientsViewController: UIViewController {
         return button
     }()
     
-    // Заглушка (Empty State) с системной иконкой
     lazy var emptyStateView: UIView = {
         let view = UIView()
         

@@ -3,6 +3,61 @@ import SnapKit
 import PDFKit
 import MessageUI
 
+// MARK: - Template Definition
+enum InvoiceTemplateStyle: String, CaseIterable {
+    case modern = "Modern (Blue)"
+    case classic = "Classic (B&W)"
+    case minimal = "Minimal (Gray)"
+    case vibrant = "Vibrant (Red)"
+    case tealAccent = "Teal Accent"
+    case goldTheme = "Gold Theme"
+    case boxed = "Boxed (Green)"
+
+    var accentColor: UIColor {
+        switch self {
+        case .modern: return UIColor.systemBlue // Базовый цвет
+        case .classic: return UIColor.black // Черный/серый
+        case .minimal: return UIColor.systemGray // Светло-серый
+        case .vibrant: return UIColor.systemRed // Красный
+        case .tealAccent: return UIColor(red: 0.1, green: 0.6, blue: 0.6, alpha: 1.0) // Бирюзовый
+        case .goldTheme: return UIColor(red: 0.8, green: 0.6, blue: 0.2, alpha: 1.0) // Золотой/Коричневый
+        case .boxed: return UIColor.systemGreen // Зеленый
+        }
+    }
+    
+    // Вспомогательное свойство для типа шрифта
+    var isSerifFont: Bool {
+        switch self {
+        case .classic, .goldTheme: return true
+        default: return false
+        }
+    }
+    
+    // Вспомогательное свойство для цвета фона таблицы
+    var tableStripeColor: UIColor {
+        switch self {
+        case .minimal: return UIColor.systemGray.withAlphaComponent(0.05)
+        case .tealAccent: return accentColor.withAlphaComponent(0.08)
+        case .boxed: return accentColor.withAlphaComponent(0.1)
+        case .goldTheme: return accentColor.withAlphaComponent(0.1)
+        default: return UIColor.surface
+        }
+    }
+    
+    // Вспомогательная функция для получения шрифта
+    func getFont(size: CGFloat, isBold: Bool = false) -> UIFont {
+        if isSerifFont {
+            if isBold {
+                return UIFont(name: "TimesNewRomanPS-BoldMT", size: size) ?? UIFont.boldSystemFont(ofSize: size)
+            } else {
+                return UIFont(name: "TimesNewRomanPSMT", size: size) ?? UIFont.systemFont(ofSize: size)
+            }
+        } else {
+            return isBold ? UIFont.boldSystemFont(ofSize: size) : UIFont.systemFont(ofSize: size)
+        }
+    }
+}
+
 class InvoiceDetailPDFViewController: UIViewController {
 
     // MARK: - Properties
@@ -10,6 +65,15 @@ class InvoiceDetailPDFViewController: UIViewController {
     var isEstimate: Bool = false
     var invoice: Invoice?
     private let pdfView = PDFView()
+    
+    // ⭐ НОВОЕ: Текущий выбранный шаблон (по умолчанию Modern)
+    private var currentStyle: InvoiceTemplateStyle = .modern {
+        didSet {
+            generateAndLoadPDF()
+            // Обновляем CollectionView, чтобы показать выделение
+            styleCollectionView.reloadData()
+        }
+    }
     
     private var estimateService: EstimateService? {
         do {
@@ -29,13 +93,30 @@ class InvoiceDetailPDFViewController: UIViewController {
         }
     }
     
-    // Вспомогательный enum для определения типа символа в строке итогов
     enum SummarySymbolType {
         case currency
         case percent
     }
     
     // MARK: - UI Elements
+    
+    // ⭐ НОВЫЙ UI ЭЛЕМЕНТ: Коллекция для выбора шаблона
+    private lazy var styleCollectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .horizontal
+        layout.itemSize = CGSize(width: 100, height: 120) // Размер превью
+        layout.minimumInteritemSpacing = 10
+        layout.minimumLineSpacing = 10
+        layout.sectionInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
+        
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.register(TemplatePreviewCell.self, forCellWithReuseIdentifier: TemplatePreviewCell.reuseIdentifier)
+        collectionView.backgroundColor = .clear
+        collectionView.showsHorizontalScrollIndicator = false
+        collectionView.delegate = self
+        collectionView.dataSource = self
+        return collectionView
+    }()
     
     private lazy var convertButton: UIButton = {
         var config = UIButton.Configuration.filled()
@@ -48,10 +129,9 @@ class InvoiceDetailPDFViewController: UIViewController {
         config.buttonSize = .large
         
         let button = UIButton(configuration: config, primaryAction: UIAction { [weak self] _ in
-            self?.convertButtonTapped() // Новый обработчик
+            self?.convertButtonTapped()
         })
         button.layer.cornerRadius = 14
-        // Можно использовать менее яркую тень, чтобы не конкурировала с sendButton
         button.layer.shadowColor = UIColor.black.withAlphaComponent(0.2).cgColor
         button.layer.shadowOpacity = 0.2
         button.layer.shadowRadius = 4
@@ -61,11 +141,10 @@ class InvoiceDetailPDFViewController: UIViewController {
     
     private lazy var sendButton: UIButton = {
         var config = UIButton.Configuration.filled()
-        // ⭐ ОБНОВЛЕНИЕ ТЕКСТА: Если это Estimate, меняем текст на "Send Estimate (PDF)"
         config.title = isEstimate ? "Send Estimate (PDF)" : "Send Invoice (PDF)"
         config.image = UIImage(systemName: "paperplane.fill")
         config.imagePadding = 10
-        // Использование предполагаемых кастомных цветов
+        
         config.baseBackgroundColor = .primary
         config.baseForegroundColor = .white
         config.buttonSize = .large
@@ -94,6 +173,11 @@ class InvoiceDetailPDFViewController: UIViewController {
         
         setupUI()
         generateAndLoadPDF()
+        
+        // Выбираем первый элемент по умолчанию
+        DispatchQueue.main.async {
+            self.styleCollectionView.selectItem(at: IndexPath(item: 0, section: 0), animated: false, scrollPosition: [])
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -106,16 +190,16 @@ class InvoiceDetailPDFViewController: UIViewController {
     private func setupUI() {
         view.backgroundColor = .background
         
-        // ⭐ ОБНОВЛЕНИЕ TITLE: если isEstimate, меняем заголовок
         title = isEstimate ? "Estimate Preview" : (invoice?.invoiceTitle ?? "Invoice Preview")
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Edit", style: .plain, target: self, action: #selector(editTapped))
         
         view.addSubview(pdfView)
         view.addSubview(sendButton)
+        view.addSubview(styleCollectionView) // ⭐ ДОБАВЛЯЕМ COLLECTION VIEW
         
-        var bottomOffset: CGFloat = 10 // Начальный отступ снизу
-        var topOfButtonsConstraint: ConstraintRelatableTarget = view.safeAreaLayoutGuide
+        var bottomOffset: CGFloat = 10
+        var topOfButtonsConstraint: ConstraintRelatableTarget = styleCollectionView.snp.top // Якорь PDF теперь CollectionView
         
         // ⭐ УСЛОВИЕ: Добавляем кнопку Convert, если это Estimate
         if isEstimate {
@@ -127,11 +211,18 @@ class InvoiceDetailPDFViewController: UIViewController {
                 make.bottom.equalTo(sendButton.snp.top).offset(-10)
                 make.height.equalTo(56)
             }
-            // Смещаем якорь для PDFView
+            // Смещаем якорь для CollectionView
             topOfButtonsConstraint = convertButton.snp.top
         } else {
-            // Если это не Estimate, pdfView будет привязан к верхней части sendButton
             topOfButtonsConstraint = sendButton.snp.top
+        }
+        
+        // 1. Располагаем Collection View над кнопками
+        styleCollectionView.snp.makeConstraints { make in
+            make.leading.trailing.equalToSuperview()
+            // Привязываем к верхней точке кнопок с отступом
+            make.bottom.equalTo(topOfButtonsConstraint).offset(-10)
+            make.height.equalTo(130)
         }
         
         // 2. Располагаем Send Button внизу
@@ -145,8 +236,8 @@ class InvoiceDetailPDFViewController: UIViewController {
         pdfView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide)
             make.leading.trailing.equalToSuperview()
-            // Привязываем нижний край либо к sendButton, либо к convertButton
-            make.bottom.equalTo(topOfButtonsConstraint).offset(-10)
+            // Привязываем нижний край к Collection View
+            make.bottom.equalTo(styleCollectionView.snp.top).offset(-10)
         }
         
         pdfView.autoScales = true
@@ -161,7 +252,8 @@ class InvoiceDetailPDFViewController: UIViewController {
     
     private func generateAndLoadPDF() {
         guard let invoice = invoice else { return }
-        let pdfData = generatePDF(for: invoice)
+        // ⭐ ПЕРЕДАЕМ ТЕКУЩИЙ СТИЛЬ
+        let pdfData = generatePDF(for: invoice, style: currentStyle)
         
         if let document = PDFDocument(data: pdfData) {
             pdfView.document = document
@@ -172,7 +264,8 @@ class InvoiceDetailPDFViewController: UIViewController {
         }
     }
     
-    private func generatePDF(for invoice: Invoice) -> Data {
+    // ⭐ ОБНОВЛЕННЫЙ generatePDF: теперь принимает Style
+    private func generatePDF(for invoice: Invoice, style: InvoiceTemplateStyle) -> Data {
         let pageRect = CGRect(x: 0, y: 0, width: 595.2, height: 841.8) // A4
         let renderer = UIGraphicsPDFRenderer(bounds: pageRect)
         
@@ -183,37 +276,37 @@ class InvoiceDetailPDFViewController: UIViewController {
             var currentY: CGFloat = margin
             
             // --- 1. Header (Title, ID) ---
-            currentY = drawHeader(pageRect: pageRect, currentY: currentY, margin: margin, invoice: invoice)
+            currentY = drawHeader(pageRect: pageRect, currentY: currentY, margin: margin, invoice: invoice, style: style)
             
-            // --- 2. Sender Info & Dates/Status (Фикс дублирования) ---
-            currentY = drawCompanyInfo(pageRect: pageRect, currentY: currentY + 10, margin: margin, invoice: invoice)
+            // --- 2. Sender Info & Dates/Status ---
+            currentY = drawCompanyInfo(pageRect: pageRect, currentY: currentY + 10, margin: margin, invoice: invoice, style: style)
             
             // --- 3. Client Info (BILL TO) ---
-            currentY = drawClientInfo(pageRect: pageRect, currentY: currentY + 30, margin: margin, invoice: invoice)
+            currentY = drawClientInfo(pageRect: pageRect, currentY: currentY + 30, margin: margin, invoice: invoice, style: style)
             
-            // --- 4. Items Table (с учетом новых полей) ---
-            currentY = drawItemsTable(pageRect: pageRect, currentY: currentY + 30, margin: margin, invoice: invoice)
+            // --- 4. Items Table ---
+            currentY = drawItemsTable(pageRect: pageRect, currentY: currentY + 30, margin: margin, invoice: invoice, style: style)
             
-            // --- 5. Summary / Totals (с учетом новых вычислений) ---
-            currentY = drawSummary(pageRect: pageRect, currentY: currentY + 30, margin: margin, invoice: invoice)
+            // --- 5. Summary / Totals ---
+            currentY = drawSummary(pageRect: pageRect, currentY: currentY + 30, margin: margin, invoice: invoice, style: style)
             
             // --- 6. Footer (Payment Notes / Status) ---
-            _ = drawFooter(pageRect: pageRect, currentY: 800, margin: margin) // Фиксированное место внизу
+            _ = drawFooter(pageRect: pageRect, currentY: 800, margin: margin, style: style, isEstimate: isEstimate) // Фиксированное место внизу
         }
         
         return pdfData
     }
     
-    // MARK: - PDF Drawing Helper Functions
+    // MARK: - PDF Drawing Helper Functions (ОБНОВЛЕНО СО СТИЛЯМИ)
     
-    private func drawHeader(pageRect: CGRect, currentY: CGFloat, margin: CGFloat, invoice: Invoice) -> CGFloat {
+    private func drawHeader(pageRect: CGRect, currentY: CGFloat, margin: CGFloat, invoice: Invoice, style: InvoiceTemplateStyle) -> CGFloat {
         var y = currentY
         let textRect = CGRect(x: margin, y: y, width: pageRect.width - 2 * margin, height: 50)
         
         // Title (Left)
         let titleAttributes: [NSAttributedString.Key: Any] = [
-            .font: UIFont.boldSystemFont(ofSize: 32),
-            .foregroundColor: UIColor.primary
+            .font: style.getFont(size: 32, isBold: true),
+            .foregroundColor: style.accentColor
         ]
         let titleText = (invoice.invoiceTitle ?? "INVOICE").uppercased()
         titleText.draw(in: textRect, withAttributes: titleAttributes)
@@ -222,7 +315,7 @@ class InvoiceDetailPDFViewController: UIViewController {
         let idText = "INVOICE ID: \(invoice.id.uuidString.prefix(8).uppercased())"
         
         let idAttributes: [NSAttributedString.Key: Any] = [
-            .font: UIFont.boldSystemFont(ofSize: 12),
+            .font: style.getFont(size: 12, isBold: true),
             .foregroundColor: UIColor.secondaryText
         ]
         
@@ -236,35 +329,37 @@ class InvoiceDetailPDFViewController: UIViewController {
         let line = UIBezierPath()
         line.move(to: CGPoint(x: margin, y: y + 5))
         line.addLine(to: CGPoint(x: pageRect.width - margin, y: y + 5))
-        UIColor.primary.setStroke()
-        line.lineWidth = 3
+        
+        // Разные стили линий
+        if style == .classic || style == .minimal {
+            UIColor.systemGray.setStroke()
+            line.lineWidth = 1
+        } else {
+            style.accentColor.setStroke()
+            line.lineWidth = 3
+        }
         line.stroke()
         
         return y + 15
     }
     
-    /**
-     Отрисовывает информацию об Отправителе (Mock) слева и Важные даты/статус справа.
-     */
-    private func drawCompanyInfo(pageRect: CGRect, currentY: CGFloat, margin: CGFloat, invoice: Invoice) -> CGFloat {
+    private func drawCompanyInfo(pageRect: CGRect, currentY: CGFloat, margin: CGFloat, invoice: Invoice, style: InvoiceTemplateStyle) -> CGFloat {
         var y = currentY
         let halfWidth = (pageRect.width - 2 * margin) / 2
         
         // --- LEFT SIDE: SENDER (Mock Info) ---
         let senderHeaderAttributes: [NSAttributedString.Key: Any] = [
-            .font: UIFont.boldSystemFont(ofSize: 16),
-            .foregroundColor: UIColor.primary
+            .font: style.getFont(size: 16, isBold: true),
+            .foregroundColor: style.accentColor
         ]
         let senderDetailAttributes: [NSAttributedString.Key: Any] = [
-            .font: UIFont.systemFont(ofSize: 12),
+            .font: style.getFont(size: 12),
             .foregroundColor: UIColor.primaryText
         ]
         
-        // Draw Sender Header (Mock)
-        "FROM:".draw(at: CGPoint(x: margin, y: y), withAttributes: [.font: UIFont.boldSystemFont(ofSize: 12), .foregroundColor: UIColor.secondaryText])
+        "FROM:".draw(at: CGPoint(x: margin, y: y), withAttributes: [.font: style.getFont(size: 12), .foregroundColor: UIColor.secondaryText])
         y += 20
         
-        // company data
         let senderCompany = invoice.senderCompany ?? CompanyInfo.load()
         (senderCompany?.name ?? "").draw(at: CGPoint(x: margin, y: y), withAttributes: senderHeaderAttributes)
         y += 20
@@ -277,60 +372,87 @@ class InvoiceDetailPDFViewController: UIViewController {
         let leftColumnMaxY = y + 10
         
         // --- RIGHT SIDE: Dates, Status, Currency ---
-        let dateX = margin + halfWidth
+        let dateX = pageRect.width - margin - halfWidth // Сдвигаем направо
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .medium
         
-        let invoiceDateText = "Invoice Date: \(dateFormatter.string(from: invoice.invoiceDate))"
-        let dueDateText = "Due Date: \(dateFormatter.string(from: invoice.dueDate))"
-        let statusText = "Status: \(invoice.status.rawValue)"
-        let currencyText = "Currency: \(invoice.currency.code) (\(invoice.currencySymbol))"
-        
         let dateLabelAttributes: [NSAttributedString.Key: Any] = [
-            .font: UIFont.boldSystemFont(ofSize: 12),
+            .font: style.getFont(size: 12, isBold: true),
             .foregroundColor: UIColor.primaryText
         ]
         
-        var rightY = currentY + 20 // Start Y for right column after "FROM:" header
+        var rightY = currentY + 20
         
-        // Рисуем даты справа
-        if !isEstimate {
-            invoiceDateText.draw(at: CGPoint(x: dateX, y: rightY), withAttributes: dateLabelAttributes)
-            rightY += 20
-            dueDateText.draw(at: CGPoint(x: dateX, y: rightY), withAttributes: dateLabelAttributes)
+        let dateLabelWidth = halfWidth - 10
+        let alignment: NSTextAlignment = style == .boxed ? .left : .right
+        
+        let info = [
+            ("Invoice Date:", isEstimate ? nil : dateFormatter.string(from: invoice.invoiceDate)),
+            ("Due Date:", isEstimate ? nil : dateFormatter.string(from: invoice.dueDate)),
+            ("Status:", invoice.status.rawValue),
+            ("Currency:", "\(invoice.currency.code) (\(invoice.currencySymbol))")
+        ]
+        
+        for item in info {
+            guard let detail = item.1 else { continue }
+            
+            // Лейбл (слева)
+            let labelSize = item.0.size(withAttributes: dateLabelAttributes)
+            let labelX = dateX + (alignment == .right ? dateLabelWidth - labelSize.width : 0) // Если right, начинаем правее
+            
+            if style != .boxed {
+                // Style: Classic, Modern - выравнивание по правому краю
+                item.0.draw(at: CGPoint(x: dateX + dateLabelWidth - labelSize.width - 70, y: rightY), withAttributes: dateLabelAttributes)
+                
+                // Значение (справа)
+                let detailAttributes: [NSAttributedString.Key: Any] = [
+                    .font: style.getFont(size: 12),
+                    .foregroundColor: UIColor.primaryText
+                ]
+                let detailSize = detail.size(withAttributes: detailAttributes)
+                let detailX = dateX + dateLabelWidth - detailSize.width
+                detail.draw(at: CGPoint(x: detailX, y: rightY), withAttributes: detailAttributes)
+                
+            } else {
+                // Style: Boxed - все в рамке
+                let text = "\(item.0) \(detail)"
+                let textRect = CGRect(x: dateX, y: rightY, width: dateLabelWidth, height: 20)
+                
+                let box = UIBezierPath(rect: textRect.insetBy(dx: 0, dy: -2))
+                style.accentColor.withAlphaComponent(0.1).setFill()
+                box.fill()
+                
+                text.draw(at: CGPoint(x: dateX + 5, y: rightY), withAttributes: dateLabelAttributes)
+            }
+            
             rightY += 20
         }
-        statusText.draw(at: CGPoint(x: dateX, y: rightY), withAttributes: dateLabelAttributes)
-        rightY += 20
-        currencyText.draw(at: CGPoint(x: dateX, y: rightY), withAttributes: dateLabelAttributes)
         
-        // Возвращаем максимальный Y
         return max(leftColumnMaxY, rightY + 10)
     }
 
-    private func drawClientInfo(pageRect: CGRect, currentY: CGFloat, margin: CGFloat, invoice: Invoice) -> CGFloat {
+    private func drawClientInfo(pageRect: CGRect, currentY: CGFloat, margin: CGFloat, invoice: Invoice, style: InvoiceTemplateStyle) -> CGFloat {
         var y = currentY
-        let client = invoice.client
         
         // Заголовок "BILL TO"
         let headerAttributes: [NSAttributedString.Key: Any] = [
-            .font: UIFont.boldSystemFont(ofSize: 12),
-            .foregroundColor: UIColor.secondaryText
+            .font: style.getFont(size: 12, isBold: true),
+            .foregroundColor: style.accentColor
         ]
         "BILL TO:".draw(at: CGPoint(x: margin, y: y), withAttributes: headerAttributes)
         y += 20
         
-        guard let client = client, let clientName = client.clientName, !clientName.isEmpty else {
-            "N/A (Client not specified)".draw(at: CGPoint(x: margin, y: y), withAttributes: [.font: UIFont.italicSystemFont(ofSize: 12), .foregroundColor: UIColor.secondaryText])
+        guard let client = invoice.client, let clientName = client.clientName, !clientName.isEmpty else {
+            "N/A (Client not specified)".draw(at: CGPoint(x: margin, y: y), withAttributes: [.font: style.getFont(size: 12, isBold: true), .foregroundColor: UIColor.secondaryText])
             return y + 30
         }
         
         let nameAttributes: [NSAttributedString.Key: Any] = [
-            .font: UIFont.boldSystemFont(ofSize: 14),
+            .font: style.getFont(size: 14, isBold: true),
             .foregroundColor: UIColor.primaryText
         ]
         let detailAttributes: [NSAttributedString.Key: Any] = [
-            .font: UIFont.systemFont(ofSize: 12),
+            .font: style.getFont(size: 12),
             .foregroundColor: UIColor.secondaryText
         ]
         
@@ -356,24 +478,33 @@ class InvoiceDetailPDFViewController: UIViewController {
             y += 15
         }
 
-        // Client Type (если не New Client)
+        // Client Type
         if client.clientType != .newClient {
             let typeText = "Type: \(client.clientType.localized)"
             typeText.draw(at: CGPoint(x: margin, y: y), withAttributes: detailAttributes)
             y += 15
         }
         
+        // Разделяющая линия
+        if style == .minimal {
+            let line = UIBezierPath()
+            line.move(to: CGPoint(x: margin, y: y + 5))
+            line.addLine(to: CGPoint(x: pageRect.width - margin, y: y + 5))
+            UIColor.systemGray.setStroke()
+            line.lineWidth = 0.5
+            line.stroke()
+        }
+        
         return y + 10
     }
     
-    private func drawItemsTable(pageRect: CGRect, currentY: CGFloat, margin: CGFloat, invoice: Invoice) -> CGFloat {
+    private func drawItemsTable(pageRect: CGRect, currentY: CGFloat, margin: CGFloat, invoice: Invoice, style: InvoiceTemplateStyle) -> CGFloat {
         var y = currentY
         let pageWidth = pageRect.width - 2 * margin
-        let rowHeight: CGFloat = 35 // Увеличена высота для описания
+        let rowHeight: CGFloat = 35
         
         let currencySymbol = invoice.currencySymbol
         
-        // Координаты колонок (доли от общей ширины)
         let colWidths: [CGFloat] = [0.4, 0.1, 0.15, 0.15, 0.2]
         let headers = ["Item / Description", "Qty", "Unit Price", "Discount", "Line Total"]
         
@@ -387,58 +518,66 @@ class InvoiceDetailPDFViewController: UIViewController {
         
         // --- 1. Draw Table Header ---
         let headerRect = CGRect(x: margin, y: y, width: pageWidth, height: rowHeight)
-        UIColor.primary.setFill() // Используем primary для заголовка
+        
+        let headerFillColor = (style == .boxed || style == .vibrant) ? style.accentColor : UIColor.systemGray // Базовый цвет для заливки заголовка
+        headerFillColor.setFill()
         UIRectFill(headerRect)
         
         let headerAttributes: [NSAttributedString.Key: Any] = [
-            .font: UIFont.boldSystemFont(ofSize: 10),
-            .foregroundColor: UIColor.white
+            .font: style.getFont(size: 10, isBold: true),
+            // В Classic/Minimal/Modern можно использовать темный текст на светлом фоне
+            .foregroundColor: (style == .classic || style == .minimal || style == .modern) ? UIColor.black : UIColor.white
         ]
         
         for (index, header) in headers.enumerated() {
             let colStart = colStarts[index]
             let colWidth = pageWidth * colWidths[index]
-            let centeredX = colStart + (colWidth / 2) - (header.size(withAttributes: headerAttributes).width / 2)
             
-            // Выравнивание: Item/Description - по левому краю, остальные - по центру/правому
-            let headerX: CGFloat = (index == 0) ? colStart + 5 : centeredX
-            header.draw(at: CGPoint(x: headerX, y: y + 10), withAttributes: headerAttributes)
+            // Выравнивание: Item/Description - по левому краю, остальные - по правому
+            let textAlignment: NSTextAlignment = (index == 0) ? .left : .right
+            let padding: CGFloat = 5
+            
+            let centeredX: CGFloat
+            if textAlignment == .left {
+                centeredX = colStart + padding
+            } else {
+                let size = header.size(withAttributes: headerAttributes)
+                centeredX = colStart + colWidth - size.width - padding
+            }
+            
+            header.draw(at: CGPoint(x: centeredX, y: y + 10), withAttributes: headerAttributes)
         }
         y += rowHeight
         
         // --- 2. Draw Items ---
         let nameAttributes: [NSAttributedString.Key: Any] = [
-            .font: UIFont.boldSystemFont(ofSize: 10),
+            .font: style.getFont(size: 10, isBold: true),
             .foregroundColor: UIColor.primaryText
         ]
         let descAttributes: [NSAttributedString.Key: Any] = [
-            .font: UIFont.systemFont(ofSize: 8),
+            .font: style.getFont(size: 8),
             .foregroundColor: UIColor.secondaryText
         ]
         let valueAttributes: [NSAttributedString.Key: Any] = [
-            .font: UIFont.systemFont(ofSize: 10),
+            .font: style.getFont(size: 10),
             .foregroundColor: UIColor.primaryText
         ]
         
         for (index, item) in invoice.items.enumerated() {
-            // TODO: Реализовать логику разбиения на страницы при необходимости
-            
             let rowRect = CGRect(x: margin, y: y, width: pageWidth, height: rowHeight)
             
             // Чередование фона строк
             if index % 2 != 0 {
-                UIColor.surface.setFill()
+                style.tableStripeColor.setFill()
                 UIRectFill(rowRect)
             }
             
-            // Расчет и форматирование значений
             let qtyUnit = item.unitType == .item ? "" : " \(item.unitType.localized.prefix(1))"
             let qty = String(format: "%.1f%@", item.quantity, qtyUnit)
             let unitPrice = "\(currencySymbol)\(String(format: "%.2f", item.unitPrice))"
-            let discountValueString: String
             
+            let discountValueString: String
             if item.discountType == .percentage {
-                // Предполагаем, что item.discountValue это 0-100%, не умножаем на 100
                 discountValueString = String(format: "%.0f%%", item.discountValue)
             } else {
                 discountValueString = "\(currencySymbol)\(String(format: "%.2f", item.discountValue))"
@@ -457,22 +596,23 @@ class InvoiceDetailPDFViewController: UIViewController {
             for (colIndex, tuple) in values.enumerated() {
                 let colStart = colStarts[colIndex]
                 let colWidth = pageWidth * colWidths[colIndex]
+                let padding: CGFloat = 5
                 
                 if colIndex == 0 {
                     // Name
-                    tuple.0.draw(at: CGPoint(x: colStart + 5, y: y + 4), withAttributes: nameAttributes)
+                    tuple.0.draw(at: CGPoint(x: colStart + padding, y: y + 4), withAttributes: nameAttributes)
                     
-                    // Description (Multiline support in restricted area)
+                    // Description
                     if let desc = tuple.1, !desc.isEmpty {
-                        let descRect = CGRect(x: colStart + 5, y: y + 18, width: colWidth - 10, height: 15)
+                        let descRect = CGRect(x: colStart + padding, y: y + 18, width: colWidth - 2 * padding, height: 15)
                         desc.draw(in: descRect, withAttributes: descAttributes)
                     }
                     
                 } else {
-                    // Other columns: Qty, Prices, Discount, Total (Right-aligned)
+                    // Other columns: Right-aligned
                     let value = tuple.0
                     let size = value.size(withAttributes: valueAttributes)
-                    let textX = colStart + colWidth - size.width - 5 // 5pt отступ от правого края
+                    let textX = colStart + colWidth - size.width - padding
                     
                     value.draw(at: CGPoint(x: textX, y: y + (rowHeight - size.height) / 2), withAttributes: valueAttributes)
                 }
@@ -482,8 +622,18 @@ class InvoiceDetailPDFViewController: UIViewController {
             let separator = UIBezierPath()
             separator.move(to: CGPoint(x: margin, y: y + rowHeight))
             separator.addLine(to: CGPoint(x: pageRect.width - margin, y: y + rowHeight))
-            UIColor.border.setStroke()
-            separator.lineWidth = 0.5
+            
+            // Разные стили для разделителей
+            if style == .minimal {
+                UIColor.systemGray.withAlphaComponent(0.3).setStroke()
+                separator.lineWidth = 0.5
+            } else if style == .boxed {
+                style.accentColor.setStroke()
+                separator.lineWidth = 1
+            } else {
+                UIColor.border.setStroke()
+                separator.lineWidth = 0.5
+            }
             separator.stroke()
             
             y += rowHeight
@@ -492,95 +642,95 @@ class InvoiceDetailPDFViewController: UIViewController {
         return y
     }
     
-    private func drawSummary(pageRect: CGRect, currentY: CGFloat, margin: CGFloat, invoice: Invoice) -> CGFloat {
+    private func drawSummary(pageRect: CGRect, currentY: CGFloat, margin: CGFloat, invoice: Invoice, style: InvoiceTemplateStyle) -> CGFloat {
         var y = currentY
         let summaryWidth: CGFloat = 180
         let summaryX = pageRect.width - margin - summaryWidth
         let currencySymbol = invoice.currencySymbol
         
         // --- Subtotal ---
-        y = drawSummaryRow(y: y, x: summaryX, width: summaryWidth, label: "Subtotal:", value: invoice.subtotal, currencySymbol: currencySymbol, symbolType: .currency, isBold: false)
+        y = drawSummaryRow(y: y, x: summaryX, width: summaryWidth, label: "Subtotal:", value: invoice.subtotal, currencySymbol: currencySymbol, symbolType: .currency, isBold: false, style: style)
         
         // --- Tax ---
-        let taxRateDisplay = String(format: "%.1f", invoice.taxRate * 100) // Отображаем в процентах
-        y = drawSummaryRow(y: y, x: summaryX, width: summaryWidth, label: "Tax (\(taxRateDisplay)%):", value: invoice.taxTotal, currencySymbol: currencySymbol, symbolType: .currency, isBold: false)
+        let taxRateDisplay = String(format: "%.1f", invoice.taxRate * 100)
+        y = drawSummaryRow(y: y, x: summaryX, width: summaryWidth, label: "Tax (\(taxRateDisplay)%):", value: invoice.taxTotal, currencySymbol: currencySymbol, symbolType: .currency, isBold: false, style: style)
         
         // --- Total Discount (на инвойс) ---
         if invoice.discountValue != 0 {
-            
             let discountLabel = "Invoice Discount:"
-            let discountAmount = abs(invoice.discountValue) // Сумма скидки (положительное число)
+            let discountAmount = abs(invoice.discountValue)
             let isPercentage = invoice.discountType == .percentage
             
             let valueToDisplay: Double
             let symbolType: SummarySymbolType
             
             if isPercentage {
-                // Если процент, показываем сам процент (invoice.discount)
-                valueToDisplay = invoice.discount // Предполагаем, что discount это 0-100%
+                valueToDisplay = invoice.discount
                 symbolType = .percent
             } else {
-                // Если фиксированная сумма, показываем сумму (discountAmount)
                 valueToDisplay = discountAmount
                 symbolType = .currency
             }
             
-            // Передаем отрицательную сумму, чтобы показать вычитание (если скидка)
             y = drawSummaryRow(y: y, x: summaryX, width: summaryWidth,
-                               label: discountLabel,
-                               value: -discountAmount, // Сумма в валюте, которая вычтется
-                               currencySymbol: currencySymbol,
-                               symbolType: symbolType, // Передаем тип символа (процент или валюта)
-                               valueToDisplay: valueToDisplay, // Передаем значение для отображения (процент или сумма)
-                               isBold: false)
+                                label: discountLabel,
+                                value: -discountAmount,
+                                currencySymbol: currencySymbol,
+                                symbolType: symbolType,
+                                valueToDisplay: valueToDisplay,
+                                isBold: false, style: style)
         }
         
         // Draw thick separator line
         let line = UIBezierPath()
         line.move(to: CGPoint(x: summaryX, y: y + 2))
         line.addLine(to: CGPoint(x: pageRect.width - margin, y: y + 2))
-        UIColor.primary.setStroke()
+        style.accentColor.setStroke() // Толстая линия акцентного цвета
         line.lineWidth = 2
         line.stroke()
         
         y += 5
         
-        y = drawSummaryRow(y: y, x: summaryX, width: summaryWidth, label: "GRAND TOTAL: ", value: invoice.grandTotal, currencySymbol: currencySymbol, symbolType: .currency, isBold: true, fontSize: 16, color: .primary)
+        // --- GRAND TOTAL ---
+        y = drawSummaryRow(y: y, x: summaryX, width: summaryWidth, label: "GRAND TOTAL: ", value: invoice.grandTotal, currencySymbol: currencySymbol, symbolType: .currency, isBold: true, fontSize: 16, color: style.accentColor, style: style)
         
         return y
     }
     
-    private func drawSummaryRow(y: CGFloat, x: CGFloat, width: CGFloat, label: String, value: Double, currencySymbol: String, symbolType: SummarySymbolType, valueToDisplay: Double? = nil, isBold: Bool, fontSize: CGFloat = 12, color: UIColor? = nil) -> CGFloat {
+    private func drawSummaryRow(y: CGFloat, x: CGFloat, width: CGFloat, label: String, value: Double, currencySymbol: String, symbolType: SummarySymbolType, valueToDisplay: Double? = nil, isBold: Bool, fontSize: CGFloat = 12, color: UIColor? = nil, style: InvoiceTemplateStyle) -> CGFloat {
         
-        let displayValue = valueToDisplay ?? abs(value) // Используем явно переданное значение (для процентов) или абсолютное значение суммы (для валюты)
+        let displayValue = valueToDisplay ?? abs(value)
 
         let labelAttributes: [NSAttributedString.Key: Any] = [
-            .font: isBold ? UIFont.boldSystemFont(ofSize: fontSize) : UIFont.systemFont(ofSize: fontSize),
+            .font: style.getFont(size: fontSize, isBold: isBold),
             .foregroundColor: color ?? UIColor.primaryText
         ]
         let valueAttributes: [NSAttributedString.Key: Any] = [
-            .font: isBold ? UIFont.boldSystemFont(ofSize: fontSize) : UIFont.systemFont(ofSize: fontSize),
+            .font: style.getFont(size: fontSize, isBold: isBold),
             .foregroundColor: color ?? UIColor.primaryText
         ]
         
+        // Draw label (Left side of summary box)
         label.draw(at: CGPoint(x: x, y: y), withAttributes: labelAttributes)
         
         let formattedValue: String
         switch symbolType {
         case .currency:
-            formattedValue = "\(currencySymbol)\(String(format: "%.2f", abs(displayValue)))"
+            let sign = (value < 0 && valueToDisplay == nil) ? "-" : "" // Если это скидка (value < 0), но не процент
+            formattedValue = "\(sign)\(currencySymbol)\(String(format: "%.2f", abs(displayValue)))"
         case .percent:
             formattedValue = String(format: "%.0f%%", displayValue)
         }
         
+        // Draw value (Right side of summary box)
         let size = formattedValue.size(withAttributes: valueAttributes)
-        let valueX = x + width - size.width
+        let valueX = x + width - size.width // Right alignment
         formattedValue.draw(at: CGPoint(x: valueX, y: y + (20 - size.height) / 2), withAttributes: valueAttributes)
         
         return y + 20
     }
     
-    private func drawFooter(pageRect: CGRect, currentY: CGFloat, margin: CGFloat) -> CGFloat {
+    private func drawFooter(pageRect: CGRect, currentY: CGFloat, margin: CGFloat, style: InvoiceTemplateStyle, isEstimate: Bool) -> CGFloat {
         let y = currentY
         
         let footerText = "Thank you for your business. Please remit payment by the due date. Contact us if you have any questions."
@@ -588,14 +738,21 @@ class InvoiceDetailPDFViewController: UIViewController {
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.alignment = .center
         
-        let attributes: [NSAttributedString.Key: Any] = [
-            .font: UIFont.italicSystemFont(ofSize: 10),
-            .foregroundColor: UIColor.secondaryText,
+        var attributes: [NSAttributedString.Key: Any] = [
+            .font: style.getFont(size: 10),
+            .foregroundColor: style.accentColor,
             .paragraphStyle: paragraphStyle
         ]
         
         let footerRect = CGRect(x: margin, y: y, width: pageRect.width - 2 * margin, height: 40)
+        
         if !isEstimate {
+            if style == .classic {
+                attributes[.foregroundColor] = UIColor.black
+            } else if style == .minimal {
+                return y + 40
+            }
+            
             footerText.draw(in: footerRect, withAttributes: attributes)
         }
         
@@ -628,9 +785,10 @@ class InvoiceDetailPDFViewController: UIViewController {
     
     private func sendButtonTapped() {
         guard let invoice = invoice else { return }
-        let pdfData = generatePDF(for: invoice)
+        // ⭐ Генерируем PDF с текущим выбранным стилем
+        let pdfData = generatePDF(for: invoice, style: currentStyle)
         
-        let titlePrefix = isEstimate ? "Estimate" : "Invoice" // ⭐ ОБНОВЛЕНИЕ
+        let titlePrefix = isEstimate ? "Estimate" : "Invoice"
         let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent("\(titlePrefix)-\(invoice.invoiceTitle ?? "Document").pdf")
         try? pdfData.write(to: tempURL)
         
@@ -646,6 +804,39 @@ class InvoiceDetailPDFViewController: UIViewController {
     }
 }
 
+// MARK: - Collection View Delegate and Data Source
+
+extension InvoiceDetailPDFViewController: UICollectionViewDelegate, UICollectionViewDataSource {
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return InvoiceTemplateStyle.allCases.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TemplatePreviewCell.reuseIdentifier, for: indexPath) as? TemplatePreviewCell else {
+            return UICollectionViewCell()
+        }
+        
+        let style = InvoiceTemplateStyle.allCases[indexPath.row]
+        
+        // Генерируем мини-PDF для превью
+        let pdfData = generatePDF(for: invoice!, style: style)
+        
+        cell.configure(with: style, pdfData: pdfData, isSelected: style == currentStyle)
+        
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let selectedStyle = InvoiceTemplateStyle.allCases[indexPath.row]
+        currentStyle = selectedStyle
+        
+        // Коллекция перезагрузится через didSet currentStyle, но можем и здесь
+        // styleCollectionView.reloadData()
+    }
+}
+
+
 // MARK: - MessageUI Delegate (Для закрытия окна почты)
 
 extension InvoiceDetailPDFViewController: MFMailComposeViewControllerDelegate {
@@ -655,5 +846,12 @@ extension InvoiceDetailPDFViewController: MFMailComposeViewControllerDelegate {
         if let error = error {
             print("Mail composition failed with error: \(error.localizedDescription)")
         }
+    }
+}
+
+// Добавим вспомогательный метод для объединения атрибутов (если у вас нет)
+extension Dictionary {
+    func merged(with dictionary: [Key: Value]) -> [Key: Value] {
+        return self.merging(dictionary) { (_, new) in new }
     }
 }
