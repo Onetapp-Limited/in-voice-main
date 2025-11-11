@@ -650,29 +650,71 @@ class InvoiceDetailPDFViewController: UIViewController {
         var y = currentY
         let halfWidth = (pageRect.width - 2 * margin) / 2
         
+        // --- Добавляем расчет ширины для левой колонки (Company Info) ---
+        let leftColumnWidth = halfWidth - margin / 2 // Ширина левой колонки с небольшим запасом
+        // -----------------------------------------------------------------
+
         let senderHeaderAttributes: [NSAttributedString.Key: Any] = [
             .font: style.getFont(size: 22, isBold: true),
-            .foregroundColor: style.accentColor
+            .foregroundColor: style.accentColor,
+            // Обязательно добавляем стиль параграфа для переноса
+            .paragraphStyle: {
+                let p = NSMutableParagraphStyle()
+                p.lineBreakMode = .byWordWrapping
+                return p
+            }()
         ]
         let senderDetailAttributes: [NSAttributedString.Key: Any] = [
             .font: style.getFont(size: 18),
-            .foregroundColor: UIColor.primaryText
+            .foregroundColor: UIColor.primaryText,
+            // Обязательно добавляем стиль параграфа для переноса
+            .paragraphStyle: {
+                let p = NSMutableParagraphStyle()
+                p.lineBreakMode = .byWordWrapping
+                return p
+            }()
         ]
         
         "FROM:".draw(at: CGPoint(x: margin, y: y), withAttributes: [.font: style.getFont(size: 18), .foregroundColor: UIColor.secondaryText])
         y += 26
         
         let senderCompany = invoice.senderCompany ?? CompanyInfo.load()
-        (senderCompany?.name ?? "").draw(at: CGPoint(x: margin, y: y), withAttributes: senderHeaderAttributes)
-        y += 26
-        (senderCompany?.street ?? "").draw(at: CGPoint(x: margin, y: y), withAttributes: senderDetailAttributes)
-        y += 23
-        ((senderCompany?.cityStateZip ?? "")).draw(at: CGPoint(x: margin, y: y), withAttributes: senderDetailAttributes)
-        y += 23
-        (senderCompany?.email ?? "").draw(at: CGPoint(x: margin, y: y), withAttributes: senderDetailAttributes)
+        
+        // --- Рисуем Имя Компании (с переносом) ---
+        let companyNameRect = CGRect(x: margin, y: y, width: leftColumnWidth, height: 1000)
+        let companyName = senderCompany?.name ?? ""
+        let companyNameSize = companyName.boundingRect(with: companyNameRect.size, options: .usesLineFragmentOrigin, attributes: senderHeaderAttributes, context: nil)
+        companyName.draw(in: companyNameRect, withAttributes: senderHeaderAttributes)
+        y += max(26, companyNameSize.height) + 4 // Сдвиг на рассчитанную высоту + небольшой отступ
+        // -----------------------------------------
+        
+        // --- Рисуем Улицу (с переносом) ---
+        let streetRect = CGRect(x: margin, y: y, width: leftColumnWidth, height: 1000)
+        let street = senderCompany?.street ?? ""
+        let streetSize = street.boundingRect(with: streetRect.size, options: .usesLineFragmentOrigin, attributes: senderDetailAttributes, context: nil)
+        street.draw(in: streetRect, withAttributes: senderDetailAttributes)
+        y += max(23, streetSize.height) + 2
+        // ----------------------------------
+        
+        // --- Рисуем Город/Индекс (с переносом) ---
+        let cityZipRect = CGRect(x: margin, y: y, width: leftColumnWidth, height: 1000)
+        let cityZip = senderCompany?.cityStateZip ?? ""
+        let cityZipSize = cityZip.boundingRect(with: cityZipRect.size, options: .usesLineFragmentOrigin, attributes: senderDetailAttributes, context: nil)
+        cityZip.draw(in: cityZipRect, withAttributes: senderDetailAttributes)
+        y += max(23, cityZipSize.height) + 2
+        // -----------------------------------------
+        
+        // --- Рисуем Email (с переносом) ---
+        let emailRect = CGRect(x: margin, y: y, width: leftColumnWidth, height: 1000)
+        let email = senderCompany?.email ?? ""
+        let emailSize = email.boundingRect(with: emailRect.size, options: .usesLineFragmentOrigin, attributes: senderDetailAttributes, context: nil)
+        email.draw(in: emailRect, withAttributes: senderDetailAttributes)
+        y += emailSize.height
+        // ----------------------------------
         
         let leftColumnMaxY = y + 15
         
+        // --- Код для правой колонки (Invoice Details) остается без изменений ---
         let dateX = pageRect.width - margin - halfWidth + 40
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .medium
@@ -694,9 +736,10 @@ class InvoiceDetailPDFViewController: UIViewController {
         
         var rightY = currentY + 26
         
-        let dateLabelWidth: CGFloat = halfWidth - 50
-        let valueWidth: CGFloat = 110
-        
+        let dateLabelWidth: CGFloat = halfWidth - 50 // Ширина, выделенная для подписи (например, "Invoice Date:")
+        let valueWidth: CGFloat = 140 // **Увеличили ширину колонки значений (было 110)**
+        let valueXPadding: CGFloat = 10 // **Добавили отступ между подписью и значением**
+
         let info: [(String, String?)] = [
             ("Invoice Date:", isEstimate ? nil : dateFormatter.string(from: invoice.invoiceDate)),
             ("Due Date:", isEstimate ? nil : dateFormatter.string(from: invoice.dueDate)),
@@ -709,11 +752,18 @@ class InvoiceDetailPDFViewController: UIViewController {
             
             item.0.draw(at: CGPoint(x: dateX, y: rightY), withAttributes: dateLabelAttributes)
             
-            let detailRect = CGRect(x: dateX + dateLabelWidth - valueWidth + 5, y: rightY, width: valueWidth, height: 25)
+            // Рассчитываем X-координату для значения с учетом отступа:
+            // dateX + (dateLabelWidth - valueWidth) + 5 (старый отступ) + valueXPadding (новый отступ)
+            let detailRectX = dateX + dateLabelWidth - valueWidth + 5 + valueXPadding
+            
+            let detailRect = CGRect(x: detailRectX, y: rightY, width: valueWidth, height: 25)
+            
+            // Рисуем значение (дату/статус)
             detail.draw(in: detailRect, withAttributes: dateValueAttributes)
             
             rightY += 26
         }
+        // --------------------------------------------------------------------
         
         return max(leftColumnMaxY, rightY)
     }
@@ -721,6 +771,10 @@ class InvoiceDetailPDFViewController: UIViewController {
     private func drawClientInfo(pageRect: CGRect, currentY: CGFloat, margin: CGFloat, invoice: Invoice, style: InvoiceTemplateStyle) -> CGFloat {
         var y = currentY
         
+        // --- Добавляем расчет ширины для клиентской информации ---
+        let clientInfoWidth = pageRect.width / 2 - margin / 2 // Используем примерно половину ширины, как и для компании
+        // --------------------------------------------------------
+
         let headerAttributes: [NSAttributedString.Key: Any] = [
             .font: style.getFont(size: 18, isBold: true),
             .foregroundColor: style.accentColor
@@ -735,30 +789,58 @@ class InvoiceDetailPDFViewController: UIViewController {
         
         let nameAttributes: [NSAttributedString.Key: Any] = [
             .font: style.getFont(size: 20, isBold: true),
-            .foregroundColor: UIColor.primaryText
+            .foregroundColor: UIColor.primaryText,
+            // Обязательно добавляем стиль параграфа для переноса
+            .paragraphStyle: {
+                let p = NSMutableParagraphStyle()
+                p.lineBreakMode = .byWordWrapping
+                return p
+            }()
         ]
         let detailAttributes: [NSAttributedString.Key: Any] = [
             .font: style.getFont(size: 18),
-            .foregroundColor: UIColor.secondaryText
+            .foregroundColor: UIColor.secondaryText,
+            // Обязательно добавляем стиль параграфа для переноса
+            .paragraphStyle: {
+                let p = NSMutableParagraphStyle()
+                p.lineBreakMode = .byWordWrapping
+                return p
+            }()
         ]
         
-        clientName.draw(at: CGPoint(x: margin, y: y), withAttributes: nameAttributes)
-        y += 26
+        // --- Рисуем Имя Клиента (с переносом) ---
+        let clientNameRect = CGRect(x: margin, y: y, width: clientInfoWidth, height: 1000)
+        let clientNameSize = clientName.boundingRect(with: clientNameRect.size, options: .usesLineFragmentOrigin, attributes: nameAttributes, context: nil)
+        clientName.draw(in: clientNameRect, withAttributes: nameAttributes)
+        y += max(26, clientNameSize.height) + 4
+        // ---------------------------------------
         
+        // --- Рисуем Адрес (с переносом) ---
         if let address = client.address, !address.isEmpty {
-            address.draw(at: CGPoint(x: margin, y: y), withAttributes: detailAttributes)
-            y += 23
+            let addressRect = CGRect(x: margin, y: y, width: clientInfoWidth, height: 1000)
+            let addressSize = address.boundingRect(with: addressRect.size, options: .usesLineFragmentOrigin, attributes: detailAttributes, context: nil)
+            address.draw(in: addressRect, withAttributes: detailAttributes)
+            y += max(23, addressSize.height) + 2
         }
+        // ----------------------------------
         
+        // --- Рисуем Email (с переносом) ---
         if let email = client.email, !email.isEmpty {
-            email.draw(at: CGPoint(x: margin, y: y), withAttributes: detailAttributes)
-            y += 23
+            let emailRect = CGRect(x: margin, y: y, width: clientInfoWidth, height: 1000)
+            let emailSize = email.boundingRect(with: emailRect.size, options: .usesLineFragmentOrigin, attributes: detailAttributes, context: nil)
+            email.draw(in: emailRect, withAttributes: detailAttributes)
+            y += max(23, emailSize.height) + 2
         }
+        // ----------------------------------
         
+        // --- Рисуем Телефон (с переносом) ---
         if let phone = client.phoneNumber, !phone.isEmpty {
-            phone.draw(at: CGPoint(x: margin, y: y), withAttributes: detailAttributes)
-            y += 23
+            let phoneRect = CGRect(x: margin, y: y, width: clientInfoWidth, height: 1000)
+            let phoneSize = phone.boundingRect(with: phoneRect.size, options: .usesLineFragmentOrigin, attributes: detailAttributes, context: nil)
+            phone.draw(in: phoneRect, withAttributes: detailAttributes)
+            y += max(23, phoneSize.height) + 2
         }
+        // ------------------------------------
         
         if style == .classic || style == .minimal || style == .tealAccent {
             let line = UIBezierPath()
@@ -998,7 +1080,7 @@ class InvoiceDetailPDFViewController: UIViewController {
             }()
         ]
         
-        let textRect = CGRect(x: margin, y: currentY, width: pageRect.width - 2 * margin, height: 20)
+        let textRect = CGRect(x: margin, y: currentY, width: pageRect.width - 2 * margin, height: 30)
         
         let line = UIBezierPath()
         line.move(to: CGPoint(x: margin, y: currentY - 4))
@@ -1036,25 +1118,21 @@ class InvoiceDetailPDFViewController: UIViewController {
     
     private func sendButtonTapped() {
         guard let invoice = invoice else { return }
-        
         let pdfData = generatePDF(for: invoice, style: currentStyle)
-        let fileName = (isEstimate ? "Estimate_" : "Invoice_") + String(invoice.id.uuidString.prefix(6)) + ".pdf"
         
-        if MFMailComposeViewController.canSendMail() {
-            let mailComposer = MFMailComposeViewController()
-            mailComposer.mailComposeDelegate = self
-            mailComposer.setSubject(isEstimate ? "Your Estimate (\(fileName))" : "Your Invoice (\(fileName))")
-            mailComposer.addAttachmentData(pdfData, mimeType: "application/pdf", fileName: fileName)
-            
-            if let clientEmail = invoice.client?.email {
-                mailComposer.setToRecipients([clientEmail])
-            }
-            
-            present(mailComposer, animated: true)
-        } else {
-            let activityVC = UIActivityViewController(activityItems: [pdfData, fileName], applicationActivities: nil)
-            present(activityVC, animated: true)
+        let titlePrefix = isEstimate ? "Estimate" : "Invoice" // ⭐ ОБНОВЛЕНИЕ
+        let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent("\(titlePrefix)-\(invoice.invoiceTitle ?? "Document").pdf")
+        try? pdfData.write(to: tempURL)
+        
+        let activityVC = UIActivityViewController(activityItems: [tempURL], applicationActivities: nil)
+        
+        if let popover = activityVC.popoverPresentationController {
+            popover.sourceView = self.view
+            popover.sourceRect = CGRect(x: self.view.bounds.midX, y: self.view.bounds.midY, width: 0, height: 0)
+            popover.permittedArrowDirections = []
         }
+        
+        present(activityVC, animated: true)
     }
 }
 
