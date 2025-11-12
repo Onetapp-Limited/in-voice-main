@@ -8,10 +8,10 @@ class SettingsViewController: UIViewController {
         
         enum Links {
             // todo test111 Заглушки, которые нужно будет заменить на актуальные URL/Email
-            static let privacyPolicyURL = "https://www.invoicefly.com/privacy"
-            static let termsOfServiceURL = "https://www.invoicefly.com/terms"
-            static let contactUsEmail = "support@invoicefly.com"
-            static let supportEmailSubject = "InvoiceFly Support Request"
+            static let privacyPolicyURL = "https://docs.google.com/document/d/1HGXHDYjPD3TvXkYv23HXHesmR50mGKTW32byUy6CrjI/edit?usp=sharing"
+            static let termsOfServiceURL = "https://docs.google.com/document/d/106Fiz2-_vg4O09vDIsir-yW5LyKId5yMU7JSOAzetms/edit?usp=sharing"
+            static let contactUsEmail = "onetapp@icloud.com"
+            static let supportEmailSubject = "Invoice Support Request"
         }
 
         enum Settings {
