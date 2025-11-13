@@ -11,10 +11,10 @@ workflows:
         
         # Ваши данные проекта
        # ⚠️ ИЗМЕНЕНИЕ: Указываем относительный путь к файлу проекта
-        XCODE_PROJECT: "in-voice-main/Quick_Invoice.xcodeproj"
+        XCODE_PROJECT: "Quick_Invoice.xcodeproj"
         
         # Схема (название таргета) остается без изменения
-        XCODE_SCHEME: "QuickInvoice"
+        XCODE_SCHEME: "Quick_Invoice"
       
       xcode: latest # Используем последнюю версию Xcode
       
