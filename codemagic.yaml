@@ -7,8 +7,7 @@ workflows:
       groups:
         - app_store_credentials # <--- Группа переменных, которую вы видите на скрине
       vars:
-        # ⚠️ Замените 'com.yourcompany.QuickInvoice' на ваш реальный Bundle ID
-        BUNDLE_ID: "com.yourcompany.QuickInvoice"
+        BUNDLE_ID: "com.voxinvoice.app"
         
         # Ваши данные проекта
         XCODE_PROJECT: "Quick_Invoice.xcodeproj" # <--- Имя вашего .xcodeproj файла

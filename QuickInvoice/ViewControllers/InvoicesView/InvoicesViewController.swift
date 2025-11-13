@@ -97,7 +97,7 @@ class InvoicesViewController: UIViewController {
         logoImageView.snp.makeConstraints { make in make.size.equalTo(24) }
         
         let titleLabel = UILabel()
-        titleLabel.text = "Invoices"
+        titleLabel.text = "VoxInvoice"
         titleLabel.font = UIFont.systemFont(ofSize: 22, weight: .bold)
         titleLabel.textColor = .primaryText
         
@@ -126,7 +126,7 @@ class InvoicesViewController: UIViewController {
         proButton.addTarget(self, action: #selector(proBadgeTapped), for: .touchUpInside)
         
         let rightBarItem = UIBarButtonItem(customView: proButton)
-        navigationItem.rightBarButtonItem = rightBarItem
+//        navigationItem.rightBarButtonItem = rightBarItem // test111
         
         // 3. Общие настройки Navigation Bar
         let appearance = UINavigationBarAppearance()

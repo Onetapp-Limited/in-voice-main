@@ -155,7 +155,7 @@ class EstimatesViewController: UIViewController {
         proButton.addTarget(self, action: #selector(proBadgeTapped), for: .touchUpInside)
         
         let rightBarItem = UIBarButtonItem(customView: proButton)
-        navigationItem.rightBarButtonItem = rightBarItem
+//        navigationItem.rightBarButtonItem = rightBarItem // test111
         
         // 3. Общие настройки
         let appearance = UINavigationBarAppearance()

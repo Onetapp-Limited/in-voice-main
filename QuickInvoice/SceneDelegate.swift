@@ -17,7 +17,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             image: UIImage(systemName: "doc.text"),
             tag: 0
         )
-        invoicesNavVC.title = "Invoices"
+        invoicesNavVC.title = "Invoices" 
         
         let estimatesViewController = EstimatesViewController()
         let estimatesNavController = UINavigationController(rootViewController: estimatesViewController)

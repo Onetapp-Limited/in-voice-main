@@ -7,9 +7,8 @@ class SettingsViewController: UIViewController {
     enum Constants {
         
         enum Links {
-            // todo test111 Заглушки, которые нужно будет заменить на актуальные URL/Email
-            static let privacyPolicyURL = "https://docs.google.com/document/d/1HGXHDYjPD3TvXkYv23HXHesmR50mGKTW32byUy6CrjI/edit?usp=sharing"
-            static let termsOfServiceURL = "https://docs.google.com/document/d/106Fiz2-_vg4O09vDIsir-yW5LyKId5yMU7JSOAzetms/edit?usp=sharing"
+            static let termsOfServiceURL = "https://docs.google.com/document/d/1HGXHDYjPD3TvXkYv23HXHesmR50mGKTW32byUy6CrjI/edit?usp=sharing"
+            static let privacyPolicyURL = "https://docs.google.com/document/d/106Fiz2-_vg4O09vDIsir-yW5LyKId5yMU7JSOAzetms/edit?usp=sharing"
             static let contactUsEmail = "onetapp@icloud.com"
             static let supportEmailSubject = "Invoice Support Request"
         }
@@ -131,7 +130,7 @@ class SettingsViewController: UIViewController {
         proButton.addTarget(self, action: #selector(proBadgeTapped), for: .touchUpInside)
         
         let rightBarItem = UIBarButtonItem(customView: proButton)
-        navigationItem.rightBarButtonItem = rightBarItem
+//        navigationItem.rightBarButtonItem = rightBarItem // test111
         
         // 3. Общие настройки Navigation Bar
         let appearance = UINavigationBarAppearance()
