@@ -10,8 +10,11 @@ workflows:
         BUNDLE_ID: "com.voxinvoice.app"
         
         # Ваши данные проекта
-        XCODE_PROJECT: "Quick_Invoice.xcodeproj" # <--- Имя вашего .xcodeproj файла
-        XCODE_SCHEME: "QuickInvoice"             # <--- Имя вашего таргета/схемы
+       # ⚠️ ИЗМЕНЕНИЕ: Указываем относительный путь к файлу проекта
+        XCODE_PROJECT: "in-voice-main/Quick_Invoice.xcodeproj"
+        
+        # Схема (название таргета) остается без изменения
+        XCODE_SCHEME: "QuickInvoice"
       
       xcode: latest # Используем последнюю версию Xcode
       
