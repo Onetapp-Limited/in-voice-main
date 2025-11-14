@@ -17,6 +17,8 @@
 		104AD7CE2EB4E7DA0014E550 /* ClientTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 104AD7CD2EB4E7D10014E550 /* ClientTableViewCell.swift */; };
 		104AD9482EB8F9410014E550 /* ClientsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 104AD9472EB8F9400014E550 /* ClientsService.swift */; };
 		104AD94B2EB9582A0014E550 /* ExistingClientsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 104AD94A2EB958290014E550 /* ExistingClientsViewController.swift */; };
+		104EB0A22EC74F9000826D1E /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 104EB0A12EC74F8C00826D1E /* OnboardingViewController.swift */; };
+		104EB0A42EC7503200826D1E /* OnboardingPageVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 104EB0A32EC7503200826D1E /* OnboardingPageVC.swift */; };
 		1051E60E2EAF912200D576BC /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 1051E60D2EAF912200D576BC /* RealmSwift */; };
 		1051E6112EAF91C100D576BC /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 1051E6102EAF91C100D576BC /* SnapKit */; };
 		1051E6142EAF9CC900D576BC /* NewClientViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1051E6132EAF9CC800D576BC /* NewClientViewController.swift */; };
@@ -85,6 +87,8 @@
 		104AD7CD2EB4E7D10014E550 /* ClientTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientTableViewCell.swift; sourceTree = "<group>"; };
 		104AD9472EB8F9400014E550 /* ClientsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientsService.swift; sourceTree = "<group>"; };
 		104AD94A2EB958290014E550 /* ExistingClientsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExistingClientsViewController.swift; sourceTree = "<group>"; };
+		104EB0A12EC74F8C00826D1E /* OnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
+		104EB0A32EC7503200826D1E /* OnboardingPageVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPageVC.swift; sourceTree = "<group>"; };
 		1051E6132EAF9CC800D576BC /* NewClientViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewClientViewController.swift; sourceTree = "<group>"; };
 		1051E6162EAFA36000D576BC /* NewInvoiceItemViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewInvoiceItemViewController.swift; sourceTree = "<group>"; };
 		1051E6192EB0F17900D576BC /* InvoiceDetailPDFViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvoiceDetailPDFViewController.swift; sourceTree = "<group>"; };
@@ -176,6 +180,15 @@
 				104AD94A2EB958290014E550 /* ExistingClientsViewController.swift */,
 			);
 			path = ExistingClientsViewController;
+			sourceTree = "<group>";
+		};
+		104EB0A02EC74F8100826D1E /* OnboardingView */ = {
+			isa = PBXGroup;
+			children = (
+				104EB0A12EC74F8C00826D1E /* OnboardingViewController.swift */,
+				104EB0A32EC7503200826D1E /* OnboardingPageVC.swift */,
+			);
+			path = OnboardingView;
 			sourceTree = "<group>";
 		};
 		1051E6122EAF9CC400D576BC /* NewClientViewController */ = {
@@ -336,6 +349,7 @@
 		95A6BC0A24ECD82600BC3088 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
+				104EB0A02EC74F8100826D1E /* OnboardingView */,
 				1051E6182EB0F17500D576BC /* InvoiceDetailPDFViewController */,
 				107315AB2EBB6225008E7C35 /* ReportsView */,
 				107315A52EBB5471008E7C35 /* SettingsView */,
@@ -453,6 +467,7 @@
 				107315C52EC1E62E008E7C35 /* CompanyInfoViewController.swift in Sources */,
 				107315B92EBC9E45008E7C35 /* ExpenseCell.swift in Sources */,
 				9520F87D24D27CBB006CDC05 /* AppDelegate.swift in Sources */,
+				104EB0A22EC74F9000826D1E /* OnboardingViewController.swift in Sources */,
 				1092045B2EAF7A2E00F0C7FE /* GradientButton+.swift in Sources */,
 				107315A72EBB547F008E7C35 /* SettingsViewController.swift in Sources */,
 				109204622EAF7D5900F0C7FE /* InvoiceItemCell.swift in Sources */,
@@ -477,6 +492,7 @@
 				107315C72EC356D0008E7C35 /* TemplatePreviewCell.swift in Sources */,
 				107315C22EBCBB53008E7C35 /* DateAxisValueFormatter.swift in Sources */,
 				1051E61A2EB0F17A00D576BC /* InvoiceDetailPDFViewController.swift in Sources */,
+				104EB0A42EC7503200826D1E /* OnboardingPageVC.swift in Sources */,
 				109204592EAF784200F0C7FE /* Colors+.swift in Sources */,
 				1051E6142EAF9CC900D576BC /* NewClientViewController.swift in Sources */,
 				107315B32EBB6480008E7C35 /* BalanceReportViewController.swift in Sources */,

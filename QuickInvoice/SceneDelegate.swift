@@ -8,68 +8,85 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         guard let windowScene = (scene as? UIWindowScene) else { return }
 
+        let window = UIWindow(frame: windowScene.coordinateSpace.bounds)
+        window.windowScene = windowScene
+        self.window = window
+        
+        // 1. Проверяем статус онбординга
+        if UserDefaults.hasCompletedOnboarding {
+            // Если онбординг пройден, сразу показываем основной флоу
+            window.rootViewController = createTabBarController()
+        } else {
+            // Если первый запуск, показываем OnboardingViewController
+            
+            // 2. Передаем в OnboardingViewController замыкание,
+            // которое запускает основной флоу
+            let onboardingVC = OnboardingViewController(completionHandler: { [weak self] in
+                // 3. Сохраняем статус завершения
+//                UserDefaults.hasCompletedOnboarding = true // todo test111
+                
+                // 4. Плавно переключаем RootViewController
+                self?.presentMainFlow()
+            })
+            window.rootViewController = onboardingVC
+        }
+        
+        self.window?.overrideUserInterfaceStyle = .light
+        window.makeKeyAndVisible()
+    }
+    
+    // MARK: - Методы управления флоу
+    
+    // Метод для создания и настройки TabBarController
+    private func createTabBarController() -> UITabBarController {
         let tabBarController = UITabBarController()
         
-        let invoicesVC = InvoicesViewController()
-        let invoicesNavVC = UINavigationController(rootViewController: invoicesVC)
-        invoicesNavVC.tabBarItem = UITabBarItem(
-            title: "Invoices",
-            image: UIImage(systemName: "doc.text"),
-            tag: 0
-        )
-        invoicesNavVC.title = "Invoices" 
+        // Вспомогательная функция для создания VC
+        func createNav(vc: UIViewController, title: String, systemImage: String) -> UINavigationController {
+            let navController = UINavigationController(rootViewController: vc)
+            navController.tabBarItem = UITabBarItem(title: title, image: UIImage(systemName: systemImage), tag: 0)
+            navController.title = title
+            return navController
+        }
         
-        let estimatesViewController = EstimatesViewController()
-        let estimatesNavController = UINavigationController(rootViewController: estimatesViewController)
-        estimatesNavController.tabBarItem = UITabBarItem(
-            title: "Estimates",
-            image: UIImage(systemName: "number.circle"),
-            tag: 0
-        )
-        estimatesNavController.title = "Estimates"
-        
-        let сlientsViewController = ClientsViewController()
-        let сlientsNavController = UINavigationController(rootViewController: сlientsViewController)
-        сlientsNavController.tabBarItem = UITabBarItem(
-            title: "Clients",
-            image: UIImage(systemName: "person.3"),
-            tag: 0
-        )
-        сlientsNavController.title = "Clients"
-        
-        let reportsViewController = ReportsViewController()
-        let reportsNavViewController = UINavigationController(rootViewController: reportsViewController)
-        reportsNavViewController.tabBarItem = UITabBarItem(
-            title: "Reports",
-            image: UIImage(systemName: "chart.bar"),
-            tag: 0
-        )
-        reportsNavViewController.title = "Reports"
-        
-        let settingsViewController = SettingsViewController()
-        let settingsNavViewController = UINavigationController(rootViewController: settingsViewController)
-        settingsNavViewController.tabBarItem = UITabBarItem(
-            title: "Settings",
-            image: UIImage(systemName: "gear"),
-            tag: 0
-        )
-        settingsNavViewController.title = "Settings"
+        let invoicesNavVC = createNav(vc: InvoicesViewController(), title: "Invoices", systemImage: "doc.text")
+        let estimatesNavController = createNav(vc: EstimatesViewController(), title: "Estimates", systemImage: "number.circle")
+        let clientsNavController = createNav(vc: ClientsViewController(), title: "Clients", systemImage: "person.3")
+        let reportsNavViewController = createNav(vc: ReportsViewController(), title: "Reports", systemImage: "chart.bar")
+        let settingsNavViewController = createNav(vc: SettingsViewController(), title: "Settings", systemImage: "gear")
         
         tabBarController.viewControllers = [
             invoicesNavVC,
             estimatesNavController,
-            сlientsNavController,
+            clientsNavController,
             reportsNavViewController,
             settingsNavViewController
         ]
+        return tabBarController
+    }
+    
+    // Метод для плавной смены корневого контроллера
+    private func presentMainFlow() {
+        guard let window = self.window else { return }
+        let tabBarController = createTabBarController()
         
-        // 7. Устанавливаем TabBarController как корневой контроллер
-        let window = UIWindow(frame: windowScene.coordinateSpace.bounds)
-        window.windowScene = windowScene
-        window.rootViewController = tabBarController
-        self.window = window
-        self.window?.overrideUserInterfaceStyle = .light
-        window.makeKeyAndVisible()
+        UIView.transition(with: window, duration: 0.5, options: .transitionCrossDissolve, animations: {
+            window.rootViewController = tabBarController
+        }, completion: nil)
     }
 }
 
+extension UserDefaults {
+    private enum Keys {
+        static let hasCompletedOnboarding = "hasCompletedOnboarding"
+    }
+
+    static var hasCompletedOnboarding: Bool {
+        get {
+            return standard.bool(forKey: Keys.hasCompletedOnboarding)
+        }
+        set {
+            standard.set(newValue, forKey: Keys.hasCompletedOnboarding)
+        }
+    }
+}
