@@ -2,16 +2,16 @@ import UIKit
 import SnapKit
 import StoreKit
 
+enum Links {
+    static let termsOfServiceURL = "https://docs.google.com/document/d/1HGXHDYjPD3TvXkYv23HXHesmR50mGKTW32byUy6CrjI/edit?usp=sharing"
+    static let privacyPolicyURL = "https://docs.google.com/document/d/106Fiz2-_vg4O09vDIsir-yW5LyKId5yMU7JSOAzetms/edit?usp=sharing"
+    static let contactUsEmail = "onetapp@icloud.com"
+    static let supportEmailSubject = "Invoice Support Request"
+}
+
 class SettingsViewController: UIViewController {
 
     enum Constants {
-        
-        enum Links {
-            static let termsOfServiceURL = "https://docs.google.com/document/d/1HGXHDYjPD3TvXkYv23HXHesmR50mGKTW32byUy6CrjI/edit?usp=sharing"
-            static let privacyPolicyURL = "https://docs.google.com/document/d/106Fiz2-_vg4O09vDIsir-yW5LyKId5yMU7JSOAzetms/edit?usp=sharing"
-            static let contactUsEmail = "onetapp@icloud.com"
-            static let supportEmailSubject = "Invoice Support Request"
-        }
 
         enum Settings {
             static let screenTitle = "Settings"
@@ -155,11 +155,11 @@ class SettingsViewController: UIViewController {
     private func handleSelection(item: SettingsItem) {
         switch item {
         case .privacy:
-            openExternalURL(string: Constants.Links.privacyPolicyURL)
+            openExternalURL(string: Links.privacyPolicyURL)
         case .terms:
-            openExternalURL(string: Constants.Links.termsOfServiceURL)
+            openExternalURL(string: Links.termsOfServiceURL)
         case .contactUs:
-            openEmailClient(email: Constants.Links.contactUsEmail)
+            openEmailClient(email: Links.contactUsEmail)
         case .rateUs:
             requestAppStoreReview()
         }
@@ -176,7 +176,7 @@ class SettingsViewController: UIViewController {
     }
     
     private func openEmailClient(email: String) {
-        let mailtoUrlString = "mailto:\(email)?subject=\(Constants.Links.supportEmailSubject)"
+        let mailtoUrlString = "mailto:\(email)?subject=\(Links.supportEmailSubject)"
             .addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
         
         guard let url = URL(string: mailtoUrlString),

@@ -2,14 +2,23 @@ import UIKit
 import SnapKit
 
 class OnboardingPageVC: UIViewController {
-    
+
     let titleLabel = UILabel()
     let detailLabel = UILabel()
     let imageView = UIImageView()
+    let highlightedText: String
     
-    init(imageName: String, title: String, detail: String) {
+    private let titleFontSize: CGFloat = 32
+    private let detailFontSize: CGFloat = 17
+    private let horizontalInset: CGFloat = 30
+    private let imageAspectRation: CGFloat = 0.8
+
+    init(imageName: String, title: String, detail: String, highlightedText: String) {
+        self.highlightedText = highlightedText
+        
         super.init(nibName: nil, bundle: nil)
-        self.imageView.image = UIImage(systemName: imageName)
+        
+        self.imageView.image = UIImage(named: imageName)
         self.titleLabel.text = title
         self.detailLabel.text = detail
     }
@@ -21,35 +30,56 @@ class OnboardingPageVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
+        setupTitleLabel()
         setupUI()
     }
     
-    private func setupUI() {
-        titleLabel.font = .boldSystemFont(ofSize: 28)
-        titleLabel.textColor = .systemBlue
-        titleLabel.textAlignment = .center
+    private func setupTitleLabel() {
+        guard let fullText = titleLabel.text else { return }
         
-        detailLabel.font = .systemFont(ofSize: 17)
+        let attributedString = NSMutableAttributedString(string: fullText, attributes: [
+            .font: UIFont.boldSystemFont(ofSize: titleFontSize),
+            .foregroundColor: UIColor.label
+        ])
+        
+        if let range = fullText.range(of: highlightedText) {
+            let nsRange = NSRange(range, in: fullText)
+            attributedString.addAttributes([
+                .foregroundColor: UIColor.systemBlue
+            ], range: nsRange)
+        }
+        
+        titleLabel.attributedText = attributedString
+        titleLabel.numberOfLines = 2
+        titleLabel.textAlignment = .center
+    }
+    
+    private func setupUI() {
+        view.addSubview(titleLabel)
+        view.addSubview(detailLabel)
+        view.addSubview(imageView)
+
+        detailLabel.font = .boldSystemFont(ofSize: detailFontSize)
         detailLabel.textColor = .secondaryLabel
         detailLabel.textAlignment = .center
-        detailLabel.numberOfLines = 0
-        
+        detailLabel.numberOfLines = 2
+
         imageView.contentMode = .scaleAspectFit
-        imageView.tintColor = .systemBlue
         
-        let stackView = UIStackView(arrangedSubviews: [imageView, titleLabel, detailLabel])
-        stackView.axis = .vertical
-        stackView.spacing = 20
+        titleLabel.snp.makeConstraints { make in
+//            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(30)
+            make.leading.trailing.equalToSuperview().inset(horizontalInset)
+        }
         
-        view.addSubview(stackView)
-        stackView.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview().inset(30)
-            make.centerY.equalToSuperview().offset(-50)
-            make.height.equalToSuperview().multipliedBy(0.6)
+        detailLabel.snp.makeConstraints { make in
+            make.top.equalTo(titleLabel.snp.bottom).offset(20)
+            make.leading.trailing.equalToSuperview().inset(horizontalInset)
         }
         
         imageView.snp.makeConstraints { make in
-            make.height.equalTo(150)
+            make.top.equalTo(detailLabel.snp.bottom).offset(30)
+            make.leading.trailing.equalToSuperview().inset(-10)
+            make.bottom.equalToSuperview()
         }
     }
 }

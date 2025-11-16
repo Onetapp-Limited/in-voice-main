@@ -3,26 +3,22 @@ import SnapKit
 
 class OnboardingViewController: UIViewController {
     
-    // Closure для запуска основного флоу, передается из SceneDelegate
     private let completionHandler: () -> Void
     
     private var currentPage: Int {
         get {
-            // Безопасно получаем текущий индекс из pageControl
             return pageControl.currentPage
         }
         set {
-            // Обновляем pageControl при программном перелистывании
             pageControl.currentPage = newValue
         }
     }
     
-    // Массив экранов онбординга
     private lazy var pages: [UIViewController] = {
         return [
-            OnboardingPageVC(imageName: "doc.text.fill.viewfinder", title: "Быстрые инвойсы", detail: "Создавайте профессиональные счета за считанные минуты."),
-            OnboardingPageVC(imageName: "person.3.fill", title: "Учет клиентов", detail: "Вся база ваших клиентов всегда под рукой и актуальна."),
-            OnboardingPageVC(imageName: "chart.bar.xaxis", title: "Аналитика и Отчеты", detail: "Отслеживайте доходы и расходы с помощью удобных отчетов."),
+            OnboardingPageVC(imageName: "onbord1", title: "Create & Send Invoices in Seconds", detail: "Professional invoices in a couple of taps — no hassle, no templates needed", highlightedText: "in Seconds"),
+            OnboardingPageVC(imageName: "onbord2", title: "Track Income,\nExpenses & Balance", detail: "All your financial stats in one place. Clear and automatic", highlightedText: "Track Income,"),
+            OnboardingPageVC(imageName: "onbord3", title: "Manage Clients &\nGrow Your Business", detail: "Store clients, create estimates, track payments — work like a pro", highlightedText: "Grow Your Business"),
         ]
     }()
     
@@ -38,6 +34,7 @@ class OnboardingViewController: UIViewController {
         control.numberOfPages = pages.count
         control.currentPageIndicatorTintColor = .systemBlue
         control.pageIndicatorTintColor = .lightGray
+        control.isHidden = true
         return control
     }()
     
@@ -47,10 +44,41 @@ class OnboardingViewController: UIViewController {
         button.titleLabel?.font = .systemFont(ofSize: 20, weight: .bold)
         button.backgroundColor = .systemBlue
         button.setTitleColor(.white, for: .normal)
-        button.layer.cornerRadius = 10
+        button.layer.cornerRadius = 30
         button.addTarget(self, action: #selector(didTapFinish), for: .touchUpInside)
         return button
     }()
+    
+    // MARK: - Дополнительные кнопки
+    
+    private lazy var privacyPolicyButton: UIButton = {
+        return createTextButton(title: "Privacy Policy", action: #selector(didTapPrivacyPolicy))
+    }()
+    
+    private lazy var restoreButton: UIButton = {
+        return createTextButton(title: "Restore", action: #selector(didTapRestore))
+    }()
+    
+    private lazy var termsOfUseButton: UIButton = {
+        return createTextButton(title: "Terms of Use", action: #selector(didTapTermsOfUse))
+    }()
+    
+    private lazy var legalButtonsStackView: UIStackView = {
+        let stack = UIStackView(arrangedSubviews: [privacyPolicyButton, restoreButton, termsOfUseButton])
+        stack.axis = .horizontal
+        stack.spacing = 15 // Отступ между кнопками
+        stack.distribution = .equalSpacing // Равномерно распределяем пространство
+        return stack
+    }()
+    
+    private func createTextButton(title: String, action: Selector) -> UIButton {
+        let button = UIButton(type: .system)
+        button.setTitle(title, for: .normal)
+        button.titleLabel?.font = .systemFont(ofSize: 13, weight: .regular)
+        button.setTitleColor(.darkGray, for: .normal) // Цвет текста
+        button.addTarget(self, action: action, for: .touchUpInside)
+        return button
+    }
     
     // MARK: - Инициализация
     
@@ -82,50 +110,77 @@ class OnboardingViewController: UIViewController {
         addChild(pageViewController)
         view.addSubview(pageViewController.view)
         pageViewController.didMove(toParent: self)
-        
-        pageViewController.view.snp.makeConstraints { make in
-            make.top.leading.trailing.equalToSuperview()
-            make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-100)
-        }
     }
     
     private func setupUI() {
         view.addSubview(pageControl)
         view.addSubview(finishButton)
+        view.addSubview(legalButtonsStackView) // Добавляем стек с новыми кнопками
         
-        pageControl.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.bottom.equalTo(finishButton.snp.top).offset(-10)
+        // Констрейнты для кнопки Continue (finishButton)
+        finishButton.snp.makeConstraints { make in
+            make.leading.trailing.equalToSuperview().inset(10)
+            make.height.equalTo(60)
+            // Привязываем ее выше стека с доп. кнопками
+            make.bottom.equalTo(legalButtonsStackView.snp.top).offset(-15)
+        }
+
+        // Констрейнты для стека с юридическими кнопками (внизу)
+        legalButtonsStackView.snp.makeConstraints { make in
+            make.centerX.equalToSuperview() // Центрируем стек
+            make.leading.trailing.equalToSuperview().inset(30)
+            make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-5) // Отступ от нижнего края safe area
         }
         
-        finishButton.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview().inset(30)
-            make.height.equalTo(50)
-            make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-20)
+        // Констрейнты для PageControl
+        pageControl.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.bottom.equalTo(finishButton.snp.top).offset(-20)
+        }
+        
+        // Констрейнты для PageViewController
+        pageViewController.view.snp.makeConstraints { make in
+            make.top.leading.trailing.equalToSuperview()
+            make.bottom.equalTo(finishButton.snp.top).inset(30)
         }
     }
     
     // MARK: - Action
     
     @objc private func didTapFinish() {
-        
         let nextIndex = currentPage + 1
         
-        // 1. Проверяем, является ли текущая страница последней
         if nextIndex < pages.count {
-            // 2. Если НЕ последняя страница, переходим к следующей
-            
             let nextVC = pages[nextIndex]
-            
             pageViewController.setViewControllers([nextVC], direction: .forward, animated: true) { [weak self] _ in
-                // После анимации обновляем currentPage
                 self?.currentPage = nextIndex
             }
-            
         } else {
-            // 3. Если это последняя страница, вызываем завершающий кложур
             completionHandler()
         }
+    }
+    
+    // MARK: - Заглушки для обработчиков новых кнопок
+    
+    @objc private func didTapPrivacyPolicy() {
+        openExternalURL(string: Links.privacyPolicyURL)
+    }
+    
+    @objc private func didTapRestore() {
+        print("Нажата кнопка: Restore Purchases")
+        // todo test111
+    }
+    
+    @objc private func didTapTermsOfUse() {
+        openExternalURL(string: Links.termsOfServiceURL)
+    }
+    
+    private func openExternalURL(string: String) {
+        guard let url = URL(string: string) else {
+            print("SettingsViewController: Invalid URL string: \(string)")
+            return
+        }
+        UIApplication.shared.open(url, options: [:], completionHandler: nil)
     }
 }
 
