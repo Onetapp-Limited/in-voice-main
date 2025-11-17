@@ -19,6 +19,8 @@ class PaywallViewController: UIViewController {
     private lazy var continueButton = createContinueButton()
     private lazy var bottomLinksView = createBottomLinksView()
     
+    var topOffset: CGFloat = -30
+    
     // MARK: - Lifecycle
     
     override func viewDidLoad() {
@@ -48,7 +50,7 @@ class PaywallViewController: UIViewController {
         // Header
         contentView.addSubview(headerView)
         headerView.snp.makeConstraints { make in
-            make.top.equalToSuperview()
+            make.top.equalToSuperview().offset(max(0, topOffset))
             make.leading.trailing.equalToSuperview()
         }
         
@@ -99,7 +101,7 @@ class PaywallViewController: UIViewController {
         // Close Button
         view.addSubview(closeButton)
         closeButton.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(-30)
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(topOffset)
             make.leading.equalToSuperview().offset(30)
             make.width.height.equalTo(22)
         }

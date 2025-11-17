@@ -12,12 +12,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window.windowScene = windowScene
         self.window = window
         
+        let isFirstLaunch = !UserDefaults.hasCompletedOnboarding
+        
         if UserDefaults.hasCompletedOnboarding {
             window.rootViewController = createTabBarController()
         } else {
             UserDefaults.hasCompletedOnboarding = true
             let onboardingVC = OnboardingViewController(completionHandler: { [weak self] in
-                self?.presentMainFlow()
+                self?.presentMainFlow(isFirstLaunch: isFirstLaunch)
             })
             window.rootViewController = onboardingVC
         }
@@ -52,13 +54,18 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         return tabBarController
     }
     
-    private func presentMainFlow() {
+    private func presentMainFlow(isFirstLaunch: Bool = false) {
         guard let window = self.window else { return }
-        let tabBarController = createTabBarController()
         
-        UIView.transition(with: window, duration: 0.5, options: .transitionCrossDissolve, animations: {
-            window.rootViewController = tabBarController
-        }, completion: nil)
+        let tabBarController = createTabBarController()
+        window.rootViewController = tabBarController
+        
+        if isFirstLaunch {
+            let paywallVC = PaywallViewController()
+            paywallVC.topOffset = 30
+            paywallVC.modalPresentationStyle = .fullScreen
+            tabBarController.present(paywallVC, animated: true)
+        }
     }
 }
 
