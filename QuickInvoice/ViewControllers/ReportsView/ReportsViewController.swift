@@ -157,9 +157,10 @@ class ReportsViewController: UIViewController {
     }
     
     @objc func proBadgeTapped() {
-        let alert = UIAlertController(title: "Go PRO", message: "Unlock advanced features!", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default))
-        present(alert, animated: true)
+        let paywallVC = PaywallViewController()
+        let navController = UINavigationController(rootViewController: paywallVC)
+        navController.modalPresentationStyle = .fullScreen
+        present(navController, animated: true)
     }
 }
 

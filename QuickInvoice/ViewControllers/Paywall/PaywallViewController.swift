@@ -48,7 +48,7 @@ class PaywallViewController: UIViewController {
         // Header
         contentView.addSubview(headerView)
         headerView.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(-10)
+            make.top.equalToSuperview()
             make.leading.trailing.equalToSuperview()
         }
         
@@ -76,14 +76,14 @@ class PaywallViewController: UIViewController {
         // Price Label
         contentView.addSubview(priceLabel)
         priceLabel.snp.makeConstraints { make in
-            make.top.equalTo(trialLabelsStackView.snp.bottom).offset(40)
+            make.top.equalTo(trialLabelsStackView.snp.bottom).offset(42)
             make.leading.trailing.equalToSuperview().inset(20)
         }
         
         // Continue Button
         contentView.addSubview(continueButton)
         continueButton.snp.makeConstraints { make in
-            make.top.equalTo(priceLabel.snp.bottom).offset(40)
+            make.top.equalTo(priceLabel.snp.bottom).offset(20)
             make.leading.trailing.equalToSuperview().inset(20)
             make.height.equalTo(60)
         }
@@ -92,14 +92,14 @@ class PaywallViewController: UIViewController {
         contentView.addSubview(bottomLinksView)
         bottomLinksView.snp.makeConstraints { make in
             make.top.equalTo(continueButton.snp.bottom).offset(10)
-            make.leading.trailing.equalToSuperview()
-            make.bottom.equalToSuperview().offset(-20)
+            make.leading.trailing.equalToSuperview().inset(30)
+            make.bottom.equalToSuperview().inset(30)
         }
         
         // Close Button
         view.addSubview(closeButton)
         closeButton.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(-15)
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(-30)
             make.leading.equalToSuperview().offset(30)
             make.width.height.equalTo(22)
         }
@@ -161,13 +161,13 @@ private extension PaywallViewController {
     func createHeaderView() -> UIView {
         let titleLabel = UILabel()
         titleLabel.text = "Premium Free"
-        titleLabel.font = .systemFont(ofSize: 40, weight: .semibold)
+        titleLabel.font = .systemFont(ofSize: 34, weight: .semibold)
         titleLabel.textColor = UIColor.primary
         titleLabel.textAlignment = .center
         
         let subtitleLabel = UILabel()
         subtitleLabel.text = "for 3 days"
-        subtitleLabel.font = .systemFont(ofSize: 40, weight: .semibold)
+        subtitleLabel.font = .systemFont(ofSize: 34, weight: .semibold)
         subtitleLabel.textColor = UIColor.black
         subtitleLabel.textAlignment = .center
         
@@ -237,7 +237,7 @@ private extension PaywallViewController {
         
         let vStack = UIStackView(arrangedSubviews: featureViews)
         vStack.axis = .vertical
-        vStack.spacing = 10
+        vStack.spacing = 4
         vStack.distribution = .fill
         vStack.alignment = .fill
         
@@ -249,18 +249,40 @@ private extension PaywallViewController {
         label.text = text
         label.font = .systemFont(ofSize: 14, weight: .bold)
         label.textColor = UIColor.black
-        label.textAlignment = .center
         label.numberOfLines = 0
         label.textAlignment = .left
         
-        let containerView = UIView()
-        containerView.backgroundColor = .clear // UIColor.secondary.withAlphaComponent(0.1)
-        containerView.layer.cornerRadius = 8
+        // Даем тексту низкий приоритет сжатия, чтобы он занимал доступное место
+        label.setContentHuggingPriority(.defaultLow, for: .horizontal)
+        label.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         
-        containerView.addSubview(label)
-        label.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview().inset(12)
-            make.top.bottom.equalToSuperview().inset(8)
+        // Жирная галочка (Unicode Symbol)
+        let checkmarkLabel = UILabel()
+        checkmarkLabel.text = "✔︎"
+        checkmarkLabel.font = .systemFont(ofSize: 20, weight: .heavy)
+        checkmarkLabel.textColor = UIColor.primary
+        
+        // ⭐️ Ключевой момент: Галочке даем высокий приоритет, чтобы она не сжималась
+        // и оставалась справа от текста.
+        checkmarkLabel.setContentHuggingPriority(.required, for: .horizontal)
+        checkmarkLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
+        
+        // StackView: Текст СЛЕВА, Галочка СПРАВА
+        let hStack = UIStackView(arrangedSubviews: [label, checkmarkLabel])
+        hStack.axis = .horizontal
+        hStack.spacing = 10
+        hStack.alignment = .top // Изменим на .top, чтобы галочка была напротив первой строки текста
+        hStack.distribution = .fill // Позволяет 'label' занять все доступное пространство
+        
+        let containerView = UIView()
+        containerView.backgroundColor = .clear
+        containerView.layer.cornerRadius = 8
+        containerView.addSubview(hStack)
+        
+        // HStack привязан к краям контейнера, который, в свою очередь, привязан к границам featuresTagView.
+        hStack.snp.makeConstraints { make in
+            // Уменьшаем отступы до 0, чтобы контроль отступов был на уровне featuresTagView (как в исходном коде)
+            make.leading.trailing.top.bottom.equalToSuperview().inset(8)
         }
         
         return containerView
@@ -293,7 +315,7 @@ private extension PaywallViewController {
         let label = UILabel()
         label.text = "Try 3 days free, after N/A/week\nCancel anytime"
         label.font = .systemFont(ofSize: 14, weight: .medium)
-        label.textColor = UIColor.secondaryText.withAlphaComponent(0.4)
+        label.textColor = .black
         label.textAlignment = .center
         label.numberOfLines = 0
         return label
@@ -310,25 +332,17 @@ private extension PaywallViewController {
         return button
     }
     
-    func createBottomLinksView() -> UIView {
+    func createBottomLinksView() -> UIStackView {
         let privacyButton = createBottomLinkButton(title: "Privacy Policy", action: #selector(privacyPolicyTapped))
         let restoreButton = createBottomLinkButton(title: "Restore", action: #selector(restoreTapped))
         let termsButton = createBottomLinkButton(title: "Terms of Use", action: #selector(termsOfUseTapped))
         
         let stack = UIStackView(arrangedSubviews: [privacyButton, restoreButton, termsButton])
         stack.axis = .horizontal
-        stack.spacing = 20
         stack.distribution = .equalSpacing
-        stack.alignment = .center
+        stack.spacing = 15
         
-        let wrapper = UIView()
-        wrapper.addSubview(stack)
-        stack.snp.makeConstraints { make in
-            make.center.equalToSuperview()
-            make.top.bottom.equalToSuperview().inset(10)
-        }
-        
-        return wrapper
+        return stack
     }
     
     func createBottomLinkButton(title: String, action: Selector) -> UIButton {

@@ -217,10 +217,10 @@ class InvoicesViewController: UIViewController {
     }
     
     @objc func proBadgeTapped() {
-        print("PRO Badge Tapped - Opening Paywall")
-        let alert = UIAlertController(title: "Go PRO", message: "Unlock advanced features!", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default))
-        present(alert, animated: true)
+        let paywallVC = PaywallViewController()
+        let navController = UINavigationController(rootViewController: paywallVC)
+        navController.modalPresentationStyle = .fullScreen
+        present(navController, animated: true)
     }
     
     // MARK: - Keyboard Handling
