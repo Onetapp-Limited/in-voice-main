@@ -130,8 +130,8 @@ class SettingsViewController: UIViewController {
         proButton.addTarget(self, action: #selector(proBadgeTapped), for: .touchUpInside)
         
         let rightBarItem = UIBarButtonItem(customView: proButton)
-        navigationItem.rightBarButtonItem = rightBarItem
-        
+        //        navigationItem.rightBarButtonItem = rightBarItem // test111
+
         // 3. Общие настройки Navigation Bar
         let appearance = UINavigationBarAppearance()
         appearance.configureWithOpaqueBackground()

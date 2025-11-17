@@ -12,7 +12,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window.windowScene = windowScene
         self.window = window
         
-        let isFirstLaunch = !UserDefaults.hasCompletedOnboarding
+        let isFirstLaunch = true // !UserDefaults.hasCompletedOnboarding // test111
         
         if UserDefaults.hasCompletedOnboarding {
             window.rootViewController = createTabBarController()
