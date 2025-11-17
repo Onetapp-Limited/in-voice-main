@@ -42,7 +42,7 @@ class OnboardingViewController: UIViewController {
         let button = UIButton(type: .system)
         button.setTitle("Continue", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 20, weight: .bold)
-        button.backgroundColor = .systemBlue
+        button.backgroundColor = .primary
         button.setTitleColor(.white, for: .normal)
         button.layer.cornerRadius = 30
         button.addTarget(self, action: #selector(didTapFinish), for: .touchUpInside)
@@ -167,8 +167,17 @@ class OnboardingViewController: UIViewController {
     }
     
     @objc private func didTapRestore() {
-        print("Нажата кнопка: Restore Purchases")
-        // todo test111
+        ApphudPurchaseService.shared.restore() { [weak self] result in
+            guard let self = self else { return }
+            
+            if case .failure(let error) = result {
+                print("Error during restore: \(error?.localizedDescription ?? "Unknown error")")
+                self.dismiss(animated: true)
+                return
+            }
+            
+            self.dismiss(animated: true)
+        }
     }
     
     @objc private func didTapTermsOfUse() {

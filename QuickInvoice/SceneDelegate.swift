@@ -15,6 +15,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         if UserDefaults.hasCompletedOnboarding {
             window.rootViewController = createTabBarController()
         } else {
+            UserDefaults.hasCompletedOnboarding = true
             let onboardingVC = OnboardingViewController(completionHandler: { [weak self] in
                 self?.presentMainFlow()
             })

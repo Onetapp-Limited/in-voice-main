@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1005158F2ECB2C1F008DD2FD /* PaywallViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1005158E2ECB2C18008DD2FD /* PaywallViewController.swift */; };
+		100515912ECB2C37008DD2FD /* PaywallViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100515902ECB2C34008DD2FD /* PaywallViewModel.swift */; };
+		100515932ECB2C7C008DD2FD /* ApphudPurchaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100515922ECB2C7A008DD2FD /* ApphudPurchaseService.swift */; };
+		100515982ECB2D6E008DD2FD /* ApphudSDK in Frameworks */ = {isa = PBXBuildFile; productRef = 100515972ECB2D6E008DD2FD /* ApphudSDK */; };
 		104AD7BE2EB35D990014E550 /* EstimatesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 104AD7BD2EB35D920014E550 /* EstimatesViewController.swift */; };
 		104AD7C02EB35FFE0014E550 /* EstimateTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 104AD7BF2EB35FFC0014E550 /* EstimateTableViewCell.swift */; };
 		104AD7C22EB360870014E550 /* EstimatesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 104AD7C12EB360820014E550 /* EstimatesModel.swift */; };
@@ -77,6 +81,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		1005158E2ECB2C18008DD2FD /* PaywallViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaywallViewController.swift; sourceTree = "<group>"; };
+		100515902ECB2C34008DD2FD /* PaywallViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaywallViewModel.swift; sourceTree = "<group>"; };
+		100515922ECB2C7A008DD2FD /* ApphudPurchaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApphudPurchaseService.swift; sourceTree = "<group>"; };
 		104AD7BD2EB35D920014E550 /* EstimatesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EstimatesViewController.swift; sourceTree = "<group>"; };
 		104AD7BF2EB35FFC0014E550 /* EstimateTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EstimateTableViewCell.swift; sourceTree = "<group>"; };
 		104AD7C12EB360820014E550 /* EstimatesModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EstimatesModel.swift; sourceTree = "<group>"; };
@@ -136,6 +143,7 @@
 			files = (
 				107315C02EBCABF7008E7C35 /* DGCharts in Frameworks */,
 				1051E60E2EAF912200D576BC /* RealmSwift in Frameworks */,
+				100515982ECB2D6E008DD2FD /* ApphudSDK in Frameworks */,
 				107315BE2EBCAAE9008E7C35 /* DGCharts in Frameworks */,
 				1051E6112EAF91C100D576BC /* SnapKit in Frameworks */,
 			);
@@ -144,6 +152,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1005158D2ECB2C0E008DD2FD /* Paywall */ = {
+			isa = PBXGroup;
+			children = (
+				100515922ECB2C7A008DD2FD /* ApphudPurchaseService.swift */,
+				100515902ECB2C34008DD2FD /* PaywallViewModel.swift */,
+				1005158E2ECB2C18008DD2FD /* PaywallViewController.swift */,
+			);
+			path = Paywall;
+			sourceTree = "<group>";
+		};
 		104AD7BC2EB35D850014E550 /* EstimatesView */ = {
 			isa = PBXGroup;
 			children = (
@@ -349,6 +367,7 @@
 		95A6BC0A24ECD82600BC3088 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
+				1005158D2ECB2C0E008DD2FD /* Paywall */,
 				104EB0A02EC74F8100826D1E /* OnboardingView */,
 				1051E6182EB0F17500D576BC /* InvoiceDetailPDFViewController */,
 				107315AB2EBB6225008E7C35 /* ReportsView */,
@@ -433,6 +452,7 @@
 				1051E60A2EAF912200D576BC /* XCRemoteSwiftPackageReference "realm-swift" */,
 				1051E60F2EAF91C100D576BC /* XCRemoteSwiftPackageReference "SnapKit" */,
 				107315BC2EBCAAE9008E7C35 /* XCRemoteSwiftPackageReference "Charts" */,
+				100515962ECB2D6E008DD2FD /* XCRemoteSwiftPackageReference "ApphudSDK" */,
 			);
 			productRefGroup = 9520F87A24D27CBB006CDC05 /* Products */;
 			projectDirPath = "";
@@ -483,6 +503,7 @@
 				104AD7C22EB360870014E550 /* EstimatesModel.swift in Sources */,
 				1092045E2EAF7B9F00F0C7FE /* NewInvoiceViewController.swift in Sources */,
 				109202F92EAF763B00F0C7FE /* InvoiceTableViewCell.swift in Sources */,
+				100515912ECB2C37008DD2FD /* PaywallViewModel.swift in Sources */,
 				107315B12EBB6472008E7C35 /* ExpensesReportViewController.swift in Sources */,
 				95A6BC1424ECECBD00BC3088 /* InvoicesViewController.swift in Sources */,
 				104AD9482EB8F9410014E550 /* ClientsService.swift in Sources */,
@@ -499,9 +520,11 @@
 				109204692EAF7E2100F0C7FE /* InvoiceDetailItemCell.swift in Sources */,
 				109204672EAF7DFE00F0C7FE /* InvoiceModel.swift in Sources */,
 				95A6BC1724ECEFDE00BC3088 /* PDFCreator.swift in Sources */,
+				1005158F2ECB2C1F008DD2FD /* PaywallViewController.swift in Sources */,
 				1092046C2EAF89D500F0C7FE /* InvoiceService.swift in Sources */,
 				104AD7BE2EB35D990014E550 /* EstimatesViewController.swift in Sources */,
 				107315B72EBC9E1D008E7C35 /* ClientSalesCell.swift in Sources */,
+				100515932ECB2C7C008DD2FD /* ApphudPurchaseService.swift in Sources */,
 				107315AF2EBB6462008E7C35 /* InvoicesReportViewController.swift in Sources */,
 				104AD7C42EB360C80014E550 /* EstimateService.swift in Sources */,
 				104AD7C72EB365950014E550 /* NewEstimateViewController.swift in Sources */,
@@ -719,6 +742,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		100515962ECB2D6E008DD2FD /* XCRemoteSwiftPackageReference "ApphudSDK" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apphud/ApphudSDK";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.0.0;
+			};
+		};
 		1051E60A2EAF912200D576BC /* XCRemoteSwiftPackageReference "realm-swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/realm/realm-swift.git";
@@ -746,6 +777,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		100515972ECB2D6E008DD2FD /* ApphudSDK */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 100515962ECB2D6E008DD2FD /* XCRemoteSwiftPackageReference "ApphudSDK" */;
+			productName = ApphudSDK;
+		};
 		1051E60D2EAF912200D576BC /* RealmSwift */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 1051E60A2EAF912200D576BC /* XCRemoteSwiftPackageReference "realm-swift" */;

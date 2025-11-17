@@ -95,7 +95,7 @@ class ReportsViewController: UIViewController {
         proButton.addTarget(self, action: #selector(proBadgeTapped), for: .touchUpInside)
         
         let rightBarItem = UIBarButtonItem(customView: proButton)
-//        navigationItem.rightBarButtonItem = rightBarItem // test111
+        navigationItem.rightBarButtonItem = rightBarItem
         
         // 3. Общие настройки Navigation Bar
         let appearance = UINavigationBarAppearance()
@@ -157,7 +157,6 @@ class ReportsViewController: UIViewController {
     }
     
     @objc func proBadgeTapped() {
-        print("PRO Badge Tapped - Opening Paywall from Settings")
         let alert = UIAlertController(title: "Go PRO", message: "Unlock advanced features!", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default))
         present(alert, animated: true)
