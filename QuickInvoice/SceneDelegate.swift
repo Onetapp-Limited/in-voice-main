@@ -12,7 +12,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window.windowScene = windowScene
         self.window = window
         
-        let isFirstLaunch = true // !UserDefaults.hasCompletedOnboarding // test111
+        let isFirstLaunch = !UserDefaults.hasCompletedOnboarding
         
         if UserDefaults.hasCompletedOnboarding {
             window.rootViewController = createTabBarController()
@@ -60,12 +60,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let tabBarController = createTabBarController()
         window.rootViewController = tabBarController
         
-        if isFirstLaunch {
-            let paywallVC = PaywallViewController()
-            paywallVC.topOffset = 30
-            paywallVC.modalPresentationStyle = .fullScreen
-            tabBarController.present(paywallVC, animated: true)
-        }
+        // test111
+//        if isFirstLaunch {
+//            let paywallVC = PaywallViewController()
+//            paywallVC.topOffset = 30
+//            paywallVC.modalPresentationStyle = .fullScreen
+//            tabBarController.present(paywallVC, animated: true)
+//        }
     }
 }
 
