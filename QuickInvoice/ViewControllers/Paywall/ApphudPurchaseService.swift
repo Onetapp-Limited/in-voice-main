@@ -8,7 +8,7 @@ import Combine
 // todo PRO
 enum PurchaseServiceProduct: String, CaseIterable {
     case week = "week_899_3dtrial"
-    case month3 = "2"
+    case month = "2"
     case year = "3"
 }
 
@@ -147,7 +147,7 @@ final class ApphudPurchaseService {
         switch product {
         case .week:
             days = 7.0
-        case .month3:
+        case .month:
             days = 90.0 // Assuming 90 days for 3 months
         case .year:
             days = 365.0
@@ -172,7 +172,7 @@ final class ApphudPurchaseService {
         case .monthly3:
             // This mapping is now ambiguous. Please update the `SubscriptionPlan` or the calling code.
             // For now, let's assume it's for 3-month plan.
-            return PurchaseServiceProduct.month3.rawValue
+            return PurchaseServiceProduct.month.rawValue
         case .yearly:
             return PurchaseServiceProduct.year.rawValue
         }

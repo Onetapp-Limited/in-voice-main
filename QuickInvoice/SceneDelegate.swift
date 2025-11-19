@@ -60,13 +60,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let tabBarController = createTabBarController()
         window.rootViewController = tabBarController
         
-        // test111
-//        if isFirstLaunch {
-//            let paywallVC = PaywallViewController()
-//            paywallVC.topOffset = 30
-//            paywallVC.modalPresentationStyle = .fullScreen
-//            tabBarController.present(paywallVC, animated: true)
-//        }
+        if isFirstLaunch {
+            let paywallVC = PaywallViewController()
+            paywallVC.modalPresentationStyle = .fullScreen
+            tabBarController.present(paywallVC, animated: true)
+        }
     }
 }
 

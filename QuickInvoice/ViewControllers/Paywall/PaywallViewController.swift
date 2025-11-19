@@ -3,38 +3,37 @@ import SnapKit
 
 class PaywallViewController: UIViewController {
     
-    // MARK: - Properties
-    
     private let viewModel: PaywallViewModel = PaywallViewModel()
     
-    // UI элементы
     private lazy var closeButton = createCloseButton()
     private lazy var scrollView = UIScrollView()
     private lazy var contentView = UIView()
-    private lazy var headerView = createHeaderView()
-    private lazy var iconsBlockView = createIconsBlockView()
-    private lazy var featuresTagView = createFeaturesTagView()
-    private lazy var trialLabelsStackView = createTrialLabelsStackView()
-    private lazy var priceLabel = createPriceLabel()
+    
+    private lazy var mainTitleLabel = createMainTitleLabel()
+    private lazy var paywallImageView = createPaywallImageView()
+    private lazy var subscriptionPlansStackView = createSubscriptionPlansStackView()
+    
     private lazy var continueButton = createContinueButton()
     private lazy var bottomLinksView = createBottomLinksView()
-    
-    var topOffset: CGFloat = -30
-    
-    // MARK: - Lifecycle
-    
+        
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
         bindViewModel()
     }
     
-    // MARK: - Setup
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.setNavigationBarHidden(true, animated: true)
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        navigationController?.setNavigationBarHidden(false, animated: true)
+    }
     
     private func setupUI() {
         view.backgroundColor = UIColor.background
-        
-        // ScrollView для контента
         view.addSubview(scrollView)
         scrollView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
@@ -47,87 +46,119 @@ class PaywallViewController: UIViewController {
             make.width.equalTo(scrollView)
         }
         
-        // Header
-        contentView.addSubview(headerView)
-        headerView.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(max(0, topOffset))
-            make.leading.trailing.equalToSuperview()
+        contentView.addSubview(closeButton)
+        closeButton.snp.makeConstraints { make in
+            make.top.equalToSuperview()
+            make.leading.equalToSuperview().offset(20)
+            make.width.height.equalTo(22)
         }
         
-        // Icons Block
-        contentView.addSubview(iconsBlockView)
-        iconsBlockView.snp.makeConstraints { make in
-            make.top.equalTo(headerView.snp.bottom).offset(20)
+        contentView.addSubview(mainTitleLabel)
+        mainTitleLabel.snp.makeConstraints { make in
+            make.top.equalTo(closeButton.snp.bottom).offset(10)
             make.leading.trailing.equalToSuperview().inset(20)
         }
         
-        // Features Tag View
-        contentView.addSubview(featuresTagView)
-        featuresTagView.snp.makeConstraints { make in
-            make.top.equalTo(iconsBlockView.snp.bottom).offset(20)
+        contentView.addSubview(paywallImageView)
+        paywallImageView.snp.makeConstraints { make in
+            make.top.equalTo(mainTitleLabel.snp.bottom).offset(20)
+            make.leading.trailing.equalToSuperview().inset(20)
+            make.height.equalTo(view.snp.width).multipliedBy(0.5).priority(.low)
+        }
+        
+        contentView.addSubview(subscriptionPlansStackView)
+        subscriptionPlansStackView.snp.makeConstraints { make in
+            make.top.equalTo(paywallImageView.snp.bottom).offset(-50)
             make.leading.trailing.equalToSuperview().inset(20)
         }
         
-        // Trial Labels Stack
-        contentView.addSubview(trialLabelsStackView)
-        trialLabelsStackView.snp.makeConstraints { make in
-            make.top.equalTo(featuresTagView.snp.bottom).offset(20)
-            make.centerX.equalToSuperview()
-        }
-        
-        // Price Label
-        contentView.addSubview(priceLabel)
-        priceLabel.snp.makeConstraints { make in
-            make.top.equalTo(trialLabelsStackView.snp.bottom).offset(42)
-            make.leading.trailing.equalToSuperview().inset(20)
-        }
-        
-        // Continue Button
         contentView.addSubview(continueButton)
         continueButton.snp.makeConstraints { make in
-            make.top.equalTo(priceLabel.snp.bottom).offset(20)
+            make.top.equalTo(subscriptionPlansStackView.snp.bottom).offset(24)
             make.leading.trailing.equalToSuperview().inset(20)
             make.height.equalTo(60)
         }
         
-        // Bottom Links
         contentView.addSubview(bottomLinksView)
         bottomLinksView.snp.makeConstraints { make in
             make.top.equalTo(continueButton.snp.bottom).offset(10)
             make.leading.trailing.equalToSuperview().inset(30)
             make.bottom.equalToSuperview().inset(30)
         }
-        
-        // Close Button
-        view.addSubview(closeButton)
-        closeButton.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(topOffset)
-            make.leading.equalToSuperview().offset(30)
-            make.width.height.equalTo(22)
-        }
     }
     
     private func bindViewModel() {
         viewModel.onPricesUpdated = { [weak self] in
-            guard let self = self else { return }
-            self.updatePriceLabel()
+            self?.updateSubscriptionPlans()
         }
         
         viewModel.onDismiss = { [weak self] in
             self?.dismiss(animated: true)
         }
         
-        updatePriceLabel()
+        updateSubscriptionPlans()
     }
     
-    // MARK: - Actions & Updates
-    
-    private func updatePriceLabel() {
-        priceLabel.text = "Try 3 days free, after \(viewModel.weekPrice)/week\nCancel anytime"
+    private func updateSubscriptionPlans() {
+        subscriptionPlansStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        
+        let yearlyPlan = createSubscriptionPlanView(
+            plan: .yearly,
+            title: "Yearly",
+            pricePerPeriod: viewModel.yearlyPrice,
+            pricePerWeek: viewModel.yearlyPricePerWeek,
+            isBestOffer: true,
+            isSelected: true
+        )
+        
+        let monthlyPlan = createSubscriptionPlanView(
+            plan: .monthly3,
+            title: "Monthly",
+            pricePerPeriod: viewModel.monthlyPrice,
+            pricePerWeek: viewModel.monthlyPricePerWeek,
+            isBestOffer: false,
+            isSelected: false
+        )
+        
+        let weeklyPlan = createSubscriptionPlanView(
+            plan: .weekly,
+            title: "Weekly",
+            pricePerPeriod: nil,
+            pricePerWeek: viewModel.weekPrice,
+            isBestOffer: false,
+            isSelected: false
+        )
+
+        subscriptionPlansStackView.addArrangedSubview(yearlyPlan)
+        subscriptionPlansStackView.addArrangedSubview(monthlyPlan)
+        subscriptionPlansStackView.addArrangedSubview(weeklyPlan)
+        
+        viewModel.selectedPlan = .yearly
+        updateSelectionState()
     }
     
+    private func updateSelectionState() {
+        for view in subscriptionPlansStackView.arrangedSubviews {
+            if let planView = view as? SubscriptionPlanView {
+                let isSelected = planView.plan == viewModel.selectedPlan
+                
+                if let wrapperView = planView.subviews.first(where: { $0.tag == 101 }) {
+                    wrapperView.layer.borderColor = isSelected ? UIColor.primary.cgColor : UIColor.white.cgColor
+                    wrapperView.layer.borderWidth = isSelected ? 4 : 1
+                }
+            }
+        }
+    }
+    
+    @objc private func handlePlanTap(_ sender: UITapGestureRecognizer) {
+        guard let planView = sender.view as? SubscriptionPlanView else { return }
+        viewModel.selectedPlan = planView.plan
+        updateSelectionState()
+    }
+
     @objc private func continueButtonTapped() {
-        viewModel.continueTapped(with: .weekly)
+        guard let selectedPlan = viewModel.selectedPlan else { return }
+        viewModel.continueTapped(with: selectedPlan)
     }
     
     @objc private func closeButtonTapped() {
@@ -147,10 +178,155 @@ class PaywallViewController: UIViewController {
     }
 }
 
-// MARK: - UI Element Factory
-
 private extension PaywallViewController {
     
+    func createMainTitleLabel() -> UILabel {
+        let label = UILabel()
+        label.text = "Drive your business beyond limits"
+        label.font = .systemFont(ofSize: 24, weight: .bold)
+        label.textColor = UIColor.black
+        label.textAlignment = .center
+        label.numberOfLines = 0
+        return label
+    }
+
+    func createPaywallImageView() -> UIImageView {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: "paywallMainImage") ?? UIImage(named: "PayWallImege1")
+        imageView.contentMode = .scaleAspectFit
+        return imageView
+    }
+    
+    func createSubscriptionPlansStackView() -> UIStackView {
+        let stack = UIStackView()
+        stack.axis = .vertical
+        stack.spacing = 10
+        stack.distribution = .fillEqually
+        return stack
+    }
+    
+    class SubscriptionPlanView: UIView {
+        let plan: SubscriptionPlan
+        
+        init(plan: SubscriptionPlan) {
+            self.plan = plan
+            super.init(frame: .zero)
+        }
+        
+        required init?(coder: NSCoder) {
+            fatalError("init(coder:) has not been implemented")
+        }
+    }
+
+    func createSubscriptionPlanView(
+        plan: SubscriptionPlan,
+        title: String,
+        pricePerPeriod: String?,
+        pricePerWeek: String?,
+        isBestOffer: Bool,
+        isSelected: Bool
+    ) -> SubscriptionPlanView {
+        
+        let planView = SubscriptionPlanView(plan: plan)
+        planView.layer.masksToBounds = false
+        planView.backgroundColor = .clear
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handlePlanTap(_:)))
+        planView.addGestureRecognizer(tapGesture)
+        
+        // --- WRAPPER VIEW (Контейнер для границы и контента) ---
+        let wrapperView = UIView()
+        wrapperView.tag = 101
+        wrapperView.layer.cornerRadius = 20
+        wrapperView.layer.masksToBounds = true
+        wrapperView.backgroundColor = UIColor.white
+        wrapperView.layer.borderWidth = isSelected ? 4 : 1
+        wrapperView.layer.borderColor = isSelected ? UIColor.primary.cgColor : UIColor.white.cgColor
+        
+        planView.addSubview(wrapperView)
+        wrapperView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+        
+        let titleLabel = UILabel()
+        titleLabel.text = title
+        titleLabel.font = .systemFont(ofSize: 16, weight: .semibold)
+        titleLabel.textColor = UIColor.black
+        
+        let pricePerPeriodLabel = UILabel()
+        if let price = pricePerPeriod {
+            pricePerPeriodLabel.text = price
+            pricePerPeriodLabel.font = .systemFont(ofSize: 14, weight: .regular)
+            pricePerPeriodLabel.textColor = UIColor.secondaryText
+        } else {
+            pricePerPeriodLabel.text = " "
+        }
+        
+        let leftStack = UIStackView(arrangedSubviews: [titleLabel, pricePerPeriodLabel])
+        leftStack.axis = .vertical
+        leftStack.alignment = .leading
+        leftStack.spacing = 2
+        
+        let pricePerWeekLabel = UILabel()
+        if let price = pricePerWeek {
+            pricePerWeekLabel.text = price + " / week"
+            pricePerWeekLabel.font = .systemFont(ofSize: 14, weight: .semibold)
+            pricePerWeekLabel.textColor = UIColor.black
+        }
+
+        let rightStack = UIStackView(arrangedSubviews: [pricePerWeekLabel])
+        rightStack.axis = .vertical
+        rightStack.alignment = .trailing
+        
+        let hStack = UIStackView(arrangedSubviews: [leftStack, rightStack])
+        hStack.axis = .horizontal
+        hStack.distribution = .fill
+        hStack.alignment = .center
+        hStack.spacing = 10
+        
+        wrapperView.addSubview(hStack)
+        hStack.snp.makeConstraints { make in
+            make.edges.equalToSuperview().inset(UIEdgeInsets(top: 5, left: 15, bottom: 5, right: 15))
+            make.height.equalTo(50)
+        }
+        
+        if isBestOffer {
+            let badgeView = createBadgeView(text: "Save 69%")
+            planView.addSubview(badgeView)
+            
+            badgeView.snp.makeConstraints { make in
+                make.top.equalToSuperview().inset(-12)
+                make.trailing.equalToSuperview().inset(10)
+                make.height.equalTo(24)
+            }
+            planView.bringSubviewToFront(badgeView)
+        }
+        
+        return planView
+    }
+    
+    func createBadgeView(text: String) -> UIView {
+        let label = UILabel()
+        label.text = text
+        label.font = .systemFont(ofSize: 12, weight: .bold)
+        label.textColor = UIColor.white
+        label.textAlignment = .center
+        
+        let view = UIView()
+        view.backgroundColor = UIColor(red: 0.9, green: 0.7, blue: 0.2, alpha: 1.0)
+        view.layer.cornerRadius = 12
+        view.addSubview(label)
+        
+        label.snp.makeConstraints { make in
+            make.edges.equalToSuperview().inset(UIEdgeInsets(top: 4, left: 8, bottom: 4, right: 8))
+        }
+        
+        label.setContentHuggingPriority(.required, for: .horizontal)
+        label.setContentCompressionResistancePriority(.required, for: .horizontal)
+        
+        return view
+    }
+
     func createCloseButton() -> UIButton {
         let button = UIButton(type: .system)
         let image = UIImage(systemName: "xmark")?.withConfiguration(UIImage.SymbolConfiguration(pointSize: 20))
@@ -158,169 +334,6 @@ private extension PaywallViewController {
         button.tintColor = UIColor.secondaryText.withAlphaComponent(0.5)
         button.addTarget(self, action: #selector(closeButtonTapped), for: .touchUpInside)
         return button
-    }
-    
-    func createHeaderView() -> UIView {
-        let titleLabel = UILabel()
-        titleLabel.text = "Premium Free"
-        titleLabel.font = .systemFont(ofSize: 34, weight: .semibold)
-        titleLabel.textColor = UIColor.primary
-        titleLabel.textAlignment = .center
-        
-        let subtitleLabel = UILabel()
-        subtitleLabel.text = "for 3 days"
-        subtitleLabel.font = .systemFont(ofSize: 34, weight: .semibold)
-        subtitleLabel.textColor = UIColor.black
-        subtitleLabel.textAlignment = .center
-        
-        let stack = UIStackView(arrangedSubviews: [titleLabel, subtitleLabel])
-        stack.axis = .vertical
-        stack.spacing = 8
-        stack.alignment = .center
-        
-        return stack
-    }
-    
-    func createIconsBlockView() -> UIView {
-        let iconData = [
-            ("PayWallImege1", "Unlimited\nInvoices"),
-            ("PayWallImege2", "Advanced\nReports"),
-            ("PayWallImege3", "Estimate\nManagement")
-        ]
-        
-        let iconViews = iconData.map { (imageName, text) -> UIView in
-            return self.createIconWithText(imageName: imageName, text: text)
-        }
-        
-        let stack = UIStackView(arrangedSubviews: iconViews)
-        stack.axis = .horizontal
-        stack.spacing = 15
-        stack.distribution = .fillEqually
-        stack.alignment = .top
-        
-        return stack
-    }
-    
-    func createIconWithText(imageName: String, text: String) -> UIView {
-        let imageView = UIImageView()
-        imageView.image = UIImage(named: imageName)
-        imageView.contentMode = .scaleAspectFit
-        imageView.tintColor = UIColor.iconPrimary
-        
-        let textLabel = UILabel()
-        textLabel.text = text
-        textLabel.numberOfLines = 2
-        textLabel.font = .systemFont(ofSize: 14, weight: .semibold)
-        textLabel.textColor = UIColor.primaryText
-        textLabel.textAlignment = .center
-        
-        let stack = UIStackView(arrangedSubviews: [imageView, textLabel])
-        stack.axis = .vertical
-        stack.spacing = 8
-        stack.alignment = .center
-        
-        imageView.snp.makeConstraints { make in
-            make.width.height.equalTo(80)
-        }
-        
-        return stack
-    }
-    
-    func createFeaturesTagView() -> UIView {
-        let features = [
-            "Detailed analytics of income, expenses, and balance",
-            "Store clients, estimates, and payment statuses — all in one place",
-            "Download and send invoices without watermarks"
-        ]
-        
-        let featureViews = features.map { text -> UIView in
-            return createFeatureTagLabel(text: text)
-        }
-        
-        let vStack = UIStackView(arrangedSubviews: featureViews)
-        vStack.axis = .vertical
-        vStack.spacing = 4
-        vStack.distribution = .fill
-        vStack.alignment = .fill
-        
-        return vStack
-    }
-    
-    func createFeatureTagLabel(text: String) -> UIView {
-        let label = UILabel()
-        label.text = text
-        label.font = .systemFont(ofSize: 14, weight: .bold)
-        label.textColor = UIColor.black
-        label.numberOfLines = 0
-        label.textAlignment = .left
-        
-        // Даем тексту низкий приоритет сжатия, чтобы он занимал доступное место
-        label.setContentHuggingPriority(.defaultLow, for: .horizontal)
-        label.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
-        
-        // Жирная галочка (Unicode Symbol)
-        let checkmarkLabel = UILabel()
-        checkmarkLabel.text = "✔︎"
-        checkmarkLabel.font = .systemFont(ofSize: 20, weight: .heavy)
-        checkmarkLabel.textColor = UIColor.primary
-        
-        // ⭐️ Ключевой момент: Галочке даем высокий приоритет, чтобы она не сжималась
-        // и оставалась справа от текста.
-        checkmarkLabel.setContentHuggingPriority(.required, for: .horizontal)
-        checkmarkLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
-        
-        // StackView: Текст СЛЕВА, Галочка СПРАВА
-        let hStack = UIStackView(arrangedSubviews: [label, checkmarkLabel])
-        hStack.axis = .horizontal
-        hStack.spacing = 10
-        hStack.alignment = .top // Изменим на .top, чтобы галочка была напротив первой строки текста
-        hStack.distribution = .fill // Позволяет 'label' занять все доступное пространство
-        
-        let containerView = UIView()
-        containerView.backgroundColor = .clear
-        containerView.layer.cornerRadius = 8
-        containerView.addSubview(hStack)
-        
-        // HStack привязан к краям контейнера, который, в свою очередь, привязан к границам featuresTagView.
-        hStack.snp.makeConstraints { make in
-            // Уменьшаем отступы до 0, чтобы контроль отступов был на уровне featuresTagView (как в исходном коде)
-            make.leading.trailing.top.bottom.equalToSuperview().inset(8)
-        }
-        
-        return containerView
-    }
-    
-    func createTrialLabelsStackView() -> UIStackView {
-        let label1 = createStyledLabel(text: "100% FREE FOR 3 DAYS", color: UIColor.primary, opacity: 1.0)
-        let label2 = createStyledLabel(text: "FULL ACCESS", color: UIColor.primary, opacity: 0.8)
-        let label3 = createStyledLabel(text: "ZERO RISK", color: UIColor.primary, opacity: 0.6)
-        
-        let stack = UIStackView(arrangedSubviews: [label1, label2, label3])
-        stack.axis = .vertical
-        stack.spacing = 8
-        stack.alignment = .center
-        
-        return stack
-    }
-    
-    func createStyledLabel(text: String, color: UIColor, opacity: CGFloat) -> UILabel {
-        let label = UILabel()
-        label.text = text
-        label.font = .systemFont(ofSize: 22, weight: .bold)
-        label.textColor = color.withAlphaComponent(opacity)
-        label.textAlignment = .center
-        label.numberOfLines = 0
-        return label
-    }
-    
-    func createPriceLabel() -> UILabel {
-        let label = UILabel()
-        label.text = "Try 3 days free, after N/A/week\nCancel anytime"
-        label.font = .systemFont(ofSize: 14, weight: .medium)
-        label.textColor = .black
-        label.textAlignment = .center
-        label.numberOfLines = 0
-        return label
     }
     
     func createContinueButton() -> UIButton {
