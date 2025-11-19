@@ -55,6 +55,17 @@ class ReportsViewController: UIViewController {
         display(childViewController: invoicesReportVC)
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        guard ApphudPurchaseService.shared.hasActiveSubscription else {
+            let paywallVC = PaywallViewController()
+            let navController = UINavigationController(rootViewController: paywallVC)
+            navigationController?.pushViewController(paywallVC, animated: true)
+            return
+        }
+    }
+    
     // MARK: - Setup
     
     private func setupNavigationBar() {

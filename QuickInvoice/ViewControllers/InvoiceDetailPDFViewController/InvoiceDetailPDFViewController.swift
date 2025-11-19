@@ -959,10 +959,18 @@ class InvoiceDetailPDFViewController: UIViewController {
     }
     
     private func sendButtonTapped() {
+        guard ApphudPurchaseService.shared.hasActiveSubscription else {
+            let paywallVC = PaywallViewController()
+            let navController = UINavigationController(rootViewController: paywallVC)
+            navController.modalPresentationStyle = .fullScreen
+            present(navController, animated: true)
+            return
+        }
+        
         guard let invoice = invoice else { return }
         let pdfData = generatePDF(for: invoice, style: currentStyle)
         
-        let titlePrefix = isEstimate ? "Estimate" : "Invoice" // ⭐ ОБНОВЛЕНИЕ
+        let titlePrefix = isEstimate ? "Estimate" : "Invoice"
         let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent("\(titlePrefix)-\(invoice.invoiceTitle ?? "Document").pdf")
         try? pdfData.write(to: tempURL)
         

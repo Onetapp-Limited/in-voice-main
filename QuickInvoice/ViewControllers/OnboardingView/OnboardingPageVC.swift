@@ -67,7 +67,7 @@ class OnboardingPageVC: UIViewController {
         imageView.contentMode = .scaleAspectFit
         
         titleLabel.snp.makeConstraints { make in
-//            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(30)
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(10)
             make.leading.trailing.equalToSuperview().inset(horizontalInset)
         }
         
@@ -77,7 +77,6 @@ class OnboardingPageVC: UIViewController {
         }
         
         imageView.snp.makeConstraints { make in
-            make.top.equalTo(detailLabel.snp.bottom).offset(30)
             make.leading.trailing.equalToSuperview().inset(-10)
             make.bottom.equalToSuperview()
         }

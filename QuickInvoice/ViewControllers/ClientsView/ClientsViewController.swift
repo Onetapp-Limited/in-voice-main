@@ -336,6 +336,14 @@ class ClientsViewController: UIViewController {
     // MARK: - Actions
     
     @objc func createClientButtonTapped() {
+        guard ApphudPurchaseService.shared.hasActiveSubscription || filteredClients.count < 3 else {
+            let paywallVC = PaywallViewController()
+            let navController = UINavigationController(rootViewController: paywallVC)
+            navController.modalPresentationStyle = .fullScreen
+            present(navController, animated: true)
+            return
+        }
+        
         let clientToEdit = Client()
         let newClientVC = NewClientViewController(client: clientToEdit)
         newClientVC.delegate = self

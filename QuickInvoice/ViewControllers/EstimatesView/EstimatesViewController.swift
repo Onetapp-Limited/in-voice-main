@@ -357,6 +357,14 @@ extension EstimatesViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard ApphudPurchaseService.shared.hasActiveSubscription else {
+            let paywallVC = PaywallViewController()
+            let navController = UINavigationController(rootViewController: paywallVC)
+            navController.modalPresentationStyle = .fullScreen
+            present(navController, animated: true)
+            return
+        }
+        
         let sectionTitle = sortedSections[indexPath.section]
         if let selectedEstimate = groupedEstimates[sectionTitle]?[indexPath.row] {
             let invoiceDetailPDFVC = InvoiceDetailPDFViewController()
