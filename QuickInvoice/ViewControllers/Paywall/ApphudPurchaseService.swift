@@ -7,9 +7,9 @@ import Combine
 /// Defines the supported subscription product types.
 // todo PRO
 enum PurchaseServiceProduct: String, CaseIterable {
-    case week = "week_899_3dtrial"
-    case month = "2"
-    case year = "3"
+    case week = "weekly_599_no_trial"
+    case month = "monthly_999_no_trial"
+    case year = "yearly_9999_no_trial"
 }
 
 /// Defines the outcome of a purchase or restore operation.
@@ -67,8 +67,7 @@ final class ApphudPurchaseService {
 
     /// Checks if the user has an active subscription.
     var hasActiveSubscription: Bool {
-        true // todo
-//        Apphud.hasActiveSubscription()
+        Apphud.hasActiveSubscription()
     }
     
     static var shared = ApphudPurchaseService()
@@ -146,11 +145,11 @@ final class ApphudPurchaseService {
         var days: Double
         switch product {
         case .week:
-            days = 7.0
+            days = 1
         case .month:
-            days = 90.0 // Assuming 90 days for 3 months
+            days = 4
         case .year:
-            days = 365.0
+            days = 52
         }
         
         let perDay = priceValue / days

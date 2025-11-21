@@ -11,6 +11,7 @@
 		100515912ECB2C37008DD2FD /* PaywallViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100515902ECB2C34008DD2FD /* PaywallViewModel.swift */; };
 		100515932ECB2C7C008DD2FD /* ApphudPurchaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100515922ECB2C7A008DD2FD /* ApphudPurchaseService.swift */; };
 		100515982ECB2D6E008DD2FD /* ApphudSDK in Frameworks */ = {isa = PBXBuildFile; productRef = 100515972ECB2D6E008DD2FD /* ApphudSDK */; };
+		1005178E2ECF40D8008DD2FD /* AppsFlyerLib in Frameworks */ = {isa = PBXBuildFile; productRef = 1005178D2ECF40D8008DD2FD /* AppsFlyerLib */; };
 		104AD7BE2EB35D990014E550 /* EstimatesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 104AD7BD2EB35D920014E550 /* EstimatesViewController.swift */; };
 		104AD7C02EB35FFE0014E550 /* EstimateTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 104AD7BF2EB35FFC0014E550 /* EstimateTableViewCell.swift */; };
 		104AD7C22EB360870014E550 /* EstimatesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 104AD7C12EB360820014E550 /* EstimatesModel.swift */; };
@@ -146,6 +147,7 @@
 				100515982ECB2D6E008DD2FD /* ApphudSDK in Frameworks */,
 				107315BE2EBCAAE9008E7C35 /* DGCharts in Frameworks */,
 				1051E6112EAF91C100D576BC /* SnapKit in Frameworks */,
+				1005178E2ECF40D8008DD2FD /* AppsFlyerLib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -453,6 +455,7 @@
 				1051E60F2EAF91C100D576BC /* XCRemoteSwiftPackageReference "SnapKit" */,
 				107315BC2EBCAAE9008E7C35 /* XCRemoteSwiftPackageReference "Charts" */,
 				100515962ECB2D6E008DD2FD /* XCRemoteSwiftPackageReference "ApphudSDK" */,
+				1005178C2ECF40D8008DD2FD /* XCRemoteSwiftPackageReference "AppsFlyerFramework" */,
 			);
 			productRefGroup = 9520F87A24D27CBB006CDC05 /* Products */;
 			projectDirPath = "";
@@ -677,7 +680,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1;
+				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.voxinvoice.app;
 				PRODUCT_NAME = "Quick Invoice";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -705,7 +708,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1;
+				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.voxinvoice.app;
 				PRODUCT_NAME = "Quick Invoice";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -750,6 +753,14 @@
 				minimumVersion = 4.0.0;
 			};
 		};
+		1005178C2ECF40D8008DD2FD /* XCRemoteSwiftPackageReference "AppsFlyerFramework" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/AppsFlyerSDK/AppsFlyerFramework.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 6.17.7;
+			};
+		};
 		1051E60A2EAF912200D576BC /* XCRemoteSwiftPackageReference "realm-swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/realm/realm-swift.git";
@@ -781,6 +792,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 100515962ECB2D6E008DD2FD /* XCRemoteSwiftPackageReference "ApphudSDK" */;
 			productName = ApphudSDK;
+		};
+		1005178D2ECF40D8008DD2FD /* AppsFlyerLib */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1005178C2ECF40D8008DD2FD /* XCRemoteSwiftPackageReference "AppsFlyerFramework" */;
+			productName = AppsFlyerLib;
 		};
 		1051E60D2EAF912200D576BC /* RealmSwift */ = {
 			isa = XCSwiftPackageProductDependency;

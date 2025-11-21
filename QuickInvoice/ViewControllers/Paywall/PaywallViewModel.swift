@@ -123,23 +123,23 @@ class PaywallViewModel {
             // Предположим, что ApphudPurchaseService возвращает нужные цены.
 
             // Обновление локализованных цен:
-            self.weekPrice = "$5.99"//ApphudPurchaseService.shared.localizedPrice(for: .week) ?? "$5.99"
-            self.monthlyPrice = "$5.99"//ApphudPurchaseService.shared.localizedPrice(for: .month) ?? "$9.99 / month"
-            self.yearlyPrice = "$5.99"//ApphudPurchaseService.shared.localizedPrice(for: .year) ?? "$99.99 / year"
+            self.weekPrice = ApphudPurchaseService.shared.localizedPrice(for: .week) ?? "N/A"
+            self.monthlyPrice = ApphudPurchaseService.shared.localizedPrice(for: .month) ?? "N/A"
+            self.yearlyPrice = ApphudPurchaseService.shared.localizedPrice(for: .year) ?? "N/A"
             
             // Обновление цен за неделю:
             // Для недельного
-            self.weeklyPricePerWeek = "$5.99" // ApphudPurchaseService.shared.localizedPrice(for: .week) ?? "$5.99"
+            self.weeklyPricePerWeek = ApphudPurchaseService.shared.localizedPrice(for: .week) ?? "$5.99"
             
             // Для месячного (должен быть специальный метод, пока mock)
-            // ApphudPurchaseService.shared.perDayPrice(for: .monthly3) // это может быть perDayPrice, но для UI нужно perWeek
-            self.monthlyPricePerWeek = "$2.49" // mock
+            //
+            self.monthlyPricePerWeek = ApphudPurchaseService.shared.perDayPrice(for: .month)
             
             // Для годового (должен быть специальный метод, пока mock)
             // ApphudPurchaseService.shared.perDayPrice(for: .yearly)
-            self.yearlyPricePerWeek = "$1.92" // mock
+            self.yearlyPricePerWeek = ApphudPurchaseService.shared.perDayPrice(for: .year)
             
-            self.onPricesUpdated?() // Уведомляем контроллер об обновлении
+            self.onPricesUpdated?()
         }
     }
     
